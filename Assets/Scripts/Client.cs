@@ -14,6 +14,7 @@ public class Client {
     byte [ ] bytes = new byte [ 256 ];
     PlayerActor actorComponent;
     GameObject actorObject;
+    public List<KeyCode> pressedInputs = new List<KeyCode>();
 
     public Client (TcpClient _client)
     {
@@ -29,11 +30,6 @@ public class Client {
         actorComponent.Client = this;
     }
 
-    void MoveCommand (Vector2 dir)
-    {
-        actorComponent.Move(dir);
-    }
-
     public IEnumerator ListenForMessages ()
     {
         NetworkStream stream = client.GetStream();
@@ -44,25 +40,30 @@ public class Client {
             if (stream.DataAvailable)
             {
                 string msg = reader.ReadLine();
-                Debug.Log(msg);
                 Vector2 moveDir = Vector2.zero;
-                if (msg.Contains("w"))
+                Debug.Log(msg);
+                string [ ] msgSplit = msg.Split(':');
+
+                for (int i = 0; i < msgSplit.Length; i++)
                 {
-                    moveDir += new Vector2(0, 1);
+                    string input = msgSplit [ i ];
+                    KeyCode inputButton;
+                    bool pressed = true;
+
+                    if (input.Contains("-"))
+                    {
+                        pressed = false;
+                        input = input.Remove(0, 1);
+                    }
+
+                    if (Enum.TryParse<KeyCode>(input, out inputButton))
+                    {
+                        if (pressed)
+                            pressedInputs.Add(inputButton);                        
+                        else
+                            pressedInputs.Remove(inputButton);                        
+                    }
                 }
-                if (msg.Contains("a"))
-                {
-                    moveDir += new Vector2(-1, 0);
-                }
-                if (msg.Contains("s"))
-                {
-                    moveDir += new Vector2(0, -1);
-                }
-                if (msg.Contains("d"))
-                {
-                    moveDir += new Vector2(1, 0);
-                }
-                MoveCommand(moveDir);
             }
             yield return null;
         }
