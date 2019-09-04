@@ -4,50 +4,68 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
+
+
 
 public class Client {
     TcpClient client;
     byte [ ] bytes = new byte [ 256 ];
+    PlayerActor actorComponent;
+    GameObject actorObject;
 
     public Client (TcpClient _client)
     {
         client = _client;
+        SpawnActor();
     }
 
-    public void ListenForMessages ()
+    void SpawnActor ()
     {
+        UnityEngine.Object playerPrefab = Resources.Load("Prefabs/PlayerActor");
+        actorObject = (GameObject)GameObject.Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+        actorComponent = actorObject.GetComponent<PlayerActor>();
+        actorComponent.Client = this;
+    }
+
+    void MoveCommand (Vector2 dir)
+    {
+        actorComponent.Move(dir);
+    }
+
+    public IEnumerator ListenForMessages ()
+    {
+        NetworkStream stream = client.GetStream();
+        StreamReader reader = new StreamReader(stream);
+
         while (true)
         {
-            NetworkStream stream = client.GetStream();
-            int i;
-            string data = null;
-
-            while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
+            if (stream.DataAvailable)
             {
-                data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
-                Console.WriteLine("Received: {0}", data);
-                data = data.ToUpper();
-                byte [ ] msg = System.Text.Encoding.ASCII.GetBytes(data);
-                stream.Write(msg, 0, msg.Length);
-                Console.WriteLine("Sent: {0}", data);
-
-                using (StreamWriter w = File.AppendText("log.txt"))
+                string msg = reader.ReadLine();
+                Debug.Log(msg);
+                Vector2 moveDir = Vector2.zero;
+                if (msg.Contains("w"))
                 {
-                    Log(w, Encoding.ASCII.GetString(bytes, 0, bytes.Length), client.ToString());
+                    moveDir += new Vector2(0, 1);
                 }
-
+                if (msg.Contains("a"))
+                {
+                    moveDir += new Vector2(-1, 0);
+                }
+                if (msg.Contains("s"))
+                {
+                    moveDir += new Vector2(0, -1);
+                }
+                if (msg.Contains("d"))
+                {
+                    moveDir += new Vector2(1, 0);
+                }
+                MoveCommand(moveDir);
             }
+            yield return null;
         }
-    }
-
-    public static void Log (TextWriter log, string msg, string sender)
-    {
-        Debug.Log("Afsender: " + sender);
-        Debug.Log("Tid: " + DateTime.Now.ToLongTimeString() + " " + DateTime.Now.ToLongDateString());
-        Debug.Log("Besked: " + msg);
-        Debug.Log("-----------------------------------------");
-        Debug.Log("Logged");
-
+        //GameObject.Destroy(actorObject);
     }
 }

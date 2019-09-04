@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +7,7 @@ public class PlayerActor : MonoBehaviour
 {
     // Start is called before the first frame update
 
+    public Client Client;
 
     void Start()
     {
@@ -16,5 +18,10 @@ public class PlayerActor : MonoBehaviour
     void Update()
     {
         
+    }
+
+    internal void Move (Vector2 dir)
+    {
+        transform.Translate(dir);
     }
 }
