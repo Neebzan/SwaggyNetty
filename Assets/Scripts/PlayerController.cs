@@ -18,16 +18,13 @@ public class PlayerController : MonoBehaviour
         stream = client.GetStream();
     }
 
-    private void FixedUpdate()
-    {
-        
-    }
 
     // Update is called once per frame
     void Update()
     {
         string inputs = string.Empty;
-        //Vector2 move = new Vector2(Input.GetAxisRaw("horizontal"), Input.GetAxisRaw("vertical"));
+        
+        //Buttons down
         if (Input.GetKeyDown(KeyCode.W))
         {
             inputs += ((int)KeyCode.W).ToString() + ":";
@@ -46,10 +43,7 @@ public class PlayerController : MonoBehaviour
         }
 
 
-
-
-
-
+        //Buttons released
         if (Input.GetKeyUp(KeyCode.W))
         {
             inputs += (-(int)KeyCode.W).ToString() + ":";
@@ -68,7 +62,7 @@ public class PlayerController : MonoBehaviour
         }
 
 
-
+        //Send inputs to server if there are any
         if (inputs != string.Empty)
         Message(inputs);
 
