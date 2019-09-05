@@ -7,7 +7,7 @@ using UnityEngine;
 public class PlayerActor : MonoBehaviour {
     Vector2 currentMoveDirection;
     private List<KeyCode> activeInputs = new List<KeyCode>();
-    public Client client;
+    public Client Client;
     public EndPoint Endpoint { get; internal set; }
     public uint PlayerID;
     public Vector2 CurrentPos;

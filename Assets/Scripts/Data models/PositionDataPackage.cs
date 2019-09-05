@@ -1,9 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
 public class PositionDataPackage
 {
-    public uint PlayerID { get; set; }
-    public Vector2 Position { get; set; }
+    public uint PlayerID;
+    public Vector2 Position;
+}
+
+
+[Serializable]
+public class PositionDataCollectionPackage {
+    public PositionDataPackage [ ] PositionDataPackages;
 }

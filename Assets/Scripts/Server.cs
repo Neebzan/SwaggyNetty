@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -9,7 +10,7 @@ using UnityEngine;
 
 public static class Server {
     public static readonly int SERVER_PORT = 13000;
-    public static readonly IPAddress iPAd = IPAddress.Parse("10.131.68.191");
+    public static IPAddress iPAd = IPAddress.Parse("10.131.68.191");
     public static ConcurrentQueue<TcpClient> tcpClients = new ConcurrentQueue<TcpClient>();
     public static List<PlayerActor> Players = new List<PlayerActor>();
     public static List<Client> Clients = new List<Client>();
@@ -21,7 +22,20 @@ public static class Server {
     static Server () {
         StartTick();
         UnityEngine.Application.quitting += StopServer;
+        //iPAd = IPAddress.Parse(GetLocalIPAddress());
+        //Debug.Log(iPAd.ToString());
     }
+
+    public static string GetLocalIPAddress () {
+        var host = Dns.GetHostEntry(Dns.GetHostName());
+        foreach (var ip in host.AddressList) {
+            if (ip.AddressFamily == AddressFamily.InterNetwork) {
+                return ip.ToString();
+            }
+        }
+        throw new Exception("No network adapters with an IPv4 address in the system!");
+    }
+
 
     /// <summary>
     /// Starts an endless loop, where the tcpListener continuesly looks for new clients
@@ -44,8 +58,9 @@ public static class Server {
     }
 
     private static void Tick (object sender, ElapsedEventArgs e) {
+        byte[] package = PositionData();
         for (int i = 0; i < Players.Count; i++) {
-            Clients [ i ].SendToClient(PositionData());
+            Players [ i ].Client.SendToClient(package);
         }
     }
 
@@ -53,23 +68,28 @@ public static class Server {
         timer.Enabled = false;
     }
 
-    private static byte[] PositionData () {
+    private static byte [ ] PositionData () {
         //Create package from player ID and position
-        PositionDataPackage [ ] package = new PositionDataPackage [ Players.Count ];
+        PositionDataPackage [ ] packageCollection = new PositionDataPackage [ Players.Count ];
         for (int i = 0; i < Players.Count; i++) {
             PositionDataPackage pck = new PositionDataPackage {
                 PlayerID = Players [ i ].PlayerID,
                 Position = Players [ i ].CurrentPos
             };
-            package [ i ] = pck;
+            packageCollection [ i ] = pck;
         }
+        PositionDataCollectionPackage package = new PositionDataCollectionPackage() {
+            PositionDataPackages = packageCollection
+        };
+
+        string packageJson = JsonUtility.ToJson(package);
 
         //Convert to JSON
-        byte [ ] packageData = System.Text.Encoding.ASCII.GetBytes(JsonUtility.ToJson(package));
+        byte [ ] packageData = System.Text.Encoding.ASCII.GetBytes(packageJson);
 
         //Create a uint containing the length of the package, and encode to byte array
         int pckLen = packageData.Length;
-        byte [ ] packageHeader = System.Text.Encoding.ASCII.GetBytes(pckLen.ToString());
+        byte [ ] packageHeader = BitConverter.GetBytes(pckLen);
         byte [ ] totalPackage = new byte [ packageHeader.Length + packageData.Length ];
         //Merge byte arrays
         System.Buffer.BlockCopy(packageHeader, 0, totalPackage, 0, packageHeader.Length);

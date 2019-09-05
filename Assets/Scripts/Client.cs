@@ -19,6 +19,7 @@ public class Client {
         tcpClient = _tcpClient;
         SpawnActor();
         networkStream = tcpClient.GetStream();
+        tcpClient.NoDelay = true;
     }
 
     /// <summary>
@@ -30,7 +31,7 @@ public class Client {
         PlayerActor actorComponent = actorObject.GetComponent<PlayerActor>();
         actorComponent.Endpoint = tcpClient.Client.RemoteEndPoint;
         this.OnNewInputsRecieved += actorComponent.NewInputsRecieved;
-        actorComponent.client = this;
+        actorComponent.Client = this;
     }
 
     /// <summary>
