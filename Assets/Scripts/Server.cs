@@ -9,21 +9,21 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 public static class Server {
-    const int SERVER_PORT = 13000;
-    static IPAddress iPAd = IPAddress.Parse("10.131.68.191");
+    public static readonly int SERVER_PORT = 13000;
+    public static readonly IPAddress iPAd = IPAddress.Parse("10.131.68.191");
     static TcpListener listener = new TcpListener(iPAd, SERVER_PORT);
 
     public static ConcurrentQueue<TcpClient> tcpClients = new ConcurrentQueue<TcpClient>();
 
-    public static void ListenForClients ()
-    {
+    /// <summary>
+    /// Starts an endless loop, where the tcpListener continuesly looks for new clients
+    /// </summary>
+    public static void ListenForClients () {
         listener.Start();
-        Debug.Log("Started listening");
-        while (true)
-        {
-            Debug.Log("Waiting for connection");
+        Debug.Log("Listening for clients");
+
+        while (true) {
             TcpClient c = listener.AcceptTcpClient();
-            Debug.Log("Client connected");
             tcpClients.Enqueue(c);
             Debug.Log(c.Client.RemoteEndPoint.ToString() + " connected");
         }
