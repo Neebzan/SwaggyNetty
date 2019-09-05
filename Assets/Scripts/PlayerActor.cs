@@ -1,13 +1,22 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using UnityEngine;
 
 public class PlayerActor : MonoBehaviour {
     Vector2 currentMoveDirection;
     private List<KeyCode> activeInputs = new List<KeyCode>();
+    public Client client;
+    public EndPoint Endpoint { get; internal set; }
+    public uint PlayerID;
+    public Vector2 CurrentPos;
 
     void Start () {
+        Server.Players.Add(this);
+        Server.PlayersConnected++;
+        PlayerID = Server.PlayersConnected;
+        CurrentPos = transform.position;
     }
 
     void Update () {
@@ -47,6 +56,7 @@ public class PlayerActor : MonoBehaviour {
         currentMoveDirection.Normalize();
         if (currentMoveDirection != Vector2.zero)
             transform.Translate(currentMoveDirection * Time.deltaTime * 1.0f);
+        CurrentPos = transform.position;
     }
 
     /// <summary>

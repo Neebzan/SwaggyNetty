@@ -13,10 +13,12 @@ public class Client {
     private TcpClient tcpClient;
     public event Action<List<KeyCode>> OnNewInputsRecieved;
     public List<KeyCode> ActiveInputs = new List<KeyCode>();
+    NetworkStream networkStream;
 
     public Client (TcpClient _tcpClient) {
         tcpClient = _tcpClient;
         SpawnActor();
+        networkStream = tcpClient.GetStream();
     }
 
     /// <summary>
@@ -26,7 +28,9 @@ public class Client {
         UnityEngine.Object playerPrefab = Resources.Load("Prefabs/PlayerActor");
         GameObject actorObject = (GameObject)GameObject.Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
         PlayerActor actorComponent = actorObject.GetComponent<PlayerActor>();
+        actorComponent.Endpoint = tcpClient.Client.RemoteEndPoint;
         this.OnNewInputsRecieved += actorComponent.NewInputsRecieved;
+        actorComponent.client = this;
     }
 
     /// <summary>
@@ -34,11 +38,10 @@ public class Client {
     /// </summary>
     /// <returns></returns>
     public IEnumerator ListenForMessages () {
-        NetworkStream stream = tcpClient.GetStream();
-        StreamReader reader = new StreamReader(stream);
+        StreamReader reader = new StreamReader(networkStream);
 
         while (true) {
-            if (stream.DataAvailable) {
+            if (networkStream.DataAvailable) {
                 string msg = reader.ReadLine();
                 Vector2 moveDir = Vector2.zero;
                 Debug.Log(msg);
@@ -91,5 +94,11 @@ public class Client {
                 OnNewInputsRecieved.Invoke(ActiveInputs);
             }
         }
+    }
+
+    public void SendToClient (byte[] data) {
+        StreamWriter writer = new StreamWriter(networkStream);
+
+        networkStream.Write(data, 0, data.Length);
     }
 }

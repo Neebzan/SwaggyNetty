@@ -21,6 +21,7 @@ public class ServerInitiator : MonoBehaviour
             while (Server.tcpClients.Count > 0) {
                 if (Server.tcpClients.TryDequeue(out TcpClient tcpClient)) {
                     Client client = new Client(tcpClient);
+                    Server.Clients.Add(client);
                     StartCoroutine(client.ListenForMessages());
                 }
             }
