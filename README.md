@@ -16,3 +16,12 @@ Ideelt
 
 
 Client sender input (én af 8 retninger eller stop) til noden forbundet til clienten.
+
+
+
+To do:
+- Disconnect detection / pinging
+  -  Remove player from scene if disconnected
+- First time connection message (server => client)
+- Update player positions on clients. Probably new actor class
+
