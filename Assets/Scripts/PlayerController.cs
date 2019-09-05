@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
@@ -25,7 +26,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         string inputs = string.Empty;
-        
+
         //Buttons down
         if (Input.GetKeyDown(KeyCode.W))
         {
@@ -66,7 +67,7 @@ public class PlayerController : MonoBehaviour
 
         //Send inputs to server if there are any
         if (inputs != string.Empty)
-        Message(inputs);
+            Message(inputs);
 
     }
 
@@ -85,18 +86,45 @@ public class PlayerController : MonoBehaviour
     public IEnumerator ListenToServer()
     {
         Debug.Log("ListenToServer Started");
-        StreamReader reader = new StreamReader(stream);
+        //StreamReader reader = new StreamReader(stream);
+
+        byte[] readBuffer = new byte[4];
         while (true)
         {
-            if(stream.DataAvailable)
+
+            if (stream.DataAvailable)
             {
-                string msg = reader.ReadLine();
+                //Debug.Log("Data received!");
+
+                int bytesRead = 0;
+
+
+                while (bytesRead < 4)
+                {
+                    bytesRead += stream.Read(readBuffer, bytesRead, 4 - bytesRead);
+                }
+
+                //Debug.Log("4 Bytes received");
+
+                bytesRead = 0;
+                byte[] buffer = new byte[BitConverter.ToInt32(readBuffer, 0)];
+                
+                while (bytesRead < buffer.Length)
+                {
+                    bytesRead += stream.Read(buffer, bytesRead, buffer.Length - bytesRead);
+                }
+                string msg = System.Text.Encoding.UTF8.GetString(buffer);
                 Debug.Log(msg);
+
             }
 
+
             yield return null;
-        }        
+        }
+
+
     }
+
 
     private void OnDestroy()
     {
