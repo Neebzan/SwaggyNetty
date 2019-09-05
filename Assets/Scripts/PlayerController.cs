@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Sockets;
 using UnityEngine;
 
@@ -16,6 +17,7 @@ public class PlayerController : MonoBehaviour
         client.NoDelay = true;
         Debug.Log("Connected?");
         stream = client.GetStream();
+        StartCoroutine(ListenToServer());
     }
 
 
@@ -78,6 +80,22 @@ public class PlayerController : MonoBehaviour
         stream.Write(data, 0, data.Length);
 
         Debug.Log("Sent: " + msg);
+    }
+
+    public IEnumerator ListenToServer()
+    {
+        Debug.Log("ListenToServer Started");
+        StreamReader reader = new StreamReader(stream);
+        while (true)
+        {
+            if(stream.DataAvailable)
+            {
+                string msg = reader.ReadLine();
+                Debug.Log(msg);
+            }
+
+            yield return null;
+        }        
     }
 
     private void OnDestroy()
