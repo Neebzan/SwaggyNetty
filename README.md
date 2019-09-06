@@ -17,7 +17,8 @@
 
 ## To do:
 - Disconnect detection / pinging
-  -  Remove player from scene if disconnected
-- First time connection message (server => client)
-- Update player positions on clients. Probably new actor class
+  - Remove player server-side ✔
+  - Remove player client-side
+- First time connection message (server => client) ✔
+- Update player positions on clients. Probably new actor class ✔
 
