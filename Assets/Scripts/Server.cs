@@ -9,7 +9,8 @@ using UnityEngine;
 
 
 public static class Server {
-    public static readonly int SERVER_PORT = 13000;
+    public const char MESSAGE_TYPE_INDICATOR = '?';
+    public const int SERVER_PORT = 13000;
     public static IPAddress iPAd = IPAddress.Parse("10.131.68.191");
     public static ConcurrentQueue<TcpClient> tcpClients = new ConcurrentQueue<TcpClient>();
     public static List<ServerActor> Players = new List<ServerActor>();

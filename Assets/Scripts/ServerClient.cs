@@ -51,12 +51,13 @@ public class ServerClient {
         while (true) {
             if (networkStream.DataAvailable) {
                 string msg = reader.ReadLine();
-
-                MessageType type = (MessageType)Int32.Parse(msg.Split('?') [ 0 ]);
+                string[] msgSplit = msg.Split(Server.MESSAGE_TYPE_INDICATOR);
+                MessageType type = (MessageType)Int32.Parse(msgSplit [ 0 ]);
+                string newMessage = msgSplit [ 1 ];
 
                 switch (type) {
                     case MessageType.Input:
-                        HandleInputMessage(msg);
+                        HandleInputMessage(newMessage);
                         break;
                     case MessageType.Disconnect:
                         break;
