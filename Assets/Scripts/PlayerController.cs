@@ -9,6 +9,8 @@ public class PlayerController : MonoBehaviour
 {
     NetworkStream stream;
     TcpClient client;
+    bool connected = false;
+    uint playerID;
 
     // Start is called before the first frame update
     void Start()
@@ -17,6 +19,7 @@ public class PlayerController : MonoBehaviour
         client = new TcpClient("10.131.68.191", port);
         client.NoDelay = true;
         Debug.Log("Connected?");
+
         stream = client.GetStream();
         StartCoroutine(ListenToServer());
     }
@@ -91,13 +94,12 @@ public class PlayerController : MonoBehaviour
         byte[] readBuffer = new byte[4];
         while (true)
         {
-
-            if (stream.DataAvailable)
+            int packagesRead = 0;
+            while (stream.DataAvailable && packagesRead < 8)
             {
                 //Debug.Log("Data received!");
 
                 int bytesRead = 0;
-
 
                 while (bytesRead < 4)
                 {
@@ -108,14 +110,27 @@ public class PlayerController : MonoBehaviour
 
                 bytesRead = 0;
                 byte[] buffer = new byte[BitConverter.ToInt32(readBuffer, 0)];
-                
+
                 while (bytesRead < buffer.Length)
                 {
                     bytesRead += stream.Read(buffer, bytesRead, buffer.Length - bytesRead);
                 }
                 string msg = System.Text.Encoding.UTF8.GetString(buffer);
-                Debug.Log(msg);
 
+                if (!connected)
+                {
+                    PositionDataPackage temp = JsonUtility.FromJson<PositionDataPackage>(msg);
+                    playerID = temp.PlayerID;
+                    gameObject.transform.position = temp.Position;
+                    connected = true;
+                }
+                else
+                {
+                    PositionDataCollectionPackage data = JsonUtility.FromJson<PositionDataCollectionPackage>(msg);
+                    gameObject.transform.position = data.PositionDataPackages[0].Position;
+                }
+
+                packagesRead++;
             }
 
 
