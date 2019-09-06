@@ -17,21 +17,27 @@ public class Client {
 
     public Client (TcpClient _tcpClient) {
         tcpClient = _tcpClient;
-        SpawnActor();
+        PlayerActor actor = SpawnActor();
         networkStream = tcpClient.GetStream();
         tcpClient.NoDelay = true;
+        ClientConnected(actor.PlayerID, actor.CurrentPos);
+        Server.Clients.Add(this);
+        Server.Players.Add(actor);
     }
 
     /// <summary>
     /// Instantiates a player actor in the scene
     /// </summary>
-    void SpawnActor () {
+    PlayerActor SpawnActor () {
         UnityEngine.Object playerPrefab = Resources.Load("Prefabs/PlayerActor");
         GameObject actorObject = (GameObject)GameObject.Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
         PlayerActor actorComponent = actorObject.GetComponent<PlayerActor>();
         actorComponent.Endpoint = tcpClient.Client.RemoteEndPoint;
         this.OnNewInputsRecieved += actorComponent.NewInputsRecieved;
         actorComponent.Client = this;
+        Server.PlayersConnected++;
+        actorComponent.PlayerID = Server.PlayersConnected;
+        return actorComponent;
     }
 
     /// <summary>
@@ -44,31 +50,66 @@ public class Client {
         while (true) {
             if (networkStream.DataAvailable) {
                 string msg = reader.ReadLine();
-                Vector2 moveDir = Vector2.zero;
-                Debug.Log(msg);
-                string [ ] msgSplit = msg.Split(':');
 
-                for (int i = 0; i < msgSplit.Length; i++) {
-                    string input = msgSplit [ i ];
-                    KeyCode inputButton;
-                    bool pressed = true;
+                MessageType type = (MessageType)Int32.Parse(msg.Split('?') [ 0 ]);
 
-                    if (input.Contains("-")) {
-                        pressed = false;
-                        input = input.Remove(0, 1);
-                    }
-
-                    if (Enum.TryParse<KeyCode>(input, out inputButton)) {
-                        if (pressed)
-                            ActiveInputs.Add(inputButton);
-                        else
-                            ActiveInputs.Remove(inputButton);
-                        OnNewInputsRecieved.Invoke(ActiveInputs);
-                    }
+                switch (type) {
+                    case MessageType.Input:
+                        HandleInputMessage(msg);
+                        break;
+                    case MessageType.Disconnect:
+                        break;
+                    case MessageType.Connect:
+                        break;
+                    case MessageType.ServerTick:
+                        break;
+                    default:
+                        break;
                 }
+
+
 
             }
             yield return null;
+        }
+    }
+
+    private void ClientConnected (uint playerID, Vector2 playerPos) {
+        PositionDataPackage package = new PositionDataPackage() {
+            PlayerID = playerID,
+            Position = playerPos
+        };
+
+        string jsonPackage = JsonUtility.ToJson(package);
+        byte [ ] byteData = System.Text.Encoding.ASCII.GetBytes(jsonPackage);
+
+        byte [ ] totalPackage = Server.AddSizeHeaderToPackage(byteData);
+
+        SendToClient(totalPackage);
+    }
+
+
+    void HandleInputMessage (string msg) {
+        Vector2 moveDir = Vector2.zero;
+        string [ ] msgSplit = msg.Split(':');
+
+        for (int i = 0; i < msgSplit.Length; i++) {
+            string input = msgSplit [ i ];
+            KeyCode inputButton;
+            bool pressed = true;
+
+            if (input.Contains("-")) {
+                pressed = false;
+                input = input.Remove(0, 1);
+            }
+
+            if (Enum.TryParse<KeyCode>(input, out inputButton)) {
+                if (pressed)
+                    ActiveInputs.Add(inputButton);
+                else
+                    ActiveInputs.Remove(inputButton);
+                OnNewInputsRecieved.Invoke(ActiveInputs);
+            }
         }
     }
 
@@ -76,7 +117,7 @@ public class Client {
     /// Handles the messages recieves from the client, and converts theses to unity inputs
     /// </summary>
     /// <param name="msg"></param>
-    private void HandleMessage (string[] msg) {
+    private void ConvertToInput (string [ ] msg) {
         for (int i = 0; i < msg.Length; i++) {
             string input = msg [ i ];
             KeyCode inputButton;
@@ -97,7 +138,7 @@ public class Client {
         }
     }
 
-    public void SendToClient (byte[] data) {
+    public void SendToClient (byte [ ] data) {
         StreamWriter writer = new StreamWriter(networkStream);
 
         networkStream.Write(data, 0, data.Length);

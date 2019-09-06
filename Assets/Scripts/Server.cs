@@ -16,7 +16,7 @@ public static class Server {
     public static List<Client> Clients = new List<Client>();
 
     static TcpListener listener = new TcpListener(iPAd, SERVER_PORT);
-    static System.Timers.Timer timer = new System.Timers.Timer(1000);
+    static System.Timers.Timer timer = new System.Timers.Timer(16.667);
     public static uint PlayersConnected;
 
     static Server () {
@@ -87,13 +87,20 @@ public static class Server {
         //Convert to JSON
         byte [ ] packageData = System.Text.Encoding.ASCII.GetBytes(packageJson);
 
+        byte [ ] totalPackage = AddSizeHeaderToPackage(packageData);
+
+        return totalPackage;
+    }
+    
+
+    public static byte[] AddSizeHeaderToPackage (byte[] package) {
         //Create a uint containing the length of the package, and encode to byte array
-        int pckLen = packageData.Length;
+        int pckLen = package.Length;
         byte [ ] packageHeader = BitConverter.GetBytes(pckLen);
-        byte [ ] totalPackage = new byte [ packageHeader.Length + packageData.Length ];
+        byte [ ] totalPackage = new byte [ packageHeader.Length + package.Length ];
         //Merge byte arrays
         System.Buffer.BlockCopy(packageHeader, 0, totalPackage, 0, packageHeader.Length);
-        System.Buffer.BlockCopy(packageData, 0, totalPackage, packageHeader.Length, packageData.Length);
+        System.Buffer.BlockCopy(package, 0, totalPackage, packageHeader.Length, package.Length);
 
         return totalPackage;
     }

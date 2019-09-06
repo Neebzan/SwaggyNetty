@@ -13,9 +13,6 @@ public class PlayerActor : MonoBehaviour {
     public Vector2 CurrentPos;
 
     void Start () {
-        Server.Players.Add(this);
-        Server.PlayersConnected++;
-        PlayerID = Server.PlayersConnected;
         CurrentPos = transform.position;
     }
 
