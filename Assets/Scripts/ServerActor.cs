@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Net;
 using UnityEngine;
 
-public class PlayerActor : MonoBehaviour {
+public class ServerActor : MonoBehaviour {
     Vector2 currentMoveDirection;
     private List<KeyCode> activeInputs = new List<KeyCode>();
-    public Client Client;
+    public ServerClient Client;
     public EndPoint Endpoint { get; internal set; }
     public uint PlayerID;
     public Vector2 CurrentPos;

@@ -12,8 +12,8 @@ public static class Server {
     public static readonly int SERVER_PORT = 13000;
     public static IPAddress iPAd = IPAddress.Parse("10.131.68.191");
     public static ConcurrentQueue<TcpClient> tcpClients = new ConcurrentQueue<TcpClient>();
-    public static List<PlayerActor> Players = new List<PlayerActor>();
-    public static List<Client> Clients = new List<Client>();
+    public static List<ServerActor> Players = new List<ServerActor>();
+    public static List<ServerClient> Clients = new List<ServerClient>();
 
     static TcpListener listener = new TcpListener(iPAd, SERVER_PORT);
     static System.Timers.Timer timer = new System.Timers.Timer(16.667);

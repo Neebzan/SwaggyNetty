@@ -9,15 +9,15 @@ using UnityEngine;
 
 
 
-public class Client {
+public class ServerClient {
     private TcpClient tcpClient;
     public event Action<List<KeyCode>> OnNewInputsRecieved;
     public List<KeyCode> ActiveInputs = new List<KeyCode>();
     NetworkStream networkStream;
 
-    public Client (TcpClient _tcpClient) {
+    public ServerClient (TcpClient _tcpClient) {
         tcpClient = _tcpClient;
-        PlayerActor actor = SpawnActor();
+        ServerActor actor = SpawnActor();
         networkStream = tcpClient.GetStream();
         tcpClient.NoDelay = true;
         ClientConnected(actor.PlayerID, actor.CurrentPos);
@@ -28,11 +28,11 @@ public class Client {
     /// <summary>
     /// Instantiates a player actor in the scene
     /// </summary>
-    void SpawnActor () {
+    ServerActor SpawnActor () {
         UnityEngine.Object playerPrefab = Resources.Load("Prefabs/ServerActor");
 
         GameObject actorObject = (GameObject)GameObject.Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
-        PlayerActor actorComponent = actorObject.GetComponent<PlayerActor>();
+        ServerActor actorComponent = actorObject.GetComponent<ServerActor>();
         actorComponent.Endpoint = tcpClient.Client.RemoteEndPoint;
         this.OnNewInputsRecieved += actorComponent.NewInputsRecieved;
         actorComponent.Client = this;
