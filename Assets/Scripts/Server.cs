@@ -23,8 +23,6 @@ public static class Server {
     static Server () {
         StartTick();
         UnityEngine.Application.quitting += StopServer;
-        //iPAd = IPAddress.Parse(GetLocalIPAddress());
-        //Debug.Log(iPAd.ToString());
     }
 
     public static string GetLocalIPAddress () {
@@ -37,14 +35,11 @@ public static class Server {
         throw new Exception("No network adapters with an IPv4 address in the system!");
     }
 
-
     /// <summary>
     /// Starts an endless loop, where the tcpListener continuesly looks for new clients
     /// </summary>
     public static void ListenForClients () {
         listener.Start();
-        Debug.Log("Listening for clients");
-
         while (true) {
             TcpClient c = listener.AcceptTcpClient();
             tcpClients.Enqueue(c);
@@ -59,7 +54,7 @@ public static class Server {
     }
 
     private static void Tick (object sender, ElapsedEventArgs e) {
-        byte[] package = PositionData();
+        byte [ ] package = PositionData();
         for (int i = 0; i < Players.Count; i++) {
             Players [ i ].Client.SendToClient(package);
         }
@@ -83,18 +78,52 @@ public static class Server {
             PositionDataPackages = packageCollection
         };
 
-        string packageJson = JsonUtility.ToJson(package);
+        MessageType msgType = MessageType.ServerTick;
 
+        string packageJson = JsonUtility.ToJson(package);
+        string msg = ((int)msgType).ToString() + Server.MESSAGE_TYPE_INDICATOR + packageJson;
         //Convert to JSON
-        byte [ ] packageData = System.Text.Encoding.ASCII.GetBytes(packageJson);
+        byte [ ] packageData = System.Text.Encoding.ASCII.GetBytes(msg);
 
         byte [ ] totalPackage = AddSizeHeaderToPackage(packageData);
 
         return totalPackage;
     }
-    
 
-    public static byte[] AddSizeHeaderToPackage (byte[] package) {
+    public static void Disconnect (ServerClient disconnectedClient) {
+        ServerActor disconnectedActor = null;
+        foreach (ServerActor actor in Players) {
+            if (actor.Client == disconnectedClient) {
+                disconnectedActor = actor;
+                SendDisconnectNotification(disconnectedActor.PlayerID);
+            }
+        }
+        if (disconnectedActor != null) {
+            Players.Remove(disconnectedActor);
+            GameObject.Destroy(disconnectedActor.gameObject);
+            Clients.Remove(disconnectedClient);
+        }
+
+    }
+
+    /// <summary>
+    /// Sends a notification to connected clients, that a player has disconnected
+    /// </summary>
+    /// <param name="playerID"></param>
+    private static void SendDisconnectNotification (uint playerID) {
+        string msg = ((int)MessageType.Disconnect).ToString();
+        msg += playerID.ToString();
+        byte [ ] data = System.Text.Encoding.ASCII.GetBytes(msg);
+        byte [ ] totalPackage = AddSizeHeaderToPackage(data);
+
+        for (int i = 0; i < Players.Count; i++) {
+            if (Players[i].PlayerID != playerID) {
+                Players [ i ].Client.SendToClient(totalPackage);
+            }
+        }
+    }
+
+    public static byte [ ] AddSizeHeaderToPackage (byte [ ] package) {
         //Create a uint containing the length of the package, and encode to byte array
         int pckLen = package.Length;
         byte [ ] packageHeader = BitConverter.GetBytes(pckLen);

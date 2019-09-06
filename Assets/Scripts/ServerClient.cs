@@ -14,6 +14,7 @@ public class ServerClient {
     public event Action<List<KeyCode>> OnNewInputsRecieved;
     public List<KeyCode> ActiveInputs = new List<KeyCode>();
     NetworkStream networkStream;
+    bool isDisconnecting = false;
 
     public ServerClient (TcpClient _tcpClient) {
         tcpClient = _tcpClient;
@@ -48,32 +49,42 @@ public class ServerClient {
     public IEnumerator ListenForMessages () {
         StreamReader reader = new StreamReader(networkStream);
 
-        while (true) {
-            if (networkStream.DataAvailable) {
-                string msg = reader.ReadLine();
-                string[] msgSplit = msg.Split(Server.MESSAGE_TYPE_INDICATOR);
-                MessageType type = (MessageType)Int32.Parse(msgSplit [ 0 ]);
-                string newMessage = msgSplit [ 1 ];
+        while (!isDisconnecting) {
+            if (Connected) {
+                if (networkStream.DataAvailable) {
+                    string msg = reader.ReadLine();
+                    string [ ] msgSplit = msg.Split(Server.MESSAGE_TYPE_INDICATOR);
+                    MessageType type = (MessageType)Int32.Parse(msgSplit [ 0 ]);
+                    string newMessage = msgSplit [ 1 ];
 
-                switch (type) {
-                    case MessageType.Input:
-                        HandleInputMessage(newMessage);
-                        break;
-                    case MessageType.Disconnect:
-                        break;
-                    case MessageType.Connect:
-                        break;
-                    case MessageType.ServerTick:
-                        break;
-                    default:
-                        break;
+                    switch (type) {
+                        case MessageType.Input:
+                            HandleInputMessage(newMessage);
+                            break;
+                        case MessageType.Disconnect:
+                            DisconnectClient();
+                            break;
+                        case MessageType.Connect:
+                            break;
+                        case MessageType.ServerTick:
+                            break;
+                        default:
+                            break;
+                    }
                 }
-
-
-
+                yield return null;
             }
-            yield return null;
+            else {
+                isDisconnecting = true;
+                DisconnectClient();
+            }
         }
+    }
+
+    private void DisconnectClient () {
+        isDisconnecting = true;
+        tcpClient.Close();
+        Server.Disconnect(this);
     }
 
     private void ClientConnected (uint playerID, Vector2 playerPos) {
@@ -81,15 +92,43 @@ public class ServerClient {
             PlayerID = playerID,
             Position = playerPos
         };
-
+        MessageType msgType = MessageType.Connect;
         string jsonPackage = JsonUtility.ToJson(package);
-        byte [ ] byteData = System.Text.Encoding.ASCII.GetBytes(jsonPackage);
+        string msg = ((int)msgType).ToString();
+        msg += Server.MESSAGE_TYPE_INDICATOR + jsonPackage;
+        byte [ ] byteData = System.Text.Encoding.ASCII.GetBytes(msg);
 
         byte [ ] totalPackage = Server.AddSizeHeaderToPackage(byteData);
 
         SendToClient(totalPackage);
     }
 
+
+
+    public bool Connected {
+        get {
+            try {
+                if (tcpClient.Client != null && tcpClient.Client.Connected) {
+                    if (tcpClient.Client.Poll(0, SelectMode.SelectRead)) {
+                        byte [ ] buff = new byte [ 1 ];
+
+                        if (tcpClient.Client.Receive(buff, SocketFlags.Peek) == 0) {
+                            return false;
+                        }
+
+                        return true;
+                    }
+
+                    return true;
+                }
+
+                return false;
+            }
+            catch {
+                return false;
+            }
+        }
+    }
 
     void HandleInputMessage (string msg) {
         Vector2 moveDir = Vector2.zero;

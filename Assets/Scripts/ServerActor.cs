@@ -52,7 +52,7 @@ public class ServerActor : MonoBehaviour {
     private void Move () {
         currentMoveDirection.Normalize();
         if (currentMoveDirection != Vector2.zero)
-            transform.Translate(currentMoveDirection * Time.deltaTime * 1.0f);
+            transform.Translate(currentMoveDirection * Time.deltaTime * 4.0f);
         CurrentPos = transform.position;
     }
 
