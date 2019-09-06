@@ -26,7 +26,7 @@ public class Client {
     /// Instantiates a player actor in the scene
     /// </summary>
     void SpawnActor () {
-        UnityEngine.Object playerPrefab = Resources.Load("Prefabs/PlayerActor");
+        UnityEngine.Object playerPrefab = Resources.Load("Prefabs/ServerActor");
         GameObject actorObject = (GameObject)GameObject.Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
         PlayerActor actorComponent = actorObject.GetComponent<PlayerActor>();
         actorComponent.Endpoint = tcpClient.Client.RemoteEndPoint;
