@@ -127,12 +127,12 @@ public class PlayerController : MonoBehaviour
                 else
                 {
                     PositionDataCollectionPackage data = JsonUtility.FromJson<PositionDataCollectionPackage>(msg);
-                    gameObject.transform.position = data.PositionDataPackages[0].Position;
+                    gameObject.transform.position = data.PositionDataPackages[playerID].Position;
                 }
 
                 packagesRead++;
             }
-
+            Debug.Log("Read: " + packagesRead + " packages");
 
             yield return null;
         }
