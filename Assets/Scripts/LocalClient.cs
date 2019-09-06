@@ -75,54 +75,74 @@ public class LocalClient : MonoBehaviour
                 }
                 string msg = System.Text.Encoding.UTF8.GetString(buffer);
 
-                if (!connected)
+                string[] tempMsg = msg.Split(Server.MESSAGE_TYPE_INDICATOR);
+                MessageType msgType = (MessageType)Int32.Parse(tempMsg[0]);
+
+                switch (msgType)
                 {
-                    PositionDataPackage temp = JsonUtility.FromJson<PositionDataPackage>(msg);
-                    LocalActor t = GameObject.FindGameObjectWithTag("Player").GetComponent<LocalActor>();
-                    t.playerID = temp.PlayerID;
-                    t.gameObject.transform.position = temp.Position;
-                    actors.Add(t);
-                    //gameObject.transform.position = temp.Position;
-                    connected = true;
-                }
-                else
-                {
-                    PositionDataCollectionPackage data = JsonUtility.FromJson<PositionDataCollectionPackage>(msg);
-                    for (int i = 0; i < data.PositionDataPackages.Length; i++)
-                    {
-                        bool playerFound = false;
-                        for (int j = 0; j < actors.Count; j++)
+                    case MessageType.Input:
+                        break;
+                    case MessageType.Disconnect:
+                        break;
+                    case MessageType.Connect:
                         {
-                            if (actors[j].playerID == data.PositionDataPackages[i].PlayerID)
+                            PositionDataPackage temp = JsonUtility.FromJson<PositionDataPackage>(tempMsg[1]);
+                            LocalActor t = GameObject.FindGameObjectWithTag("Player").GetComponent<LocalActor>();
+                            t.playerID = temp.PlayerID;
+                            t.gameObject.transform.position = temp.Position;
+                            actors.Add(t);
+                            //gameObject.transform.position = temp.Position;
+                            connected = true;
+                            break;
+                        }
+                    case MessageType.ServerTick:
+                        {
+                            PositionDataCollectionPackage data = JsonUtility.FromJson<PositionDataCollectionPackage>(tempMsg[1]);
+                            for (int i = 0; i < data.PositionDataPackages.Length; i++)
                             {
-                                actors[j].gameObject.transform.position = data.PositionDataPackages[i].Position;
-                                playerFound = true;
+                                bool playerFound = false;
+                                for (int j = 0; j < actors.Count; j++)
+                                {
+                                    if (actors[j].playerID == data.PositionDataPackages[i].PlayerID)
+                                    {
+                                        actors[j].gameObject.transform.position = data.PositionDataPackages[i].Position;
+                                        playerFound = true;
+                                    }
+                                }
+                                if (!playerFound)
+                                {
+                                    GameObject actorObject = (GameObject)GameObject.Instantiate(playerPrefab, data.PositionDataPackages[i].Position, Quaternion.identity);
+                                    LocalActor temp = actorObject.GetComponent<LocalActor>();
+                                    temp.playerID = data.PositionDataPackages[i].PlayerID;
+                                    actors.Add(temp);
+                                }
                             }
+                            break;
                         }
-                        if (!playerFound)
-                        {
-                            GameObject actorObject = (GameObject)GameObject.Instantiate(playerPrefab, data.PositionDataPackages[i].Position, Quaternion.identity);
-                            LocalActor temp = actorObject.GetComponent<LocalActor>();
-                            temp.playerID = data.PositionDataPackages[i].PlayerID;
-                            actors.Add(temp);
-                        }
-
-                    }
-
-                    //gameObject.transform.position = data.PositionDataPackages[playerID].Position;
+                    default:
+                        break;
                 }
 
-                packagesRead++;
-            }
-            Debug.Log("Read: " + packagesRead + " packages");
 
+                //gameObject.transform.position = data.PositionDataPackages[playerID].Position;
+            }
+
+            packagesRead++;
+            Debug.Log("Read: " + packagesRead + " packages");
             yield return null;
         }
+
     }
+
 
     private void OnDestroy()
     {
-        client.Close();
+        //Message(((int)MessageType.Disconnect).ToString() + Server.MESSAGE_TYPE_INDICATOR);
+
+
         stream.Close();
+        client.Close();
     }
 }
+
+

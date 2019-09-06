@@ -38,7 +38,10 @@ public class PlayerController : MonoBehaviour
         {
             inputs += ((int)KeyCode.D).ToString() + ":";
         }
-
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            client.Message(((int)MessageType.Disconnect).ToString() + Server.MESSAGE_TYPE_INDICATOR);
+        }
 
         //Buttons released
         if (Input.GetKeyUp(KeyCode.W))
@@ -61,14 +64,17 @@ public class PlayerController : MonoBehaviour
 
         //Send inputs to server if there are any
         if (inputs != string.Empty)
+        {
+            inputs = ((int)MessageType.Input).ToString() + Server.MESSAGE_TYPE_INDICATOR + inputs;
             client.Message(inputs);
+        }
 
     }
 
-    
-
-    
 
 
-    
+
+
+
+
 }
