@@ -18,14 +18,14 @@
 ## To do
 
 ### Base TCP/IP - netværks stack
-- X Disconnect detection / pinging
+- ❌ Disconnect detection / pinging
   - ✔ Remove player server-side
-  - X Remove player client-side
+  - ❌ Remove player client-side
 - ✔ First time connection message (server => client)
 - ✔ Update player positions on clients. Probably new actor class
 
 ## Systemintegration
-- X Lav kald mellem client - server asynkrone
-- X Måske skift fra JSON til XML, vurder fordele / ulemper
+- ❌ Lav kald mellem client - server asynkrone
+- ❌ Måske skift fra JSON til XML, vurder fordele / ulemper
 - ...
 
