@@ -8,19 +8,22 @@ using UnityEngine;
 
 
 
-public static class Server {
+public static class HeadlessServer
+    {
     public const char MESSAGE_TYPE_INDICATOR = '?';
     public const int SERVER_PORT = 13000;
     public static IPAddress iPAd = IPAddress.Parse("10.131.69.85");
     public static ConcurrentQueue<TcpClient> tcpClients = new ConcurrentQueue<TcpClient>();
-    public static List<ServerActor> Players = new List<ServerActor>();
-    public static List<ServerClient> Clients = new List<ServerClient>();
+    public static List<HeadlessServerActor> Players = new List<HeadlessServerActor>();
+    public static List<HeadlessServerClient> Clients = new List<HeadlessServerClient>();
 
     static TcpListener listener = new TcpListener(iPAd, SERVER_PORT);
-    static System.Timers.Timer timer = new System.Timers.Timer(16.667);
+
+    static float deltaTime = 0.0016667f;
+    static System.Timers.Timer timer = new System.Timers.Timer(deltaTime * 1000);
     public static uint PlayersConnected;
 
-    static Server () {
+    static HeadlessServer () {
         StartTick();
         UnityEngine.Application.quitting += StopServer;
     }
@@ -44,7 +47,7 @@ public static class Server {
         while (true) {
             TcpClient c = listener.AcceptTcpClient();
             tcpClients.Enqueue(c);
-            Debug.Log(c.Client.RemoteEndPoint.ToString() + " connected");
+            Console.WriteLine(c.Client.RemoteEndPoint.ToString() + " connected");
         }
     }
 
@@ -55,9 +58,16 @@ public static class Server {
     }
 
     private static void Tick (object sender, ElapsedEventArgs e) {
+        Update();
         byte [ ] package = PositionData();
         for (int i = 0; i < Players.Count; i++) {
             Players [ i ].Client.SendToClient(package);
+        }
+    }
+
+    private static void Update () {
+        for (int i = 0; i < Players.Count; i++) {
+            Players [ i ].Update(deltaTime);
         }
     }
 
@@ -82,7 +92,7 @@ public static class Server {
         MessageType msgType = MessageType.ServerTick;
 
         string packageJson = JsonUtility.ToJson(package);
-        string msg = ((int)msgType).ToString() + Server.MESSAGE_TYPE_INDICATOR + packageJson;
+        string msg = ((int)msgType).ToString() + HeadlessServer.MESSAGE_TYPE_INDICATOR + packageJson;
         //Convert to JSON
         byte [ ] packageData = System.Text.Encoding.ASCII.GetBytes(msg);
 
@@ -91,9 +101,9 @@ public static class Server {
         return totalPackage;
     }
 
-    public static void Disconnect (ServerClient disconnectedClient) {
-        ServerActor disconnectedActor = null;
-        foreach (ServerActor actor in Players) {
+    public static void Disconnect (HeadlessServerClient disconnectedClient) {
+        HeadlessServerActor disconnectedActor = null;
+        foreach (HeadlessServerActor actor in Players) {
             if (actor.Client == disconnectedClient) {
                 disconnectedActor = actor;
                 SendDisconnectNotification(disconnectedActor.PlayerID);
@@ -101,7 +111,6 @@ public static class Server {
         }
         if (disconnectedActor != null) {
             Players.Remove(disconnectedActor);
-            GameObject.Destroy(disconnectedActor.gameObject);
             Clients.Remove(disconnectedClient);
         }
 
