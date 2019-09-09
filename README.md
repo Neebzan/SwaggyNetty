@@ -27,5 +27,6 @@
 ## Systemintegration
 - ❌ Lav kald mellem client - server asynkrone
 - ❌ Måske skift fra JSON til XML, vurder fordele / ulemper
+- ❌ Kommunikations node mellem client og server
 - ...
 
