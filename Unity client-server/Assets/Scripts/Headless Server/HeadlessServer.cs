@@ -12,7 +12,7 @@ public static class HeadlessServer
     {
     public const char MESSAGE_TYPE_INDICATOR = '?';
     public const int SERVER_PORT = 13000;
-    public static IPAddress iPAd = IPAddress.Parse("10.131.69.85");
+    public static IPAddress iPAd = IPAddress.Parse("192.168.8.109");
     public static ConcurrentQueue<TcpClient> tcpClients = new ConcurrentQueue<TcpClient>();
     public static List<HeadlessServerActor> Players = new List<HeadlessServerActor>();
     public static List<HeadlessServerClient> Clients = new List<HeadlessServerClient>();
