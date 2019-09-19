@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,11 +14,27 @@ namespace Login_Middleware
 {
     class Program
     {
-        static Queue<Database_Request_Handler> databaseRequests = new Queue<Database_Request_Handler>();
+        static int port = 0;
+        static private IPAddress IP = IPAddress.Any;
 
+        static Queue<Database_Request_Handler> databaseRequests = new Queue<Database_Request_Handler>();
+        static ConcurrentQueue<Middleware_Client> users = new ConcurrentQueue<Middleware_Client>();
+
+        static public TcpListener serverListener = new TcpListener(IP,port);
         static void Main(string[] args)
         {
             
+        }
+
+        public static void ListenForClients()
+        {
+            serverListener.Start();
+
+            while (true)
+            {
+                TcpClient c = serverListener.AcceptTcpClient();
+                users.Enqueue(new Middleware_Client(c));
+            }
         }
 
         static void TCP_Request_Handler(string data)
@@ -59,7 +78,9 @@ namespace Login_Middleware
         static internal void Login(DynamicJsonObject data, Database_Request_Handler logOnRequest)
         {
 
-            DynamicJsonObject db_Obj = Json.Decode(logOnRequest.Request_Get(data));
+            dynamic db_Obj = Json.Decode(logOnRequest.Request_Get(data));
+
+            if(db_Obj.User_ID == data.User_ID)
 
             if (data == db_Obj)
             {
