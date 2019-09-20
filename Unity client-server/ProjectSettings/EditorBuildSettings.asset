@@ -11,7 +11,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Client.unity
     guid: d4c84fcabcd715140bd7de3d4678de0a
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Headless Server.unity
     guid: 0936da895ed861a408029d48fffd7570
+  - enabled: 1
+    path: Assets/Scenes/ChatSystem.unity
+    guid: 813b1ccfd66d1d346b29711f661fd413
   m_configObjects: {}

@@ -7,7 +7,7 @@ public class Chat : MonoBehaviour
     public List<string> chatHistorie = new List<string>();
 
     private string currentMessage = string.Empty;
-
+    
 
     private void OnGUI()
     {
