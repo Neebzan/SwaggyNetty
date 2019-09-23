@@ -20,8 +20,7 @@ namespace MySQL_translator
         public const string CONSUMER_QUEUE_NAME = "userdb_request_consumer";
         public const string PRODUCER_QUEUE_NAME = "userdb_request_producer";
 
-        public MessageQueue consumerQueue;
-        public MessageQueue producerQueue;
+        public MessageQueue consumerQueue, producerQueue;
 
         /// <summary>
         /// Raised when inputs have been recieved and handled
@@ -30,8 +29,8 @@ namespace MySQL_translator
 
         public MessageQueueHandler () {
             SetupQueues();
-            consumerQueue.BeginReceive();
             consumerQueue.Formatter = new XmlMessageFormatter(new Type [ ] { typeof(string) });
+            consumerQueue.BeginReceive();
             consumerQueue.ReceiveCompleted += OnConsumerInputRecieved;
         }
 
