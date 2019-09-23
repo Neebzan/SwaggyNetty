@@ -13,7 +13,7 @@ public class ChatServer : MonoBehaviour
     public const int SERVER_PORT = 13000;
     public static IPAddress iPAd = IPAddress.Parse("10.131.69.85");
     public static ConcurrentQueue<TcpClient> tcpClients = new ConcurrentQueue<TcpClient>();
-    public static List<ServerClient> Clients = new List<ServerClient>();
+    public static List<ChatServerClient> Clients = new List<ChatServerClient>();
     public static List<ServerActor> Players = new List<ServerActor>();
     static TcpListener listener = new TcpListener(iPAd, SERVER_PORT);
 
