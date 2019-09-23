@@ -13,6 +13,7 @@ public class ChatSystem : MonoBehaviour
     private int maxMessages = 25;
     public InputField chatBox;
     public Color playerMessage, info;
+    public ChatClient cClient;
 
 
 [SerializeField]
@@ -21,7 +22,7 @@ public class ChatSystem : MonoBehaviour
 
 
 
-    public void SendMessageToChat(string text, Messages.messageType mstype)
+    public void SendMessageToChat(string text, Messages.messageTypeColor mstype)
     {
         Messages newMessage = new Messages();
         newMessage.text = text;
@@ -47,7 +48,8 @@ public class ChatSystem : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Return))
             {
-                SendMessageToChat(chatBox.text, Messages.messageType.playerMessage);
+                SendMessageToChat(chatBox.text, Messages.messageTypeColor.playerMessage);
+                cClient.SendMessage(chatBox.text, Messages.messageTypeColor.info); //sent to server
                 chatBox.text = "";
             }
         }
@@ -55,29 +57,30 @@ public class ChatSystem : MonoBehaviour
         {
             if (!chatBox.isFocused && Input.GetKeyDown(KeyCode.Return))
             {
-                chatBox.ActivateInputField();
+                chatBox.ActivateInputField();            
             }
         }
 
         if (!chatBox.isFocused)
         {
+            // network info from server
             if (Input.GetKeyDown(KeyCode.Return))
             {
-                SendMessageToChat("W yo", Messages.messageType.info);
+                SendMessageToChat("W yo", Messages.messageTypeColor.info);
             }
         }      
     }
 
-   public Color MessageTypeColor(Messages.messageType messageType)
+   public Color MessageTypeColor(Messages.messageTypeColor messageType)
     {
         Color color = info;
 
         switch (messageType)
         {
-            case Messages.messageType.playerMessage:
+            case Messages.messageTypeColor.playerMessage:
                 color = playerMessage;
                 break;
-            case Messages.messageType.info:
+            case Messages.messageTypeColor.info:
                 color = info;
                 break;
             default:
@@ -93,11 +96,12 @@ public class Messages
 {
     public string text;
     public Text textObject;
-    public messageType msType;
-    public enum messageType
+    public messageTypeColor msType;
+    public enum messageTypeColor
     {
         playerMessage,
         info
+      
     }
 }
 
