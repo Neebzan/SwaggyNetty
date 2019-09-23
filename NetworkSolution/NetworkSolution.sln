@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.757
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserRestApi", "UserRestApi\UserRestApi.csproj", "{3A7EA112-71F4-4ACA-93D9-B5B118B58034}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySQL translator", "MySQL translator\MySQL translator.csproj", "{C5A44FF6-7085-480E-B5FA-125AF7E307DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3A7EA112-71F4-4ACA-93D9-B5B118B58034}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3A7EA112-71F4-4ACA-93D9-B5B118B58034}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3A7EA112-71F4-4ACA-93D9-B5B118B58034}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3A7EA112-71F4-4ACA-93D9-B5B118B58034}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5A44FF6-7085-480E-B5FA-125AF7E307DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5A44FF6-7085-480E-B5FA-125AF7E307DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5A44FF6-7085-480E-B5FA-125AF7E307DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5A44FF6-7085-480E-B5FA-125AF7E307DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
