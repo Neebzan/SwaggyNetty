@@ -50,6 +50,7 @@
     <Reference Include="System.IdentityModel.Tokens.Jwt, Version=5.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.5.5.0\lib\net461\System.IdentityModel.Tokens.Jwt.dll</HintPath>
     </Reference>
+    <Reference Include="System.Messaging" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -60,13 +61,23 @@
   <ItemGroup>
     <Compile Include="JWTManager.cs" />
     <Compile Include="Models\ConnectionModel.cs" />
-    <Compile Include="Models\Payload.cs" />
+    <Compile Include="Models\UserModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GlobalVariablesLib\GlobalVariablesLib.csproj">
+      <Project>{fa66e8ef-4684-4487-94cf-042a955f904d}</Project>
+      <Name>GlobalVariablesLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MSMQHelper\MSMQHelperUtilities.csproj">
+      <Project>{33dfe7ee-dd0d-47c8-ab86-0b62a35ecec0}</Project>
+      <Name>MSMQHelperUtilities</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

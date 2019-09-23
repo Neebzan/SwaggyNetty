@@ -1,0 +1,9 @@
+C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\MSMQHelper\obj\Debug\MSMQHelperUtilities.csprojAssemblyReference.cache
+C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\MSMQHelper\obj\Debug\MSMQHelperUtilities.csproj.CoreCompileInputs.cache
+C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\MSMQHelper\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\MSMQHelper\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\MSMQHelper\obj\Debug\MSMQHelperUtilities.csproj.CopyComplete
+C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\MSMQHelper\bin\Debug\MSMQHelperUtilities.dll
+C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\MSMQHelper\bin\Debug\MSMQHelperUtilities.pdb
+C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\MSMQHelper\obj\Debug\MSMQHelperUtilities.dll
+C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\MSMQHelper\obj\Debug\MSMQHelperUtilities.pdb

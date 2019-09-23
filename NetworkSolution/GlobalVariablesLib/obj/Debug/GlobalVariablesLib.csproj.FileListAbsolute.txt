@@ -1,0 +1,6 @@
+C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\GlobalVariablesLib\bin\Debug\GlobalVariablesLib.dll
+C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\GlobalVariablesLib\bin\Debug\GlobalVariablesLib.pdb
+C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\GlobalVariablesLib\obj\Debug\GlobalVariablesLib.csprojAssemblyReference.cache
+C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\GlobalVariablesLib\obj\Debug\GlobalVariablesLib.csproj.CoreCompileInputs.cache
+C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\GlobalVariablesLib\obj\Debug\GlobalVariablesLib.dll
+C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\GlobalVariablesLib\obj\Debug\GlobalVariablesLib.pdb

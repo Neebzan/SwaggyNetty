@@ -6,9 +6,12 @@ using System.Threading.Tasks;
 
 namespace TokenSystem
 {
-    public class ConnectionModel
+    public class Payload
     {
-        public string IP { get; set; }
-        public int Port { get; set; }
+        public string UserID { get; set; }
+        public string ClientSocket { get; set; }
+        public string ServerID { get; set; }
+        public string ServerSocket { get; set; }
+        public string ChatSocket { get; set; }
     }
 }

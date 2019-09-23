@@ -16,3 +16,7 @@ C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\TokenSystem\bin\Deb
 C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\TokenSystem\obj\Debug\TokenSystem.csproj.CopyComplete
 C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\TokenSystem\obj\Debug\TokenSystem.exe
 C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\TokenSystem\obj\Debug\TokenSystem.pdb
+C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\TokenSystem\bin\Debug\MSMQHelperUtilities.dll
+C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\TokenSystem\bin\Debug\MSMQHelperUtilities.pdb
+C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\TokenSystem\bin\Debug\GlobalVariablesLib.dll
+C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\TokenSystem\bin\Debug\GlobalVariablesLib.pdb
