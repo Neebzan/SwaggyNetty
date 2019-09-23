@@ -16,14 +16,15 @@ public class ChatServerClient : MonoBehaviour
     public ChatServerClient(TcpClient _tcpClient)
     {
         tcpClient = _tcpClient;
-        ServerActor actor = SpawnActor();
+        ServerActor actor = SpawnActor(); // skal fjernes
         networkStream = tcpClient.GetStream();
         tcpClient.NoDelay = true;
         ClientConnected(actor.PlayerID, actor.CurrentPos);
-        ChatServer.Clients.Add(this);
+        ChatServer.Clients.Add(this);        
         ChatServer.Players.Add(actor);
     }
 
+    // skal fjernes
     ServerActor SpawnActor()
     {
         UnityEngine.Object playerPrefab = Resources.Load("Prefabs/ServerActor");

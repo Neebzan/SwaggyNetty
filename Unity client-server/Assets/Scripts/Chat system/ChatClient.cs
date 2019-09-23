@@ -16,7 +16,7 @@ public class ChatClient : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        int port = 13000;
+        int port = 13001;
         string IpAdress = "178.155.161.248";
         client = new TcpClient(IpAdress, port);
         client.NoDelay = true;
