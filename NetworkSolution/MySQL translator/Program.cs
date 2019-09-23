@@ -11,25 +11,39 @@ namespace MySQL_translator
 {
     class Program
     {
-        static MessageQueueHandler msmqHandler;
+        static MessageQueueHandler mQHandler;
+
         static void Main (string [ ] args) {
-            msmqHandler = new MessageQueueHandler();
-            msmqHandler.NewInputRecieved += InputRecieved;
+            mQHandler = new MessageQueueHandler();
+            mQHandler.NewInputRecieved += InputRecieved;
+
             SetupDBConnection();
+
             ConsoleInputLoop();
+        }
+
+        static void SetupDBConnection () {
+            DBConnection.Instance().DatabaseName = "authentication_data";
+            DBConnection.Instance().ServerIP = "178.155.161.248";
+            DBConnection.Instance().ServerPort = 3306;
+            DBConnection.Instance().Username = "netty";
+            DBConnection.Instance().Password = "swaggynetty";
         }
 
         private static void InputRecieved (object sender, InputRecievedEventArgs e) {
             User newUser = null;
+
             switch (e.requestType) {
                 case RequestTypes.Get_User:
-                    newUser = DBConnectionHandler.Instance().Select(e.User);
-                    msmqHandler.PushProducerQueue(newUser);
+                    newUser = DBConnection.Instance().Select(e.User);
+                    mQHandler.PushProducerQueue(newUser);
                     break;
+
                 case RequestTypes.Create_User:
-                    newUser = DBConnectionHandler.Instance().Insert(e.User);
-                    msmqHandler.PushProducerQueue(newUser);
+                    newUser = DBConnection.Instance().Insert(e.User);
+                    mQHandler.PushProducerQueue(newUser);
                     break;
+
                 default:
                     Console.WriteLine("Inputs recieved, but command was unknown");
                     break;
@@ -57,14 +71,14 @@ namespace MySQL_translator
                         Console.Write("user_id: ");
                         user_id = Console.ReadLine();
 
-                        newUser = DBConnectionHandler.Instance().Select(new User() { UserID = user_id });
+                        newUser = DBConnection.Instance().Select(new User() { UserID = user_id });
 
                         if (newUser.RequestStatus == RequestStatus.Success) {
                             Console.WriteLine("UserID: {0}, PswdHash: {1}, CreatedAt: {2}", newUser.UserID, newUser.PswdHash, newUser.CreatedAt);
                         }
                         break;
                     case ConsoleKey.S:
-                        DBConnectionHandler.Instance().ConsoleSelect();
+                        DBConnection.Instance().ConsoleSelect();
 
                         break;
                     case ConsoleKey.I:
@@ -74,7 +88,7 @@ namespace MySQL_translator
                         Console.Write("password_hash: ");
                         password_hash = Console.ReadLine();
 
-                        newUser = DBConnectionHandler.Instance().Insert(new User() { UserID = user_id, PswdHash = password_hash });
+                        newUser = DBConnection.Instance().Insert(new User() { UserID = user_id, PswdHash = password_hash });
                         
                         if (newUser.RequestStatus == RequestStatus.Success) {
                             Console.WriteLine("UserID: {0}, PswdHash: {1}", newUser.UserID, newUser.PswdHash);
@@ -91,11 +105,5 @@ namespace MySQL_translator
             }
         }
 
-        static void SetupDBConnection () {
-            DBConnectionHandler.Instance().DatabaseName = "authentication_data";
-            DBConnectionHandler.Instance().Password = "swaggynetty";
-            DBConnectionHandler.Instance().ServerIP = "178.155.161.248";
-            DBConnectionHandler.Instance().ServerPort = 3306;
-        }
     }
 }

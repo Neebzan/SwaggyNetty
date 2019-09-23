@@ -9,7 +9,7 @@ namespace MySQL_translator
     //Some code taken from https://stackoverflow.com/questions/21618015/how-to-connect-to-mysql-database
     //By users Ocph23 & Moffen
 
-    public class DBConnectionHandler
+    public class DBConnection
     {
         private string databaseName = string.Empty;
         public string DatabaseName {
@@ -28,22 +28,29 @@ namespace MySQL_translator
             get { return serverPort; }
             set { serverPort = value; }
         }
-               
+
+        private string username;
+        public string Username {
+            get { return username; }
+            set { username = value; }
+        }
+
+
         public string Password { get; set; }
 
-        private DBConnectionHandler () {
+        private DBConnection () {
 
         }
 
-        private static DBConnectionHandler _instance = null;
-        public static DBConnectionHandler Instance () {
+        private static DBConnection _instance = null;
+        public static DBConnection Instance () {
             if (_instance == null)
-                _instance = new DBConnectionHandler();
+                _instance = new DBConnection();
             return _instance;
         }
 
         public MySqlConnection CreateConnection () {
-            string connstring = string.Format("datasource={0}; port={1}; database={2}; username=netty; password={3}", ServerIP, ServerPort, DatabaseName, Password);
+            string connstring = string.Format("datasource={0}; port={1}; database={2}; username={3}; password={4}", ServerIP, ServerPort, DatabaseName, Username, Password);
             MySqlConnection connection = new MySqlConnection(connstring);
             return connection;
         }
@@ -214,6 +221,11 @@ namespace MySQL_translator
         //    }
         //}
 
+        /// <summary>
+        /// Inserts user into database
+        /// </summary>
+        /// <param name="_user"></param>
+        /// <returns></returns>
         public User Insert (User _user) {
             using (MySqlConnection connection = CreateConnection()) {
                 try {
