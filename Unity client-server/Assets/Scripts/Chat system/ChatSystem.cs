@@ -33,7 +33,7 @@ public class ChatSystem : MonoBehaviour
 
         GameObject newText = Instantiate(TextObject, chatPanel.transform);
         newMessage.textObject = newText.GetComponent<Text>();
-        newMessage.textObject.text = newMessage.text;
+        newMessage.textObject.text = newMessage.text; 
         newMessage.textObject.color = MessageTypeColor(mstype);
         chatHistory.Add(newMessage);
 
@@ -99,4 +99,10 @@ public class Messages
         playerMessage,
         info
     }
+}
+
+[SerializeField]
+public class ChatMessagesPacket
+{
+    public Messages[] packetMessages;
 }
