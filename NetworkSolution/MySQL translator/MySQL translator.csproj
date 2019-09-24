@@ -48,7 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DBConnection.cs" />
+    <Compile Include="DBConnectionHandler.cs" />
     <Compile Include="JsonMessageFormatter.cs" />
     <Compile Include="MessageQueueHandler.cs" />
     <Compile Include="MSMQHelper.cs" />
