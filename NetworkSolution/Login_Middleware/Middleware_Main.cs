@@ -45,7 +45,9 @@ namespace Login_Middleware
                 {
                     if (users.TryDequeue(out TcpClient tcpClient))
                     {
-                        Middleware_Client client = new Middleware_Client(tcpClient,new MessageQueue(), new MessageQueue());
+                        Middleware_Client client = new Middleware_Client(tcpClient);
+                        Console.WriteLine($"User at IP: {tcpClient.Client.RemoteEndPoint} Recieved Queue time, Processing requests...");
+
                         Task.Factory.StartNew(client.ListenForMessages);
                     }
                 }

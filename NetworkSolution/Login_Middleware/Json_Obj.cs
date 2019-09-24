@@ -20,7 +20,7 @@ namespace Login_Middleware
         public Socket Socket { get; set; }
         public enum RequestStatus { Success, AlreadyExists, DoesNotExist, ConnectionError }
         public RequestStatus Status { get; set; }
-        public enum RequestTypes { Get_User, Create_User, Update_User, Delete_User, Response };
+        public enum RequestTypes { Get_User, Create_User, Update_User, Delete_User, Response, Valid_Client_Token };
         public RequestTypes RequestType { get; set; }
 
 

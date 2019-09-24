@@ -78,9 +78,6 @@ namespace Login_Middleware
                     // Queues request from client to db
                     QueueRequest(user_obj);
 
-                    msg = Encoding.ASCII.GetBytes("");
-
-                    stream.Write(msg, 0, msg.Length);
                 }
 
             }
@@ -150,7 +147,8 @@ namespace Login_Middleware
                             if (tempJsonObj.Status == Json_Obj.RequestStatus.Success && CheckHash(response_msg, data,out result))
                             {
 
-
+                                Console.WriteLine($"User gotten: ID: {tempJsonObj.UserID}, Status: {tempJsonObj.Status}, RQType: {tempJsonObj.RequestType}");
+                                
                                 
                             }
                             else 
@@ -160,6 +158,8 @@ namespace Login_Middleware
                                 byte[] msg = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(tempJsonObj));
                                 //sends message to client
                                 stream.Write(msg, 0, msg.Length);
+
+                                tcpClient.Close();
                             }
                             success = true;
                         }
