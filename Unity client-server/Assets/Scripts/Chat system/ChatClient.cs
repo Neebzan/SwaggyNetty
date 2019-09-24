@@ -17,7 +17,7 @@ public class ChatClient : MonoBehaviour
     void Start()
     {
         int port = 13001;
-        string IpAdress = "178.155.161.248";
+        string IpAdress = "127.0.0.1";
         client = new TcpClient(IpAdress, port);
         client.NoDelay = true;
         Debug.Log("Connected?");

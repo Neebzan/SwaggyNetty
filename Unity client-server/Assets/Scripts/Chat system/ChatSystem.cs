@@ -121,8 +121,7 @@ public class Messages
         playerMessage,
         info,
         fail
-
-      
+     
     }
 }
 

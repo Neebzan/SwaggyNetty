@@ -131,6 +131,8 @@ public class ChatServerClient : MonoBehaviour
         }
     }
 
+
+    //skal nok sende til grupper
     void HandleInputMessage(string msg)
     {
         Vector2 moveDir = Vector2.zero;
