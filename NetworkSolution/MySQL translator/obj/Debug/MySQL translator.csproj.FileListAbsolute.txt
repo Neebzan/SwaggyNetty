@@ -54,3 +54,7 @@ D:\GitHub\SwaggyNetty\NetworkSolution\MySQL translator\obj\Debug\MySQL translato
 D:\GitHub\SwaggyNetty\NetworkSolution\MySQL translator\obj\Debug\MySQL translator.csproj.CopyComplete
 D:\GitHub\SwaggyNetty\NetworkSolution\MySQL translator\obj\Debug\MySQL translator.exe
 D:\GitHub\SwaggyNetty\NetworkSolution\MySQL translator\obj\Debug\MySQL translator.pdb
+D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\GlobalVariablesLib.dll
+D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\MSMQHelperUtilities.dll
+D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\GlobalVariablesLib.pdb
+D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\MSMQHelperUtilities.pdb
