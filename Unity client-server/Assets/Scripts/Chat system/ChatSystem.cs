@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-
+using System;
 
 public class ChatSystem : MonoBehaviour
 {
@@ -12,7 +12,7 @@ public class ChatSystem : MonoBehaviour
     private string currentMessage = string.Empty;
     private int maxMessages = 25;
     public InputField chatBox;
-    public Color playerMessage, info;
+    public Color playerMessage, info, fail;
     public ChatClient cClient;
 
 
@@ -49,7 +49,15 @@ public class ChatSystem : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Return))
             {
                 SendMessageToChat(chatBox.text, Messages.messageTypeColor.playerMessage);
-                cClient.SendMessage(chatBox.text, Messages.messageTypeColor.info); //sent to server
+                try
+                {
+                    cClient.SendMessage(chatBox.text, Messages.messageTypeColor.info); //sent to server
+                }
+                catch(Exception e)
+                {
+
+                    SendMessageToChat(e.ToString(), Messages.messageTypeColor.fail);
+                }
                 chatBox.text = "";
             }
         }
@@ -60,15 +68,26 @@ public class ChatSystem : MonoBehaviour
                 chatBox.ActivateInputField();            
             }
         }
-
-        if (!chatBox.isFocused)
+        // network info from server
+        try
         {
-            // network info from server
-            if (Input.GetKeyDown(KeyCode.Return))
-            {
-                SendMessageToChat("W yo", Messages.messageTypeColor.info);
-            }
-        }      
+            cClient.ListenToServer();
+        }
+        catch(Exception e)
+        {
+            Debug.Log(e);
+        }
+
+
+        //if (!chatBox.isFocused)
+        //{
+            
+            
+        //    if (Input.GetKeyDown(KeyCode.Return))
+        //    {
+        //        SendMessageToChat("W yo", Messages.messageTypeColor.info);
+        //    }
+        //}      
     }
 
    public Color MessageTypeColor(Messages.messageTypeColor messageType)
@@ -100,7 +119,9 @@ public class Messages
     public enum messageTypeColor
     {
         playerMessage,
-        info
+        info,
+        fail
+
       
     }
 }

@@ -16,28 +16,16 @@ public class ChatServerClient : MonoBehaviour
     public ChatServerClient(TcpClient _tcpClient)
     {
         tcpClient = _tcpClient;
-        ServerActor actor = SpawnActor(); // skal fjernes
+      
         networkStream = tcpClient.GetStream();
         tcpClient.NoDelay = true;
-        ClientConnected(actor.PlayerID, actor.CurrentPos);
+        
         ChatServer.Clients.Add(this);        
-        ChatServer.Players.Add(actor);
+       
     }
 
     // skal fjernes
-    ServerActor SpawnActor()
-    {
-        UnityEngine.Object playerPrefab = Resources.Load("Prefabs/ServerActor");
 
-        GameObject actorObject = (GameObject)GameObject.Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
-        ServerActor actorComponent = actorObject.GetComponent<ServerActor>();
-        actorComponent.Endpoint = tcpClient.Client.RemoteEndPoint;
-        this.OnNewInputsRecieved += actorComponent.NewInputsRecieved;
-        actorComponent.Client = this;
-        ChatServer.PlayersConnected++;
-        actorComponent.PlayerID = ChatServer.PlayersConnected;
-        return actorComponent;
-    }
 
     /// <summary>
     /// Starts an endless while-loop, where the tcp client listens for new messages from the endpoint
@@ -91,12 +79,12 @@ public class ChatServerClient : MonoBehaviour
         ChatServer.Disconnect(this);
     }
 
-    private void ClientConnected(uint playerID, Vector2 playerPos)
+    private void ClientConnected(uint playerID)
     {
         PositionDataPackage package = new PositionDataPackage()
         {
             PlayerID = playerID,
-            Position = playerPos
+           
         };
         MessageType msgType = MessageType.Connect;
         string jsonPackage = JsonUtility.ToJson(package);

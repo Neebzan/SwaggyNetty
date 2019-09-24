@@ -14,7 +14,6 @@ public class ChatServer : MonoBehaviour
     public static IPAddress iPAd = IPAddress.Parse("10.131.69.85");
     public static ConcurrentQueue<TcpClient> tcpClients = new ConcurrentQueue<TcpClient>();
     public static List<ChatServerClient> Clients = new List<ChatServerClient>();
-    public static List<ServerActor> Players = new List<ServerActor>();
     static TcpListener listener = new TcpListener(iPAd, SERVER_PORT);
 
     public static uint PlayersConnected;
@@ -55,46 +54,15 @@ public class ChatServer : MonoBehaviour
         }
     }
 
-    public static void Disconnect(ServerClient disconnectedClient)
+    public static void Disconnect(ChatServerClient disconnectedClient)
     {
-        ServerActor disconnectedActor = null;
-        foreach (ServerActor actor in Players)
-        {
-            if (actor.Client == disconnectedClient)
-            {
-                disconnectedActor = actor;
-                SendDisconnectNotification(disconnectedActor.PlayerID);
-            }
-        }
-        if (disconnectedActor != null)
-        {
-            Players.Remove(disconnectedActor);
-            GameObject.Destroy(disconnectedActor.gameObject);
+        
             Clients.Remove(disconnectedClient);
-        }
+        
 
     }
 
 
-    /// <summary>
-    /// Sends a notification to connected clients, that a player has disconnected
-    /// </summary>
-    /// <param name="playerID"></param>
-    private static void SendDisconnectNotification(uint playerID)
-    {
-        string msg = ((int)MessageType.Disconnect).ToString();
-        msg += playerID.ToString();
-        byte[] data = System.Text.Encoding.ASCII.GetBytes(msg);
-        byte[] totalPackage = AddSizeHeaderToPackage(data);
-
-        for (int i = 0; i < Players.Count; i++)
-        {
-            if (Players[i].PlayerID != playerID)
-            {
-                Players[i].Client.SendToClient(totalPackage);
-            }
-        }
-    }
 
     public static byte[] AddSizeHeaderToPackage(byte[] package)
     {
@@ -111,7 +79,7 @@ public class ChatServer : MonoBehaviour
 
     public void SendString()
     {
-     
+      // send to clients
     }
    
  
