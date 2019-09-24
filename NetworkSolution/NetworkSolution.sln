@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.572
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29306.81
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TokenSystem", "TokenSystem\TokenSystem.csproj", "{5F3BC860-6C1A-4CC5-A626-998268C74E08}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobalVariablesLib", "GlobalVariablesLib\GlobalVariablesLib.csproj", "{FA66E8EF-4684-4487-94CF-042A955F904D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySQL translator", "MySQL translator\MySQL translator.csproj", "{C5A44FF6-7085-480E-B5FA-125AF7E307DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Launcher", "Launcher\Launcher.csproj", "{594B2C8C-43D0-49AC-8290-8D3C3B6B5B44}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{C5A44FF6-7085-480E-B5FA-125AF7E307DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5A44FF6-7085-480E-B5FA-125AF7E307DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5A44FF6-7085-480E-B5FA-125AF7E307DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{594B2C8C-43D0-49AC-8290-8D3C3B6B5B44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{594B2C8C-43D0-49AC-8290-8D3C3B6B5B44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{594B2C8C-43D0-49AC-8290-8D3C3B6B5B44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{594B2C8C-43D0-49AC-8290-8D3C3B6B5B44}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
