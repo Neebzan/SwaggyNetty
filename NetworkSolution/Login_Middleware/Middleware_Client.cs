@@ -22,11 +22,13 @@ namespace Login_Middleware
         private Json_Obj user_obj;
         private NetworkStream stream;
 
-        public Middleware_Client(TcpClient client, MessageQueue postingQueue, MessageQueue receivingQueue)
+        public Middleware_Client(TcpClient client)
         {
             // Sets the correct queue for the client to send and recieve from
-            databaseRequestQueue = postingQueue;
-            databaseResponseQueue = receivingQueue;
+            databaseRequestQueue = new MessageQueue();
+            databaseResponseQueue = new MessageQueue();
+            tokenRequestQueue = new MessageQueue();
+            tokenResponseQueue = new MessageQueue();
 
 
             tcpClient = client;
