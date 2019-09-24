@@ -13,17 +13,3 @@ F:\Coding projects\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\Google
 F:\Coding projects\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\Renci.SshNet.dll
 F:\Coding projects\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\BouncyCastle.Crypto.dll
 F:\Coding projects\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\MySql.Data.xml
-D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\MySQL translator.exe.config
-D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\MySQL translator.exe
-D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\MySQL translator.pdb
-D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\Newtonsoft.Json.dll
-D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\Google.Protobuf.dll
-D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\Renci.SshNet.dll
-D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\BouncyCastle.Crypto.dll
-D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\MySql.Data.xml
-D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\Newtonsoft.Json.xml
-D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\obj\Debug\MySQL translator.csprojAssemblyReference.cache
-D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\obj\Debug\MySQL translator.csproj.CoreCompileInputs.cache
-D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\obj\Debug\MySQL translator.csproj.CopyComplete
-D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\obj\Debug\MySQL translator.exe
-D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\obj\Debug\MySQL translator.pdb
