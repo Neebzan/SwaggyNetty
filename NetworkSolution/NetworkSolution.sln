@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.572
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserRestApi", "UserRestApi\UserRestApi.csproj", "{3A7EA112-71F4-4ACA-93D9-B5B118B58034}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TokenSystem", "TokenSystem\TokenSystem.csproj", "{5F3BC860-6C1A-4CC5-A626-998268C74E08}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beacon", "Beacon\Beacon.csproj", "{3777E252-E59F-426B-B8E7-193BE55A566B}"
@@ -13,16 +11,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSMQHelperUtilities", "MSMQ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobalVariablesLib", "GlobalVariablesLib\GlobalVariablesLib.csproj", "{FA66E8EF-4684-4487-94CF-042A955F904D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySQL translator", "MySQL translator\MySQL translator.csproj", "{C5A44FF6-7085-480E-B5FA-125AF7E307DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3A7EA112-71F4-4ACA-93D9-B5B118B58034}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3A7EA112-71F4-4ACA-93D9-B5B118B58034}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3A7EA112-71F4-4ACA-93D9-B5B118B58034}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3A7EA112-71F4-4ACA-93D9-B5B118B58034}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5F3BC860-6C1A-4CC5-A626-998268C74E08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5F3BC860-6C1A-4CC5-A626-998268C74E08}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F3BC860-6C1A-4CC5-A626-998268C74E08}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,6 +35,10 @@ Global
 		{FA66E8EF-4684-4487-94CF-042A955F904D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA66E8EF-4684-4487-94CF-042A955F904D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA66E8EF-4684-4487-94CF-042A955F904D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5A44FF6-7085-480E-B5FA-125AF7E307DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5A44FF6-7085-480E-B5FA-125AF7E307DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5A44FF6-7085-480E-B5FA-125AF7E307DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5A44FF6-7085-480E-B5FA-125AF7E307DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
