@@ -1,0 +1,56 @@
+﻿<Window x:Class="Launcher.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Launcher"
+        mc:Ignorable="d"
+        Title="Swaggy Netty" Height="450" Width="800" ResizeMode="CanMinimize" WindowStyle="SingleBorderWindow">
+    <Grid Margin="0" Height="419.5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="4.5*"/>
+            <ColumnDefinition Width="1.5*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition x:Name="Game_title" Height="2*"/>
+            <RowDefinition x:Name="Username_label" Height="30"/>
+            <RowDefinition x:Name="Username_entry" Height="40"/>
+            <RowDefinition x:Name="Password_label" Height="30"/>
+            <RowDefinition x:Name="Password_entry" Height="40"/>
+            <RowDefinition x:Name="Remember_username_tick" Height="25"/>
+            <RowDefinition x:Name="Remember_password_tick" Height="25"/>
+            <RowDefinition x:Name="Login_button" Height="40"/>
+            <RowDefinition x:Name="Progresss_bar" Height="80"/>
+        </Grid.RowDefinitions>
+
+
+        <Frame  Margin="0" Grid.RowSpan="9" Grid.ColumnSpan="4" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+            <Frame.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFDADADA" Offset="1"/>
+                    <GradientStop Color="#FFF4F4F4" Offset="0.017"/>
+                </LinearGradientBrush>
+            </Frame.Background>
+        </Frame>
+
+
+        <Label Content="Username" Margin="20,0" VerticalContentAlignment="Bottom" UseLayoutRounding="False" Grid.Row="1" Padding="0"/>
+        <Button Content="Login" Margin="20,5" Grid.Row="7" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="#FFD1D1D1" Click="Button_Click" FontSize="16" BorderThickness="0"/>
+        <Label Content="Password" Margin="20,0" VerticalContentAlignment="Bottom" UseLayoutRounding="False" Grid.Row="3" Padding="0"/>
+        <Label Content="Swaggy Netty" Margin="20,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" UseLayoutRounding="True" Padding="6,5,5,5" Grid.ColumnSpan="2" FontSize="30" FontFamily="Segoe UI Historic"/>
+        <TextBox x:Name="username_textbox" Grid.ColumnSpan="2" Margin="20,5,20,10" Grid.Row="2" TextWrapping="Wrap" VerticalContentAlignment="Center" Padding="5"/>
+        <PasswordBox x:Name="password_textbox" Grid.ColumnSpan="2" Margin="20,5,20,10" Grid.Row="4" VerticalContentAlignment="Center" Padding="5"/>
+        <CheckBox Content="  Remember username" Margin="20,0" Grid.Row="5" Padding="0" VerticalContentAlignment="Center"/>
+        <CheckBox Content="  Automatic login" Margin="20,0" Grid.Row="6" Padding="0" VerticalContentAlignment="Center"/>
+        <Label Content="Forgot your password?" Margin="5" VerticalContentAlignment="Center" UseLayoutRounding="False" Grid.Row="3" Padding="0" FontSize="10" Grid.Column="1" Background="{x:Null}" Foreground="Red"/>
+        <StackPanel Grid.Column="1" Margin="5" Orientation="Horizontal" Grid.Row="7">
+            <Label Content="or" Margin="0" VerticalContentAlignment="Center" UseLayoutRounding="False" Padding="0" FontSize="10" Background="{x:Null}" HorizontalContentAlignment="Right" FlowDirection="RightToLeft"/>
+            <Label Content="create an account" Margin="2,0,0,0" VerticalContentAlignment="Center" UseLayoutRounding="False" Padding="0" FontSize="10" Background="{x:Null}" HorizontalContentAlignment="Right" FlowDirection="RightToLeft" Foreground="Red"/>
+        </StackPanel>
+        <ProgressBar Margin="20,5" VerticalContentAlignment="Center" Grid.Row="8" Grid.ColumnSpan="3" Height="29"/>
+        <Button Content="Play" Margin="20" Grid.Row="8" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="#FFF0F0F0" Grid.Column="3"/>
+        <Image Grid.RowSpan="8" Grid.Column="2" Margin="5" Grid.ColumnSpan="2" Source="Content\deusvult.png" Stretch="UniformToFill"/>
+    </Grid>
+</Window>
