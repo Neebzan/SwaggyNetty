@@ -23,23 +23,23 @@ namespace MySQL_translator
         }
 
         static void SetupDBConnection () {
-            DBConnection.Instance().DatabaseName = "authentication_data";
-            DBConnection.Instance().ServerIP = "178.155.161.248";
-            DBConnection.Instance().ServerPort = 3306;
-            DBConnection.Instance().Username = "netty";
-            DBConnection.Instance().Password = "swaggynetty";
+            DBConnection.Instance().DatabaseName = GlobalVariablesLib.GlobalVariables.MYSQL_LOGIN_DB_DATABASENAME;
+            DBConnection.Instance().ServerIP = GlobalVariablesLib.GlobalVariables.MYSQL_LOGIN_DB_IP;
+            DBConnection.Instance().ServerPort = GlobalVariablesLib.GlobalVariables.MYSQL_LOGIN_DB_PORT;
+            DBConnection.Instance().Username = GlobalVariablesLib.GlobalVariables.MYSQL_LOGIN_DB_USERNAME;
+            DBConnection.Instance().Password = GlobalVariablesLib.GlobalVariables.MYSQL_LOGIN_DB_PASSWORD;
         }
 
         private static void InputRecieved (object sender, InputRecievedEventArgs e) {
             User newUser = null;
 
             switch (e.requestType) {
-                case RequestTypes.Get_User:
+                case GlobalVariablesLib.RequestTypes.Get_User:
                     newUser = DBConnection.Instance().Select(e.User);
                     mQHandler.PushProducerQueue(newUser);
                     break;
 
-                case RequestTypes.Create_User:
+                case GlobalVariablesLib.RequestTypes.Create_User:
                     newUser = DBConnection.Instance().Insert(e.User);
                     mQHandler.PushProducerQueue(newUser);
                     break;
@@ -73,7 +73,7 @@ namespace MySQL_translator
 
                         newUser = DBConnection.Instance().Select(new User() { UserID = user_id });
 
-                        if (newUser.RequestStatus == RequestStatus.Success) {
+                        if (newUser.RequestStatus == GlobalVariablesLib.RequestStatus.Success) {
                             Console.WriteLine("UserID: {0}, PswdHash: {1}, CreatedAt: {2}", newUser.UserID, newUser.PswdHash, newUser.CreatedAt);
                         }
                         break;
@@ -90,7 +90,7 @@ namespace MySQL_translator
 
                         newUser = DBConnection.Instance().Insert(new User() { UserID = user_id, PswdHash = password_hash });
                         
-                        if (newUser.RequestStatus == RequestStatus.Success) {
+                        if (newUser.RequestStatus == GlobalVariablesLib.RequestStatus.Success) {
                             Console.WriteLine("UserID: {0}, PswdHash: {1}", newUser.UserID, newUser.PswdHash);
                         }
                         

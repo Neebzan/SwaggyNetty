@@ -11,15 +11,12 @@ namespace MySQL_translator
 
     public class InputRecievedEventArgs : EventArgs
     {
-        public RequestTypes requestType { get; set; }
+        public GlobalVariablesLib.RequestTypes requestType { get; set; }
         public User User { get; set; }
     }
 
     public class MessageQueueHandler
     {
-        public const string CONSUMER_QUEUE_NAME = "userdb_request_consumer";
-        public const string PRODUCER_QUEUE_NAME = "userdb_request_producer";
-
         public MessageQueue consumerQueue;
         public MessageQueue producerQueue;
 
@@ -39,8 +36,8 @@ namespace MySQL_translator
         /// Instantiates the message queues
         /// </summary>
         void SetupQueues () {
-            consumerQueue = MSMQHelper.CreateMessageQueue(CONSUMER_QUEUE_NAME);
-            producerQueue = MSMQHelper.CreateMessageQueue(PRODUCER_QUEUE_NAME);
+            consumerQueue = MSMQHelperUtilities.MSMQHelper.CreateMessageQueue(GlobalVariablesLib.GlobalVariables.CONSUMER_QUEUE_NAME);
+            producerQueue = MSMQHelperUtilities.MSMQHelper.CreateMessageQueue(GlobalVariablesLib.GlobalVariables.PRODUCER_QUEUE_NAME);
         }
 
         /// <summary>
@@ -55,14 +52,14 @@ namespace MySQL_translator
 
             try {
                 User user = Newtonsoft.Json.JsonConvert.DeserializeObject<User>(m.Body.ToString());
-                RequestTypes requestType = RequestTypes.Get_User;
+                GlobalVariablesLib.RequestTypes requestType = GlobalVariablesLib.RequestTypes.Get_User;
 
                 switch (user.RequestType) {
-                    case RequestTypes.Get_User:
-                        requestType = RequestTypes.Get_User;
+                    case GlobalVariablesLib.RequestTypes.Get_User:
+                        requestType = GlobalVariablesLib.RequestTypes.Get_User;
                         break;
-                    case RequestTypes.Create_User:
-                        requestType = RequestTypes.Create_User;
+                    case GlobalVariablesLib.RequestTypes.Create_User:
+                        requestType = GlobalVariablesLib.RequestTypes.Create_User;
                         break;
                     default:
                         break;
@@ -84,7 +81,7 @@ namespace MySQL_translator
         public void PushProducerQueue (User _user) {
             Message msg = new Message(Newtonsoft.Json.JsonConvert.SerializeObject(_user));
             msg.Label = _user.UserID;
-            MSMQHelper.SendMessage(producerQueue, msg);
+            MSMQHelperUtilities.MSMQHelper.SendMessage(producerQueue, msg);
         }
     }
 }

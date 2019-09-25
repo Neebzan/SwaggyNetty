@@ -26,5 +26,11 @@ namespace GlobalVariablesLib
 
         public const int TOKENSYSTEM_PORT = 13005;
         public const int BEACON_PORT = 13006;
+
+        public const int MYSQL_LOGIN_DB_PORT = 3306;
+        public const string MYSQL_LOGIN_DB_IP = "178.155.161.248";
+        public const string MYSQL_LOGIN_DB_DATABASENAME = "authentication_data";
+        public const string MYSQL_LOGIN_DB_USERNAME = "netty";
+        public const string MYSQL_LOGIN_DB_PASSWORD = "swaggynetty";
     }
 }
