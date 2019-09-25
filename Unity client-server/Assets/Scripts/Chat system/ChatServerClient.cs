@@ -12,6 +12,8 @@ public class ChatServerClient : MonoBehaviour
     public List<KeyCode> ActiveInputs = new List<KeyCode>();
     NetworkStream networkStream;
     bool isDisconnecting = false;
+    
+    
 
     public ChatServerClient(TcpClient _tcpClient)
     {
@@ -33,36 +35,14 @@ public class ChatServerClient : MonoBehaviour
     /// <returns></returns>
     public IEnumerator ListenForMessages()
     {
-        StreamReader reader = new StreamReader(networkStream);
+   
 
         while (!isDisconnecting)
         {
             if (Connected)
             {
-                if (networkStream.DataAvailable)
-                {
-                    string msg = reader.ReadLine();
-                    string[] msgSplit = msg.Split(ChatServer.MESSAGE_TYPE_INDICATOR);
-                    
-                    MessageType type = (MessageType)Int32.Parse(msgSplit[0]);
-                    string newMessage = msgSplit[1];
-
-                    switch (type)
-                    {
-                        case MessageType.Input:
-                            HandleInputMessage(newMessage);
-                            break;
-                        case MessageType.Disconnect:
-                            DisconnectClient();
-                            break;
-                        case MessageType.Connect:
-                            break;
-                        case MessageType.ServerTick:
-                            break;
-                        default:
-                            break;
-                    }
-                }
+                TCPHelper.ReadMessage(networkStream);
+                
                 yield return null;
             }
             else
@@ -186,8 +166,10 @@ public class ChatServerClient : MonoBehaviour
 
     public void SendToClient(byte[] data)
     {
-        StreamWriter writer = new StreamWriter(networkStream);
+        //StreamWriter writer = new StreamWriter(networkStream);
 
-        networkStream.Write(data, 0, data.Length);
+        //networkStream.Write(data, 0, data.Length);
+
+        TCPHelper.MessageBytes(data);
     }
 }

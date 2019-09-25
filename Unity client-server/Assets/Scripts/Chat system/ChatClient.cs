@@ -71,13 +71,13 @@ public class ChatClient : MonoBehaviour
 
     public void Message(string msg)
     {
-        
-        msg += "\n";
-        // Translate the passed message into ASCII and store it as a Byte array.
-        byte[] data = System.Text.Encoding.ASCII.GetBytes(msg);
+        TCPHelper.MessageBytes(msg);
+        //msg += "\n";
+        //// Translate the passed message into ASCII and store it as a Byte array.
+        //byte[] data = System.Text.Encoding.ASCII.GetBytes(msg);
 
-        // Send the message to the connected TcpServer. 
-        stream.Write(data, 0, data.Length);
+        //// Send the message to the connected TcpServer. 
+        //stream.Write(data, 0, data.Length);
 
         Debug.Log("Sent: " + msg);
     }
@@ -85,59 +85,61 @@ public class ChatClient : MonoBehaviour
     public IEnumerator ListenToServer()
     {
         Debug.Log("ListenToServer Started");
+        TCPHelper.ReadMessage(stream);
+
         //StreamReader reader = new StreamReader(stream);
 
-        byte[] readBuffer = new byte[4];
-        while (true)
-        {
-            int packagesRead = 0;
-            while (stream.DataAvailable && packagesRead < 8)
-            {
-                //Debug.Log("Data received!");
+        //byte[] readBuffer = new byte[4];
+        //while (true)
+        //{
+        //    int packagesRead = 0;
+        //    while (stream.DataAvailable && packagesRead < 8)
+        //    {
+        //        //Debug.Log("Data received!");
 
-                int bytesRead = 0;
+        //        int bytesRead = 0;
 
-                while (bytesRead < 4)
-                {
-                    bytesRead += stream.Read(readBuffer, bytesRead, 4 - bytesRead);
-                }
+        //        while (bytesRead < 4)
+        //        {
+        //            bytesRead += stream.Read(readBuffer, bytesRead, 4 - bytesRead);
+        //        }
 
-                //Debug.Log("4 Bytes received");
+        //        //Debug.Log("4 Bytes received");
 
-                bytesRead = 0;
-                byte[] buffer = new byte[BitConverter.ToInt32(readBuffer, 0)];
+        //        bytesRead = 0;
+        //        byte[] buffer = new byte[BitConverter.ToInt32(readBuffer, 0)];
 
-                while (bytesRead < buffer.Length)
-                {
-                    bytesRead += stream.Read(buffer, bytesRead, buffer.Length - bytesRead);
-                }
-                string msg = System.Text.Encoding.UTF8.GetString(buffer);
+        //        while (bytesRead < buffer.Length)
+        //        {
+        //            bytesRead += stream.Read(buffer, bytesRead, buffer.Length - bytesRead);
+        //        }
+        //        string msg = System.Text.Encoding.UTF8.GetString(buffer);
 
-                string[] tempMsg = msg.Split(ChatServer.MESSAGE_TYPE_INDICATOR);
-                MessageType msgType = (MessageType)Int32.Parse(tempMsg[0]);
-                ChatMessageType msgChat = (ChatMessageType)Int32.Parse(tempMsg[0]);
+        //        string[] tempMsg = msg.Split(ChatServer.MESSAGE_TYPE_INDICATOR);
+        //        MessageType msgType = (MessageType)Int32.Parse(tempMsg[0]);
+        //        ChatMessageType msgChat = (ChatMessageType)Int32.Parse(tempMsg[0]);
 
-                string[] chMsg = msg.Split('*');
+        //        string[] chMsg = msg.Split('*');
 
-                for (int i = 0; i < chMsg.Length; i++)
-                {
-                    string input = chMsg[i];
+        //        for (int i = 0; i < chMsg.Length; i++)
+        //        {
+        //            string input = chMsg[i];
 
-                    if (input.Contains("*"))
-                    {
-                        //do something
-                        //så man har enum om hvem sende som gruppe
-                    }
+        //            if (input.Contains("*"))
+        //            {
+        //                //do something
+        //                //så man har enum om hvem sende som gruppe
+        //            }
 
 
-                }
+        //        }
                
 
-                packagesRead++;
-                Debug.Log("Read: " + packagesRead + " packages");
+        //        packagesRead++;
+        //        Debug.Log("Read: " + packagesRead + " packages");
 
                 yield return null;
-            }
-        }
+           // }
+      //  }
     }
 }
