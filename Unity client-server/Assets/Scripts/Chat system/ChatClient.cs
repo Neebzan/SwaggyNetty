@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class ChatClient : MonoBehaviour
@@ -9,13 +10,16 @@ public class ChatClient : MonoBehaviour
 
     NetworkStream stream;
     TcpClient client;
-    bool connected = false;
-    uint playerID;
-    List<LocalActor> actors = new List<LocalActor>();
+    Task task;
+
+    
+    
+
 
     // Start is called before the first frame update
     void Start()
     {
+        
         int port = 13001;
         string IpAdress = "127.0.0.1"; 
         client = new TcpClient(IpAdress, port);
@@ -23,13 +27,46 @@ public class ChatClient : MonoBehaviour
         Debug.Log("Connected?");
 
         stream = client.GetStream();
-        StartCoroutine(ListenToServer());
+        task = Task.Factory.StartNew(ListenToServer, TaskCreationOptions.LongRunning);
+        
     }
 
     // Update is called once per frame
     void Update()
     {
+        
+    }
 
+    public bool Connected
+    {
+        get
+        {
+            try
+            {
+                if (client.Client != null && client.Client.Connected)
+                {
+                    if (client.Client.Poll(0, SelectMode.SelectRead))
+                    {
+                        byte[] buff = new byte[1];
+
+                        if (client.Client.Receive(buff, SocketFlags.Peek) == 0)
+                        {
+                            return false;
+                        }
+
+                        return true;
+                    }
+
+                    return true;
+                }
+
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 
     public void Message(string msg)
@@ -94,6 +131,7 @@ public class ChatClient : MonoBehaviour
 
 
                 }
+               
 
                 packagesRead++;
                 Debug.Log("Read: " + packagesRead + " packages");

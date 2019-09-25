@@ -14,7 +14,7 @@ public class ChatServer : MonoBehaviour
     public static IPAddress iPAd = IPAddress.Parse("10.131.69.158");
     public static ConcurrentQueue<TcpClient> tcpClients = new ConcurrentQueue<TcpClient>();
     public static List<ChatServerClient> Clients = new List<ChatServerClient>();
-    static TcpListener listener = new TcpListener(iPAd, SERVER_PORT);
+    static TcpListener listener = new TcpListener(IPAddress.Any, SERVER_PORT);
 
     public static uint PlayersConnected;
     // Start is called before the first frame update
@@ -24,6 +24,10 @@ public class ChatServer : MonoBehaviour
     }
 
     // Update is called once per frame
+    // send en besked i starten som siger om man vil joine en gruppe 
+    // hvem den bliver sendt til
+    //serveren skal tjekke hvem beskeden er til.
+
     void Update()
     {
         

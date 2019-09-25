@@ -2,21 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 using System;
 
 public class ChatSystem : MonoBehaviour
 {
-    
+
     public GameObject chatPanel, TextObject;
     private string currentMessage = string.Empty;
     private int maxMessages = 30;
     public InputField chatBox;
     public Color playerMessage, info, fail;
     public ChatClient cClient;
+    
 
 
-[SerializeField]
+    [SerializeField]
     private List<Messages> chatHistory = new List<Messages>();
 
 
@@ -34,18 +34,18 @@ public class ChatSystem : MonoBehaviour
 
         GameObject newText = Instantiate(TextObject, chatPanel.transform);
         newMessage.textObject = newText.GetComponent<Text>();
-        newMessage.textObject.text = newMessage.text; 
+        newMessage.textObject.text = newMessage.text;
         newMessage.textObject.color = MessageTypeColor(mstype);
         chatHistory.Add(newMessage);
 
-         
+
 
     }
 
     public void Update()
     {
-            
-        if(chatBox.text != "")
+
+        if (chatBox.text != "")
         {
             if (Input.GetKeyDown(KeyCode.Return))
             {
@@ -56,7 +56,7 @@ public class ChatSystem : MonoBehaviour
                     cClient.Message(chatBox.text); //sent to server
 
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
 
                     SendMessageToChat(e.ToString(), Messages.messageTypeColor.fail);
@@ -68,24 +68,33 @@ public class ChatSystem : MonoBehaviour
         {
             if (!chatBox.isFocused && Input.GetKeyDown(KeyCode.Return))
             {
-                chatBox.ActivateInputField();            
+                chatBox.ActivateInputField();
             }
         }
         // network info from server
-        try
+        if (cClient.Connected)
         {
-            cClient.ListenToServer();
-        }
-        catch(Exception e)
-        {
-            Debug.Log(e);
+
+            try
+            {
+
+                cClient.ListenToServer();
+
+               
+
+              
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e);
+            }
         }
 
 
         //if (!chatBox.isFocused)
         //{
-            
-            
+
+
         //    if (Input.GetKeyDown(KeyCode.Return))
         //    {
         //        SendMessageToChat("W yo", Messages.messageTypeColor.info);
@@ -93,7 +102,7 @@ public class ChatSystem : MonoBehaviour
         //}      
     }
 
-   public Color MessageTypeColor(Messages.messageTypeColor messageType)
+    public Color MessageTypeColor(Messages.messageTypeColor messageType)
     {
         Color color = info;
 
@@ -124,7 +133,7 @@ public class Messages
         playerMessage,
         info,
         fail
-     
+
     }
 }
 

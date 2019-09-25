@@ -24,7 +24,7 @@ public class ChatServerClient : MonoBehaviour
        
     }
 
-    // skal fjernes
+    // skal modtage besked. og sende den videre.
 
 
     /// <summary>
@@ -43,6 +43,7 @@ public class ChatServerClient : MonoBehaviour
                 {
                     string msg = reader.ReadLine();
                     string[] msgSplit = msg.Split(ChatServer.MESSAGE_TYPE_INDICATOR);
+                    
                     MessageType type = (MessageType)Int32.Parse(msgSplit[0]);
                     string newMessage = msgSplit[1];
 
