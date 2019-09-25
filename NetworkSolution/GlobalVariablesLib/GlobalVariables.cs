@@ -14,6 +14,13 @@ namespace GlobalVariablesLib
     public static class GlobalVariables
     {
         public const string TOKEN_INPUT_QUEUE_NAME = "Token_Input_Queue";
+        public const string BEACON_INPUT_QUEUE_NAME = "Beacon_Input_Queue";
+        public const string BEACON_RESPONSE_QUEUE_NAME = "Beacon_Response_Queue";
+        public const string TEST_QUEUE_NAME = "Test_Queue";
+
+
+
+
         public const string CONSUMER_QUEUE_NAME = "userdb_request_consumer";
         public const string PRODUCER_QUEUE_NAME = "userdb_request_producer";
 

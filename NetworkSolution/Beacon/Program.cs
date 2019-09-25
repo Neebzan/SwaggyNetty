@@ -15,32 +15,27 @@ namespace Beacon
 {
     class Program
     {
+        static Beacon beacon;
         static void Main(string[] args)
         {
-            Beacon beacon = new Beacon();
+            beacon = new Beacon();
 
-            using (MessageQueue outputQueue = MSMQHelper.CreateMessageQueue("BeaconOutputQueue"))
-            {
-                MSMQHelper.SendMessage(outputQueue, JsonConvert.SerializeObject(beacon.serverData));
-            }
+            MessageQueue beaconInputMQ = MSMQHelper.CreateMessageQueue(GlobalVariables.BEACON_INPUT_QUEUE_NAME);
 
-            using (MessageQueue outputQueue = MSMQHelper.CreateMessageQueue("BeaconOutputQueue"))
-            {
-                ServersData temp = MSMQHelper.GetMessageBody<ServersData>(MSMQHelper.ReceiveMessage(outputQueue));
-            }
+            beaconInputMQ.ReceiveCompleted += BeaconInputReaceived;
+            beaconInputMQ.BeginReceive();
+
             Console.ReadKey();
         }
 
-
-        void KeepOutputQueueUpdated()
+        private static void BeaconInputReaceived(object sender, ReceiveCompletedEventArgs e)
         {
-            using (MessageQueue outputQueue = MSMQHelper.CreateMessageQueue("BeaconOutputQueue"))
-            {
-                while (true)
-                {
-                    //MSMQHelper.SendMessage(outputQueue, JsonConvert.SerializeObject(beacon.ServerData));
-                }
-            }
+            MessageQueue mQ = (MessageQueue)sender;
+            Message m = mQ.EndReceive(e.AsyncResult);
+
+            MSMQHelper.SendMessage(m.ResponseQueue, beacon.GetServerData(), "ServerData");
+
+            mQ.BeginReceive();
         }
     }
 }
