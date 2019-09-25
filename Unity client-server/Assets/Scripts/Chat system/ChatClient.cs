@@ -34,6 +34,7 @@ public class ChatClient : MonoBehaviour
 
     public void Message(string msg, Messages.messageTypeColor mstype)
     {
+        msg += "*" +  mstype;
         msg += "\n";
         // Translate the passed message into ASCII and store it as a Byte array.
         byte[] data = System.Text.Encoding.ASCII.GetBytes(msg);
@@ -78,15 +79,27 @@ public class ChatClient : MonoBehaviour
                 string[] tempMsg = msg.Split(ChatServer.MESSAGE_TYPE_INDICATOR);
                 MessageType msgType = (MessageType)Int32.Parse(tempMsg[0]);
                 ChatMessageType msgChat = (ChatMessageType)Int32.Parse(tempMsg[0]);
-               
+
+                string[] chMsg = msg.Split('*');
+
+                for (int i = 0; i < chMsg.Length; i++)
+                {
+                    string input = chMsg[i];
+
+                    if (input.Contains("*"))
+                    {
+                        //do something
+                        //så man har enum om hvem sende som gruppe
+                    }
 
 
+                }
+
+                packagesRead++;
+                Debug.Log("Read: " + packagesRead + " packages");
+
+                yield return null;
             }
-
-            packagesRead++;
-            Debug.Log("Read: " + packagesRead + " packages");
-
-            yield return null;
         }
     }
 }

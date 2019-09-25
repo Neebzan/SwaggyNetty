@@ -44,6 +44,7 @@ public class ChatSystem : MonoBehaviour
 
     public void Update()
     {
+            
         if(chatBox.text != "")
         {
             if (Input.GetKeyDown(KeyCode.Return))

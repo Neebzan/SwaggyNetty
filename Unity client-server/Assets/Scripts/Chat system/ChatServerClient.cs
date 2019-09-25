@@ -135,29 +135,22 @@ public class ChatServerClient : MonoBehaviour
     //skal nok sende til grupper
     void HandleInputMessage(string msg)
     {
-        Vector2 moveDir = Vector2.zero;
-        string[] msgSplit = msg.Split(':');
+        
+
+        string[] msgSplit = msg.Split('*');
+        
+
 
         for (int i = 0; i < msgSplit.Length; i++)
         {
             string input = msgSplit[i];
-            KeyCode inputButton;
-            bool pressed = true;
-
-            if (input.Contains("-"))
+           
+            if(input.Contains("*"))
             {
-                pressed = false;
-                input = input.Remove(0, 1);
-            }
 
-            if (Enum.TryParse<KeyCode>(input, out inputButton))
-            {
-                if (pressed)
-                    ActiveInputs.Add(inputButton);
-                else
-                    ActiveInputs.Remove(inputButton);
-                OnNewInputsRecieved.Invoke(ActiveInputs);
-            }
+            }  
+
+          
         }
     }
 
