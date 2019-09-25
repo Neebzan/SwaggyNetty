@@ -10,7 +10,7 @@ public class ChatSystem : MonoBehaviour
     
     public GameObject chatPanel, TextObject;
     private string currentMessage = string.Empty;
-    private int maxMessages = 25;
+    private int maxMessages = 30;
     public InputField chatBox;
     public Color playerMessage, info, fail;
     public ChatClient cClient;
@@ -51,7 +51,9 @@ public class ChatSystem : MonoBehaviour
                 SendMessageToChat(chatBox.text, Messages.messageTypeColor.playerMessage);
                 try
                 {
-                    cClient.SendMessage(chatBox.text, Messages.messageTypeColor.info); //sent to server
+                    //cClient.SendMessage(chatBox.text, Messages.messageTypeColor.info); 
+                    cClient.Message(chatBox.text, Messages.messageTypeColor.info); //sent to server
+
                 }
                 catch(Exception e)
                 {

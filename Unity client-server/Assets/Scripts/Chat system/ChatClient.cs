@@ -32,7 +32,7 @@ public class ChatClient : MonoBehaviour
 
     }
 
-    public void Message(string msg)
+    public void Message(string msg, Messages.messageTypeColor mstype)
     {
         msg += "\n";
         // Translate the passed message into ASCII and store it as a Byte array.

@@ -11,7 +11,7 @@ public class ChatServer : MonoBehaviour
 
     public const char MESSAGE_TYPE_INDICATOR = '?';
     public const int SERVER_PORT = 13001;
-    public static IPAddress iPAd = IPAddress.Parse("10.131.68.211");
+    public static IPAddress iPAd = IPAddress.Parse("10.131.69.158");
     public static ConcurrentQueue<TcpClient> tcpClients = new ConcurrentQueue<TcpClient>();
     public static List<ChatServerClient> Clients = new List<ChatServerClient>();
     static TcpListener listener = new TcpListener(iPAd, SERVER_PORT);
@@ -43,7 +43,7 @@ public class ChatServer : MonoBehaviour
         throw new Exception("No network adapters with an IPv4 address in the system!");
     }
 
-    public  void ListenForClients()
+    public static void ListenForClients()
     {
         listener.Start();
         while (true)
