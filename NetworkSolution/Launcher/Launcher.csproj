@@ -96,7 +96,17 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Content\deusvult.png" />
+    <ProjectReference Include="..\GlobalVariablesLib\GlobalVariablesLib.csproj">
+      <Project>{fa66e8ef-4684-4487-94cf-042a955f904d}</Project>
+      <Name>GlobalVariablesLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TcpHelper\TcpHelper.csproj">
+      <Project>{812fcb5e-7617-4944-aee9-7a2935e952c8}</Project>
+      <Name>TcpHelper</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Content\deusvulttransparent.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

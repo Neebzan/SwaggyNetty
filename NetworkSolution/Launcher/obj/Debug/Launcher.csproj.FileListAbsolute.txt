@@ -13,3 +13,10 @@ D:\GithubRepos\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\Launcher.csproj.Ge
 D:\GithubRepos\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\Launcher.csproj.CoreCompileInputs.cache
 D:\GithubRepos\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\Launcher.exe
 D:\GithubRepos\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\Launcher.pdb
+D:\GithubRepos\SwaggyNetty\NetworkSolution\Launcher\bin\Debug\GlobalVariablesLib.dll
+D:\GithubRepos\SwaggyNetty\NetworkSolution\Launcher\bin\Debug\TcpHelper.dll
+D:\GithubRepos\SwaggyNetty\NetworkSolution\Launcher\bin\Debug\Newtonsoft.Json.dll
+D:\GithubRepos\SwaggyNetty\NetworkSolution\Launcher\bin\Debug\GlobalVariablesLib.pdb
+D:\GithubRepos\SwaggyNetty\NetworkSolution\Launcher\bin\Debug\TcpHelper.pdb
+D:\GithubRepos\SwaggyNetty\NetworkSolution\Launcher\bin\Debug\Newtonsoft.Json.xml
+D:\GithubRepos\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\Launcher.csproj.CopyComplete
