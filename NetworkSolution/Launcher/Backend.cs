@@ -23,6 +23,8 @@ namespace Launcher {
             string hashedPassword = GetPasswordHash(unsecurePassword);
 
             await client.ConnectAsync(middlewareIP, middlewarePort);
+
+            //TcpHelper.MessageFormatter.
         }
 
         private static string GetPasswordHash (string password) {
