@@ -17,7 +17,7 @@ public class ChatClient : MonoBehaviour
     void Start()
     {
         int port = 13001;
-        string IpAdress = "127.0.0.1";
+        string IpAdress = "127.0.0.1"; 
         client = new TcpClient(IpAdress, port);
         client.NoDelay = true;
         Debug.Log("Connected?");
@@ -32,9 +32,9 @@ public class ChatClient : MonoBehaviour
 
     }
 
-    public void Message(string msg, Messages.messageTypeColor mstype)
+    public void Message(string msg)
     {
-        msg += "*" +  mstype;
+        
         msg += "\n";
         // Translate the passed message into ASCII and store it as a Byte array.
         byte[] data = System.Text.Encoding.ASCII.GetBytes(msg);

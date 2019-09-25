@@ -53,7 +53,7 @@ public class ChatSystem : MonoBehaviour
                 try
                 {
                     //cClient.SendMessage(chatBox.text, Messages.messageTypeColor.info); 
-                    cClient.Message(chatBox.text, Messages.messageTypeColor.info); //sent to server
+                    cClient.Message(chatBox.text); //sent to server
 
                 }
                 catch(Exception e)
