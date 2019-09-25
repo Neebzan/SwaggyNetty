@@ -93,9 +93,9 @@
         </StackPanel>
         <ProgressBar Margin="20,5" VerticalContentAlignment="Center" Grid.Row="8" Grid.ColumnSpan="3" Height="29"/>
         <Button Content="Play" Margin="20" Grid.Row="8" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="#FFF0F0F0" Grid.Column="3"/>
-        <Image Grid.Column="2" Margin="5" Grid.RowSpan="8" Grid.ColumnSpan="2" Source="Content/deusvulttransparent.png" Stretch="UniformToFill"  />
+        <Image Grid.Column="2" Margin="5" Grid.RowSpan="8" Grid.ColumnSpan="2" Source="Content/deusvulttransparent.png" Stretch="Uniform"  />
         <Popup x:Name="Error_Popup" IsOpen="False" PlacementTarget="{Binding ElementName=username, Mode=OneWay}" PopupAnimation="Fade" AllowsTransparency="True" StaysOpen="False" Grid.Row="5" Grid.RowSpan="3" Grid.ColumnSpan="2" Margin="20,5" ClipToBounds="True" UseLayoutRounding="True" HorizontalAlignment="Center" VerticalAlignment="Center" Placement="Relative" VerticalOffset="250" HorizontalOffset="20">
-            <TextBlock x:Name="Error_Popup_Label" Background="#FFFF005C" Text="Username already exists" TextAlignment="Justify" Padding="5" TextWrapping="Wrap" VerticalAlignment="Center" Width="275.2" UseLayoutRounding="True"/>
+            <TextBlock x:Name="Error_Popup_Label" Background="#FFFF005C" Text="Username already exists" TextAlignment="Left" Padding="5" TextWrapping="Wrap" VerticalAlignment="Top" Width="275.2" UseLayoutRounding="True" Foreground="White" LineHeight="6" FontStyle="Italic"/>
         </Popup>
     </Grid>
 </Window>

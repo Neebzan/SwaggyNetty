@@ -57,12 +57,13 @@ namespace Launcher {
             }
             else {
                 errorPopup.IsOpen = true;
-                errorPopupMessage.Text = "You must fill out both username and password entries.";
+                errorPopupMessage.Text = "Could not login.\n\nYou must fill out both username and password entries.";
             }
         }
 
         private void Register_Button_Clicked (object sender, RoutedEventArgs e) {
-            
+            errorPopup.IsOpen = true;
+            errorPopupMessage.Text = "Could not create an account.\n\nThis feature is not yet implemented dum dum.";
         }
     }
 }
