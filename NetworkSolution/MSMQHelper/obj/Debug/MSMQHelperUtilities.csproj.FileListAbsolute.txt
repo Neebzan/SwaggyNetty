@@ -16,3 +16,12 @@ D:\GitHub\SwaggyNetty\NetworkSolution\MSMQHelper\obj\Debug\MSMQHelperUtilities.c
 D:\GitHub\SwaggyNetty\NetworkSolution\MSMQHelper\obj\Debug\MSMQHelperUtilities.csproj.CopyComplete
 D:\GitHub\SwaggyNetty\NetworkSolution\MSMQHelper\obj\Debug\MSMQHelperUtilities.dll
 D:\GitHub\SwaggyNetty\NetworkSolution\MSMQHelper\obj\Debug\MSMQHelperUtilities.pdb
+D:\GithubRepos\SwaggyNetty\NetworkSolution\MSMQHelper\bin\Debug\MSMQHelperUtilities.dll
+D:\GithubRepos\SwaggyNetty\NetworkSolution\MSMQHelper\bin\Debug\MSMQHelperUtilities.pdb
+D:\GithubRepos\SwaggyNetty\NetworkSolution\MSMQHelper\bin\Debug\Newtonsoft.Json.dll
+D:\GithubRepos\SwaggyNetty\NetworkSolution\MSMQHelper\bin\Debug\Newtonsoft.Json.xml
+D:\GithubRepos\SwaggyNetty\NetworkSolution\MSMQHelper\obj\Debug\MSMQHelperUtilities.csprojAssemblyReference.cache
+D:\GithubRepos\SwaggyNetty\NetworkSolution\MSMQHelper\obj\Debug\MSMQHelperUtilities.csproj.CoreCompileInputs.cache
+D:\GithubRepos\SwaggyNetty\NetworkSolution\MSMQHelper\obj\Debug\MSMQHelperUtilities.csproj.CopyComplete
+D:\GithubRepos\SwaggyNetty\NetworkSolution\MSMQHelper\obj\Debug\MSMQHelperUtilities.dll
+D:\GithubRepos\SwaggyNetty\NetworkSolution\MSMQHelper\obj\Debug\MSMQHelperUtilities.pdb
