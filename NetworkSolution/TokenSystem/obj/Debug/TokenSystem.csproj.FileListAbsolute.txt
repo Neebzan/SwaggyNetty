@@ -42,3 +42,5 @@ D:\GitHub\SwaggyNetty\NetworkSolution\TokenSystem\obj\Debug\TokenSystem.csproj.C
 D:\GitHub\SwaggyNetty\NetworkSolution\TokenSystem\obj\Debug\TokenSystem.csproj.CopyComplete
 D:\GitHub\SwaggyNetty\NetworkSolution\TokenSystem\obj\Debug\TokenSystem.exe
 D:\GitHub\SwaggyNetty\NetworkSolution\TokenSystem\obj\Debug\TokenSystem.pdb
+D:\GitHub\SwaggyNetty\NetworkSolution\TokenSystem\bin\Debug\JWTlib.dll
+D:\GitHub\SwaggyNetty\NetworkSolution\TokenSystem\bin\Debug\JWTlib.pdb

@@ -12,3 +12,12 @@ D:\GitHub\SwaggyNetty\NetworkSolution\TestProject\obj\Debug\TestProject.csproj.C
 D:\GitHub\SwaggyNetty\NetworkSolution\TestProject\obj\Debug\TestProject.csproj.CopyComplete
 D:\GitHub\SwaggyNetty\NetworkSolution\TestProject\obj\Debug\TestProject.exe
 D:\GitHub\SwaggyNetty\NetworkSolution\TestProject\obj\Debug\TestProject.pdb
+D:\GitHub\SwaggyNetty\NetworkSolution\TestProject\bin\Debug\JWTlib.dll
+D:\GitHub\SwaggyNetty\NetworkSolution\TestProject\bin\Debug\Microsoft.IdentityModel.Tokens.dll
+D:\GitHub\SwaggyNetty\NetworkSolution\TestProject\bin\Debug\Microsoft.IdentityModel.Logging.dll
+D:\GitHub\SwaggyNetty\NetworkSolution\TestProject\bin\Debug\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\GitHub\SwaggyNetty\NetworkSolution\TestProject\bin\Debug\JWTlib.pdb
+D:\GitHub\SwaggyNetty\NetworkSolution\TestProject\bin\Debug\System.IdentityModel.Tokens.Jwt.xml
+D:\GitHub\SwaggyNetty\NetworkSolution\TestProject\bin\Debug\Microsoft.IdentityModel.Tokens.xml
+D:\GitHub\SwaggyNetty\NetworkSolution\TestProject\bin\Debug\Microsoft.IdentityModel.Logging.xml
+D:\GitHub\SwaggyNetty\NetworkSolution\TestProject\bin\Debug\Microsoft.IdentityModel.JsonWebTokens.xml
