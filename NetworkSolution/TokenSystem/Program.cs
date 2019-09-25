@@ -4,6 +4,7 @@ using MSMQHelperUtilities;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
 using System.Messaging;
@@ -51,10 +52,10 @@ namespace TokenSystem
                             MSMQHelper.SendMessage(beaconInputMQ, "ServersData", "ServersData", beaconResponseMQ);
 
                             ServersData data = MSMQHelper.GetMessageBody<ServersData>(MSMQHelper.ReceiveMessage(beaconResponseMQ, new TimeSpan(0, 0, 5)));
-
                             JWTPayload payload = new JWTPayload() { User = userModel, ServersInfo = data };
+                            JwtSecurityToken token = JWTManager.CreateJWT(JWTManager.CreateClaims<JWTPayload>(payload), 5);
 
-                            MSMQHelper.SendMessage(m.ResponseQueue, JWTManager.CreateJWT(JWTManager.CreateClaims<JWTPayload>(payload), 5).RawData);
+                            MSMQHelper.SendMessage(m.ResponseQueue, token.RawData);
                             Console.WriteLine("Token send to {0}", m.ResponseQueue.Path);
                             break;
                         }

@@ -20,8 +20,8 @@ namespace TestProject
 
         static void Main(string[] args)
         {
-            ConsoleKey key = Console.ReadKey().Key;
             Console.WriteLine("1. Request new JWT Token");
+            ConsoleKey key = Console.ReadKey().Key;
 
             switch(key)
             {
@@ -46,11 +46,14 @@ namespace TestProject
 
             Console.WriteLine("Awaiting response in testMQ");
             Message msg = MSMQHelper.ReceiveMessage(testMQ);
+            msg.Formatter = new JsonMessageFormatter();
 
-            //JWTPayload payload = JWTManager.GetModelFromToken<JWTPayload>(msg.Body);
+            string token = MSMQHelper.GetMessageBody<string>(msg);
+
+            JWTPayload payload = JWTManager.GetModelFromToken<JWTPayload>(token);
 
 
-            JWTPayload payload = MSMQHelper.GetMessageBody<JWTPayload>(msg);
+            //JWTPayload payload = MSMQHelper.GetMessageBody<JWTPayload>(msg);
 
 
             Console.WriteLine("Response received");
