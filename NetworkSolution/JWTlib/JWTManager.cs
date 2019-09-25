@@ -5,11 +5,10 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TokenSystem
+namespace JWTlib
 {
     public static class JWTManager
     {
@@ -56,6 +55,18 @@ namespace TokenSystem
         /// <returns></returns>
         public static T GetModelFromToken<T>(JwtSecurityToken token)
         {
+            return JsonConvert.DeserializeObject<T>(token.Claims.Where(c => c.Type == typeof(T).Name).Select(c => c.Value).FirstOrDefault().ToString());
+        }
+
+        /// <summary>
+        /// Gets the deserialized object from a JWT claim
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public static T GetModelFromToken<T>(string tokenString)
+        {
+            JwtSecurityToken token = new JwtSecurityToken(tokenString);
             return JsonConvert.DeserializeObject<T>(token.Claims.Where(c => c.Type == typeof(T).Name).Select(c => c.Value).FirstOrDefault().ToString());
         }
 

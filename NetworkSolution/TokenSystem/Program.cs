@@ -1,4 +1,5 @@
 ﻿using GlobalVariablesLib;
+using JWTlib;
 using MSMQHelperUtilities;
 using Newtonsoft.Json;
 using System;
@@ -17,35 +18,18 @@ namespace TokenSystem
 {
     class Program
     {
+        static MessageQueue userInputMQ = MSMQHelper.CreateMessageQueue(GlobalVariables.TOKEN_INPUT_QUEUE_NAME);
+        static MessageQueue beaconInputMQ = MSMQHelper.CreateMessageQueue(GlobalVariables.BEACON_INPUT_QUEUE_NAME);
+        static MessageQueue beaconResponseMQ = MSMQHelper.CreateMessageQueue(GlobalVariables.BEACON_RESPONSE_QUEUE_NAME);
+
         static void Main(string[] args)
         {
             Thread t = new Thread(HandleConnections);
             t.IsBackground = true;
             t.Start();
 
-            MessageQueue userInputMQ = MSMQHelper.CreateMessageQueue(GlobalVariables.TOKEN_INPUT_QUEUE_NAME);
-
             userInputMQ.ReceiveCompleted += UserInputRecieved;
             userInputMQ.BeginReceive();
-
-            //while(true)
-            //{
-
-            //}
-
-            //ConnectionModel testModel = new ConnectionModel { UserID = "My ID", ServerID = "Test server ID" };
-
-            //var e = JWTManager.CreateJWT(JWTManager.CreateClaims<ConnectionModel>(testModel), 5);
-
-            //string token = e.RawData;
-            ////token += "a";
-
-            //if (JWTManager.VerifyToken(token))
-            //    Console.WriteLine("Token is valid");
-            //else
-            //    Console.WriteLine("Token is NOT valid");
-
-            //var tttt = JWTManager.GetModelFromToken<ConnectionModel>(e);
 
             Console.ReadKey();
         }
@@ -63,7 +47,14 @@ namespace TokenSystem
                         {
                             UserModel userModel = MSMQHelper.GetMessageBody<UserModel>(m);
                             Console.WriteLine("UserModel received!");
-                            MSMQHelper.SendMessage(m.ResponseQueue, JWTManager.CreateJWT(JWTManager.CreateClaims<UserModel>(userModel), 5).RawData);
+
+                            MSMQHelper.SendMessage(beaconInputMQ, "ServersData", "ServersData", beaconResponseMQ);
+
+                            ServersData data = MSMQHelper.GetMessageBody<ServersData>(MSMQHelper.ReceiveMessage(beaconResponseMQ, new TimeSpan(0, 0, 5)));
+
+                            JWTPayload payload = new JWTPayload() { User = userModel, ServersInfo = data };
+
+                            MSMQHelper.SendMessage(m.ResponseQueue, JWTManager.CreateJWT(JWTManager.CreateClaims<JWTPayload>(payload), 5).RawData);
                             Console.WriteLine("Token send to {0}", m.ResponseQueue.Path);
                             break;
                         }

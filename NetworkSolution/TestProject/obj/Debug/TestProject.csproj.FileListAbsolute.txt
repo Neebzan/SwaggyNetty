@@ -1,0 +1,14 @@
+D:\GitHub\SwaggyNetty\NetworkSolution\TestProject\bin\Debug\TestProject.exe.config
+D:\GitHub\SwaggyNetty\NetworkSolution\TestProject\bin\Debug\TestProject.exe
+D:\GitHub\SwaggyNetty\NetworkSolution\TestProject\bin\Debug\TestProject.pdb
+D:\GitHub\SwaggyNetty\NetworkSolution\TestProject\bin\Debug\GlobalVariablesLib.dll
+D:\GitHub\SwaggyNetty\NetworkSolution\TestProject\bin\Debug\MSMQHelperUtilities.dll
+D:\GitHub\SwaggyNetty\NetworkSolution\TestProject\bin\Debug\Newtonsoft.Json.dll
+D:\GitHub\SwaggyNetty\NetworkSolution\TestProject\bin\Debug\GlobalVariablesLib.pdb
+D:\GitHub\SwaggyNetty\NetworkSolution\TestProject\bin\Debug\MSMQHelperUtilities.pdb
+D:\GitHub\SwaggyNetty\NetworkSolution\TestProject\bin\Debug\Newtonsoft.Json.xml
+D:\GitHub\SwaggyNetty\NetworkSolution\TestProject\obj\Debug\TestProject.csprojAssemblyReference.cache
+D:\GitHub\SwaggyNetty\NetworkSolution\TestProject\obj\Debug\TestProject.csproj.CoreCompileInputs.cache
+D:\GitHub\SwaggyNetty\NetworkSolution\TestProject\obj\Debug\TestProject.csproj.CopyComplete
+D:\GitHub\SwaggyNetty\NetworkSolution\TestProject\obj\Debug\TestProject.exe
+D:\GitHub\SwaggyNetty\NetworkSolution\TestProject\obj\Debug\TestProject.pdb

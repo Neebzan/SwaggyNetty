@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobalVariablesLib", "Globa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySQL translator", "MySQL translator\MySQL translator.csproj", "{C5A44FF6-7085-480E-B5FA-125AF7E307DF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "TestProject\TestProject.csproj", "{0496F596-9747-465B-BB78-397589E34618}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{C5A44FF6-7085-480E-B5FA-125AF7E307DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5A44FF6-7085-480E-B5FA-125AF7E307DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5A44FF6-7085-480E-B5FA-125AF7E307DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0496F596-9747-465B-BB78-397589E34618}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0496F596-9747-465B-BB78-397589E34618}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0496F596-9747-465B-BB78-397589E34618}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0496F596-9747-465B-BB78-397589E34618}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

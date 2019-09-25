@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TokenSystem
+namespace GlobalVariablesLib
 {
     public class UserModel
     {
         public string UserID { get; set; }
-        public string ClientSocket { get; set; }
+        public string PasswordHash { get; set; }
     }
 }

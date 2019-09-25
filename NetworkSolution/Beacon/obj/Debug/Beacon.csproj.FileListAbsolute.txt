@@ -12,3 +12,17 @@ C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\Beacon\bin\Debug\MS
 C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\Beacon\bin\Debug\MSMQHelperUtilities.pdb
 C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\Beacon\bin\Debug\GlobalVariablesLib.dll
 C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\Beacon\bin\Debug\GlobalVariablesLib.pdb
+D:\GitHub\SwaggyNetty\NetworkSolution\Beacon\bin\Debug\Beacon.exe.config
+D:\GitHub\SwaggyNetty\NetworkSolution\Beacon\bin\Debug\Beacon.exe
+D:\GitHub\SwaggyNetty\NetworkSolution\Beacon\bin\Debug\Beacon.pdb
+D:\GitHub\SwaggyNetty\NetworkSolution\Beacon\bin\Debug\GlobalVariablesLib.dll
+D:\GitHub\SwaggyNetty\NetworkSolution\Beacon\bin\Debug\MSMQHelperUtilities.dll
+D:\GitHub\SwaggyNetty\NetworkSolution\Beacon\bin\Debug\Newtonsoft.Json.dll
+D:\GitHub\SwaggyNetty\NetworkSolution\Beacon\bin\Debug\GlobalVariablesLib.pdb
+D:\GitHub\SwaggyNetty\NetworkSolution\Beacon\bin\Debug\MSMQHelperUtilities.pdb
+D:\GitHub\SwaggyNetty\NetworkSolution\Beacon\bin\Debug\Newtonsoft.Json.xml
+D:\GitHub\SwaggyNetty\NetworkSolution\Beacon\obj\Debug\Beacon.csprojAssemblyReference.cache
+D:\GitHub\SwaggyNetty\NetworkSolution\Beacon\obj\Debug\Beacon.csproj.CoreCompileInputs.cache
+D:\GitHub\SwaggyNetty\NetworkSolution\Beacon\obj\Debug\Beacon.csproj.CopyComplete
+D:\GitHub\SwaggyNetty\NetworkSolution\Beacon\obj\Debug\Beacon.exe
+D:\GitHub\SwaggyNetty\NetworkSolution\Beacon\obj\Debug\Beacon.pdb

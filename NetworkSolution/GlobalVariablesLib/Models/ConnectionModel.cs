@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TokenSystem
+namespace GlobalVariablesLib
 {
-    public class Payload
+    public class ConnectionModel
     {
         public string UserID { get; set; }
         public string ClientSocket { get; set; }
@@ -15,3 +15,4 @@ namespace TokenSystem
         public string ChatSocket { get; set; }
     }
 }
+
