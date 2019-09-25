@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Helpers;
 
@@ -16,14 +17,11 @@ namespace Login_Middleware
 {
     class Middleware_Main
     {
-        static int port = 0;
-        static private IPAddress IP = IPAddress.Any;
-
-        public static Queue<Database_Request_Handler> databaseRequests = new Queue<Database_Request_Handler>();
+        static int port = 13005;
         static ConcurrentQueue<TcpClient> users = new ConcurrentQueue<TcpClient>();
         
-
-        static public TcpListener serverListener = new TcpListener(IP,port);
+        static private IPAddress IP = IPAddress.Any;
+        static public TcpListener serverListener = new TcpListener(IP, port);
         static void Main(string[] args)
         {
             // Start Listen for Clients
@@ -32,13 +30,19 @@ namespace Login_Middleware
             // Work With Clients
             Task.Factory.StartNew(WaitForClients, TaskCreationOptions.LongRunning);
 
+            while (true)
+            {
+                
+            }
+
         }
          /// <summary>
          /// 
          /// </summary>
-         /// <returns></returns>
-        public static IEnumerator WaitForClients()
+        public static void WaitForClients()
         {
+            Console.WriteLine("Waiting For Clients...");
+
             while (true)
             {
                 while (users.Count > 0)
@@ -46,25 +50,31 @@ namespace Login_Middleware
                     if (users.TryDequeue(out TcpClient tcpClient))
                     {
                         Middleware_Client client = new Middleware_Client(tcpClient);
-                        Console.WriteLine($"User at IP: {tcpClient.Client.RemoteEndPoint} Recieved Queue time, Processing requests...");
-
+                        Console.WriteLine($"User at IP: {tcpClient.Client.RemoteEndPoint} Recieved Queue Time, Processing requests...");
+                        
                         Task.Factory.StartNew(client.ListenForMessages);
                     }
                 }
-                yield return null;
             }
         }
 
-
+        /// <summary>
+        /// Endless Loop that listens for incoming connections,
+        /// and puts them as new clients into a concurrent queue.
+        /// </summary>
         public static void ListenForClients()
         {
+            Console.WriteLine("Starting Server Listen");
             serverListener.Start();
 
             while (true)
             {
-                TcpClient c = serverListener.AcceptTcpClient();
-                users.Enqueue(c);
-                Console.WriteLine(c.Client.RemoteEndPoint.ToString() + " connected");
+                if (serverListener.Pending())
+                {
+                    TcpClient c = serverListener.AcceptTcpClient();
+                    users.Enqueue(c);
+                    Console.WriteLine(c.Client.RemoteEndPoint.ToString() + " connected");
+                }
             }
         }
     }
