@@ -67,8 +67,8 @@ public class TCPHelper : MonoBehaviour
 
         byte[] readBuffer = new byte[4];
 
-        int packagesRead = 0;
-        while (stream.DataAvailable && packagesRead < 8)
+        
+        if (stream.DataAvailable)
         {
             int bytesRead = 0;
 
@@ -85,6 +85,7 @@ public class TCPHelper : MonoBehaviour
                 bytesRead += stream.Read(buffer, bytesRead, buffer.Length - bytesRead);
             }
             msg = System.Text.Encoding.UTF8.GetString(buffer);
+            
         }
         return msg;
     }

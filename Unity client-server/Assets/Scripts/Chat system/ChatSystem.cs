@@ -13,13 +13,14 @@ public class ChatSystem : MonoBehaviour
     public InputField chatBox;
     public Color playerMessage, info, fail;
     public ChatClient cClient;
+
     
 
 
     [SerializeField]
     private List<Messages> chatHistory = new List<Messages>();
 
-
+    
 
 
     public void SendMessageToChat(string text, Messages.messageTypeColor mstype)
@@ -89,8 +90,8 @@ public class ChatSystem : MonoBehaviour
                 Debug.Log(e);
             }
         }
-
-
+        
+        
         //if (!chatBox.isFocused)
         //{
 

@@ -135,41 +135,18 @@ public class ChatServerClient : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Handles the messages recieves from the client, and converts theses to unity inputs
-    /// </summary>
-    /// <param name="msg"></param>
-    private void ConvertToInput(string[] msg)
+    public string recievFromClient()
     {
-        for (int i = 0; i < msg.Length; i++)
-        {
-            string input = msg[i];
-            KeyCode inputButton;
-            bool pressed = true;
-
-            if (input.Contains("-"))
-            {
-                pressed = false;
-                input = input.Remove(0, 1);
-            }
-
-            if (Enum.TryParse<KeyCode>(input, out inputButton))
-            {
-                if (pressed)
-                    ActiveInputs.Add(inputButton);
-                else
-                    ActiveInputs.Remove(inputButton);
-                OnNewInputsRecieved.Invoke(ActiveInputs);
-            }
-        }
+         string packetICarry = TCPHelper.ReadMessage(networkStream);
+        return packetICarry;
     }
 
     public void SendToClient(byte[] data)
     {
         //StreamWriter writer = new StreamWriter(networkStream);
 
-        //networkStream.Write(data, 0, data.Length);
+         //TCPHelper.MessageBytes(data);
+        networkStream.Write(data, 0, data.Length);
 
-        TCPHelper.MessageBytes(data);
     }
 }

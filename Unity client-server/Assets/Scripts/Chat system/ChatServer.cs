@@ -30,7 +30,7 @@ public class ChatServer : MonoBehaviour
 
     void Update()
     {
-        
+        SendString();
     }
 
     public  string GetLocalIPAddress()
@@ -61,8 +61,7 @@ public class ChatServer : MonoBehaviour
     public static void Disconnect(ChatServerClient disconnectedClient)
     {
         
-            Clients.Remove(disconnectedClient);
-        
+            Clients.Remove(disconnectedClient);   
 
     }
 
@@ -83,7 +82,11 @@ public class ChatServer : MonoBehaviour
 
     public void SendString()
     {
-      // send to clients
+        for (int i = 0; i < Clients.Count; i++)
+        {
+           byte[] mes =  TCPHelper.MessageBytes("oh no");
+            Clients[i].SendToClient(mes);
+        }
     }
    
  
