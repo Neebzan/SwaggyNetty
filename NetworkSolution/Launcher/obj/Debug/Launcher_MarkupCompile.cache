@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-D:\GithubRepos\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\
+C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\
 Launcher
 none
 false
 DEBUG;TRACE
-D:\GithubRepos\SwaggyNetty\NetworkSolution\Launcher\App.xaml
+C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\Launcher\App.xaml
 3-236627611
 
-8408492627
-151795604368
+9-1959705189
+16-1013790115
 LoginPage.xaml;MainWindow.xaml;RegisterPage.xaml;
 
-False
+True
 

@@ -23,8 +23,8 @@ namespace GlobalVariablesLib
 
 
 
-        public const string DATABASE_CONSUMER_QUEUE_NAME = "userdb_request_consumer";
-        public const string DATABASE_PRODUCER_QUEUE_NAME = "userdb_request_producer";
+        public const string CONSUMER_QUEUE_NAME = "userdb_request_consumer";
+        public const string PRODUCER_QUEUE_NAME = "userdb_request_producer";
 
         public const int TOKENSYSTEM_PORT = 13005;
         public const int BEACON_PORT = 13006;

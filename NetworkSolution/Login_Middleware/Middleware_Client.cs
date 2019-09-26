@@ -33,8 +33,8 @@ namespace Login_Middleware
 
             isAlive = true;
             // Sets the correct queue for the client to send and recieve from
-            databaseRequestQueue = MSMQHelper.CreateMessageQueue(GlobalVariables.DATABASE_CONSUMER_QUEUE_NAME);
-            databaseResponseQueue = MSMQHelper.CreateMessageQueue(GlobalVariables.DATABASE_PRODUCER_QUEUE_NAME);
+            databaseRequestQueue = MSMQHelper.CreateMessageQueue(GlobalVariables.CONSUMER_QUEUE_NAME);
+            databaseResponseQueue = MSMQHelper.CreateMessageQueue(GlobalVariables.PRODUCER_QUEUE_NAME);
             tokenRequestQueue = MSMQHelper.CreateMessageQueue(GlobalVariables.TOKEN_INPUT_QUEUE_NAME);
             tokenResponseQueue = MSMQHelper.CreateMessageQueue(GlobalVariables.TOKEN_RESPONSE_QUEUE_NAME);
 

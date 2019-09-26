@@ -58,3 +58,16 @@ D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\MySql.Data
 D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\Google.Protobuf.dll
 D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\BouncyCastle.Crypto.dll
 D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\MySql.Data.xml
+C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\MySQL translator\obj\Debug\MySQL translator.csprojAssemblyReference.cache
+C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\MySQL translator\obj\Debug\MySQL translator.exe
+C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\MySQL translator\obj\Debug\MySQL translator.pdb
+C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\MySQL translator.exe.config
+C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\MySQL translator.exe
+C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\MySQL translator.pdb
+C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\GlobalVariablesLib.dll
+C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\MSMQHelperUtilities.dll
+C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\GlobalVariablesLib.pdb
+C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\MSMQHelperUtilities.pdb
+C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\MySQL translator\obj\Debug\MySQL translator.csproj.CopyComplete

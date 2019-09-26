@@ -12,7 +12,7 @@ namespace MySQL_translator
 
     public class InputRecievedEventArgs : EventArgs
     {
-        public GlobalVariablesLib.RequestTypes requestType { get; set; }
+        public GlobalVariablesLib.RequestTypes RequestType { get; set; }
         public UserModel User { get; set; }
     }
 
@@ -37,8 +37,8 @@ namespace MySQL_translator
         /// Instantiates the message queues
         /// </summary>
         void SetupQueues () {
-            consumerQueue = MSMQHelperUtilities.MSMQHelper.CreateMessageQueue(GlobalVariablesLib.GlobalVariables.DATABASE_CONSUMER_QUEUE_NAME);
-            producerQueue = MSMQHelperUtilities.MSMQHelper.CreateMessageQueue(GlobalVariablesLib.GlobalVariables.DATABASE_PRODUCER_QUEUE_NAME);
+            consumerQueue = MSMQHelperUtilities.MSMQHelper.CreateMessageQueue(GlobalVariablesLib.GlobalVariables.CONSUMER_QUEUE_NAME);
+            producerQueue = MSMQHelperUtilities.MSMQHelper.CreateMessageQueue(GlobalVariablesLib.GlobalVariables.PRODUCER_QUEUE_NAME);
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace MySQL_translator
                 }
 
                 EventHandler<InputRecievedEventArgs> handler = NewInputRecieved;
-                handler?.Invoke(this, new InputRecievedEventArgs() { User = user, requestType = requestType });
+                handler?.Invoke(this, new InputRecievedEventArgs() { User = user, RequestType = requestType });
             }
             catch (Exception eM) {
                 Console.WriteLine(eM.Message);
