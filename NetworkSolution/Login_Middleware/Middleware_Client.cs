@@ -8,6 +8,7 @@ using System.Messaging;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using MSMQHelperUtilities;
+using TcpHelper;
 using System.IO;
 using System.Threading;
 
@@ -61,53 +62,41 @@ namespace Login_Middleware
         {
             while (isAlive)
             {
-                int i = 0;
 
-                Byte[] bytes = new Byte[256];
-                string data = null;
+                string data = MessageFormatter.ReadMessage(stream);
 
-                while ((i = stream.Read(bytes, 0, bytes.Length)) != 0 && tcpClient.Connected)
+                Console.WriteLine("{0} Received: {1}\nAttempting To Convert To Json Object", this.ToString(), data);
+                try
                 {
+                    user_obj = DeserializeRequest(data);
 
-                    data = Encoding.ASCII.GetString(bytes, 0, i);
-                    Console.WriteLine("{0} Received: {1}\nAttempting To Convert To Json Object", this.ToString(), data);
-                    try
-                    {
-                        user_obj = DeserializeRequest(data);
-
-                        // Queues request from client to db
-                        QueueRequest(user_obj);
-
-
-
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine($"EXCEPTION:-----------------------------------\n {e}\n-----------------------------------");
-                        Console.WriteLine("\n\n-----------------------------------\n" + data + "\n\n-----------------------------------");
-
-                        // Json client response setup
-                        Json_Obj response = new Json_Obj()
-                        {
-                            Message = $"ERROR: [ {e.Message} ] \nHost Closed the Connection!",
-                            RequestType = Json_Obj.RequestTypes.Error
-                        };
-
-                        // Get bytes from data (string)
-
-                        byte[] msg = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(response));
-
-                        //sends message to client
-
-                        stream.Write(msg, 0, msg.Length);
-
-                        isAlive = false;
-                        tcpClient.Close();
-                        Thread.CurrentThread.Abort();
-                    }
-
+                    // Queues request from client to db
+                    QueueRequest(user_obj);
                 }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"EXCEPTION:-----------------------------------\n {e}\n-----------------------------------");
+                    Console.WriteLine("\n\n-----------------------------------\n" + data + "\n\n-----------------------------------");
 
+                    // Json client response setup
+                    Json_Obj response = new Json_Obj()
+                    {
+                        Message = $"ERROR: [ {e.Message} ] \nHost Closed the Connection!",
+                        RequestType = Json_Obj.RequestTypes.Error
+                    };
+
+                    // Get bytes from data (string)
+
+                    byte[] msg = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(response));
+
+                    //sends message to client
+
+                    stream.Write(msg, 0, msg.Length);
+
+                    isAlive = false;
+                    tcpClient.Close();
+                    Thread.CurrentThread.Abort();
+                }
             }
         }
 
@@ -118,7 +107,6 @@ namespace Login_Middleware
             {
                 if (received_obj.PswdHash == userData.PswdHash)
                 {
-
                     Console.WriteLine($"User: {userData.UserID} Found. Requesting Token from Token Server...");
                     return true;
                 }
@@ -127,7 +115,6 @@ namespace Login_Middleware
                     Console.WriteLine("Hashing Failed: Wrong Username or Password");
                     return false;
                 }
-
             }
             catch (Exception e)
             {

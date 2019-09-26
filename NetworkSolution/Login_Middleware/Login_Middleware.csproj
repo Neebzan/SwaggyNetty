@@ -76,5 +76,11 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TcpHelper\TcpHelper.csproj">
+      <Project>{812fcb5e-7617-4944-aee9-7a2935e952c8}</Project>
+      <Name>TcpHelper</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

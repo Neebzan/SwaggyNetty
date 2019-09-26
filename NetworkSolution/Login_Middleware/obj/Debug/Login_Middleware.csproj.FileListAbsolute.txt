@@ -18,3 +18,5 @@ C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\Login_Middleware\obj\Debu
 C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\Login_Middleware\obj\Debug\Login_Middleware.csproj.CopyComplete
 C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\Login_Middleware\obj\Debug\Login_Middleware.exe
 C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\Login_Middleware\obj\Debug\Login_Middleware.pdb
+C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\Login_Middleware\bin\Debug\TcpHelper.dll
+C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\Login_Middleware\bin\Debug\TcpHelper.pdb
