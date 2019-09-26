@@ -58,14 +58,18 @@ namespace Launcher {
 
         }
 
-        private void Create_Account_Button_Clicked (object sender, RoutedEventArgs e) {
+        private void BackToLogin_Button_Clicked (object sender, RoutedEventArgs e) {
+            Application.Current.MainWindow.Content = new LoginPage();
+        }
+
+        private async void Create_Account_Button_Clicked (object sender, RoutedEventArgs e) {
             if (!string.IsNullOrEmpty(passwordBox.Password) && !string.IsNullOrEmpty(usernameBox.Text) && !string.IsNullOrEmpty(confirmPassBox.Password)) {
                 SecureString password = passwordBox.SecurePassword;
                 SecureString confirmPass = confirmPassBox.SecurePassword;
                 string username = usernameBox.Text;
 
                 if (Backend.CheckPassUniformity(password, confirmPass)) {
-
+                    await Backend.SendRegisterRequest(username, password);
                 }
                 else {
                     errorPopup.IsOpen = true;

@@ -14,7 +14,7 @@ namespace Launcher {
     public static class Backend {
 
         private static string middlewareIP = "10.131.69.129";
-        private static int middlewarePort = 13005;
+        private static int middlewarePort = 13010;
         
 
         public static async Task SendLoginCredentials (string username, SecureString password) {
@@ -28,6 +28,21 @@ namespace Launcher {
             GlobalVariablesLib.UserModel user = new GlobalVariablesLib.UserModel() { UserID = username, PswdHash = hashedPassword, RequestType = GlobalVariablesLib.RequestTypes.Get_User };
 
             byte[] msg = TcpHelper.MessageFormatter.MessageBytes<GlobalVariablesLib.UserModel>(user);
+
+            client.GetStream().Write(msg, 0, msg.Length);
+        }
+
+        public static async Task SendRegisterRequest (string username, SecureString password) {
+            TcpClient client = new TcpClient();
+
+            string unsecurePassword = ConvertToUnsecureString(password);
+            string hashedPassword = GetPasswordHash(unsecurePassword);
+
+            await client.ConnectAsync(middlewareIP, middlewarePort);
+
+            GlobalVariablesLib.UserModel user = new GlobalVariablesLib.UserModel() { UserID = username, PswdHash = hashedPassword, RequestType = GlobalVariablesLib.RequestTypes.Create_User };
+
+            byte [ ] msg = TcpHelper.MessageFormatter.MessageBytes<GlobalVariablesLib.UserModel>(user);
 
             client.GetStream().Write(msg, 0, msg.Length);
         }
@@ -72,5 +87,7 @@ namespace Launcher {
                 return false;
             }
         }
+
+
     }
 }

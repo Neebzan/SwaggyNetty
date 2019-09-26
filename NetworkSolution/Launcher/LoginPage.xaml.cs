@@ -55,7 +55,14 @@ namespace Launcher {
                 SecureString password = passwordBox.SecurePassword;
                 string username = usernameBox.Text;
 
-                await Backend.SendLoginCredentials(username, password);
+                try {
+
+                    await Backend.SendLoginCredentials(username, password);
+                }
+                catch (Exception) {
+
+                    throw;
+                }
             }
             else {
                 errorPopup.IsOpen = true;
