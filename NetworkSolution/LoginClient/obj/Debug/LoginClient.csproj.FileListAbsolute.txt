@@ -1,9 +1,0 @@
-C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\LoginClient\bin\Debug\LoginClient.exe.config
-C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\LoginClient\bin\Debug\LoginClient.exe
-C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\LoginClient\bin\Debug\LoginClient.pdb
-C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\LoginClient\obj\Debug\LoginClient.csprojAssemblyReference.cache
-C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\LoginClient\obj\Debug\LoginClient.exe
-C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\LoginClient\obj\Debug\LoginClient.pdb
-C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\LoginClient\bin\Debug\Newtonsoft.Json.dll
-C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\LoginClient\bin\Debug\Newtonsoft.Json.xml
-C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\LoginClient\obj\Debug\LoginClient.csproj.CopyComplete
