@@ -20,3 +20,7 @@ D:\GithubRepos\SwaggyNetty\NetworkSolution\Launcher\bin\Debug\GlobalVariablesLib
 D:\GithubRepos\SwaggyNetty\NetworkSolution\Launcher\bin\Debug\TcpHelper.pdb
 D:\GithubRepos\SwaggyNetty\NetworkSolution\Launcher\bin\Debug\Newtonsoft.Json.xml
 D:\GithubRepos\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\Launcher.csproj.CopyComplete
+D:\GithubRepos\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\LoginPage.g.cs
+D:\GithubRepos\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\RegisterPage.g.cs
+D:\GithubRepos\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\LoginPage.baml
+D:\GithubRepos\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\RegisterPage.baml

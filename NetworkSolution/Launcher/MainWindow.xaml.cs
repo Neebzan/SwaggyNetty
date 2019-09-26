@@ -21,49 +21,12 @@ namespace Launcher {
     /// </summary>
     public partial class MainWindow : Window {
 
-        TextBox usernameBox;
-        PasswordBox passwordBox;
-        Popup errorPopup;
-        TextBlock errorPopupMessage;
-
         public MainWindow () {
             InitializeComponent();
 
-            usernameBox = username_textbox;
-            passwordBox = password_textbox;
-            errorPopup = Error_Popup;
-            errorPopupMessage = Error_Popup_Label;
-
-            Deactivated += (object sender, EventArgs e) => {
-                errorPopup.IsOpen = false;
-            };
-
-            LocationChanged += (object sender, EventArgs e) => {
-                errorPopup.IsOpen = false;
-            };
-            this.usernameBox.KeyDown += (object sender, KeyEventArgs e) => {
-                errorPopup.IsOpen = false;
-            };
-
-            errorPopup.IsOpen = false;
+            this.Content = new LoginPage();            
         }
 
-        private async void Login_Button_Clicked (object sender, RoutedEventArgs e) {
-            if (!string.IsNullOrEmpty(passwordBox.Password) && !string.IsNullOrEmpty(usernameBox.Text)) {
-                SecureString password = passwordBox.SecurePassword;
-                string username = usernameBox.Text;
-
-                await Backend.SendLoginCredentials(username, password);
-            }
-            else {
-                errorPopup.IsOpen = true;
-                errorPopupMessage.Text = "Could not login.\n\nYou must fill out both username and password entries.";
-            }
-        }
-
-        private void Register_Button_Clicked (object sender, RoutedEventArgs e) {
-            errorPopup.IsOpen = true;
-            errorPopupMessage.Text = "Could not create an account.\n\nThis feature is not yet implemented dum dum.";
-        }
+      
     }
 }

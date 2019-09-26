@@ -1,0 +1,77 @@
+﻿<Page x:Class="Launcher.RegisterPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Launcher"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="RegisterPage">
+
+    <Grid Margin="0" Height="419.5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="400"/>
+            <ColumnDefinition Width="100*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition x:Name="Game_title" Height="100"/>
+            <RowDefinition x:Name="Username_label" Height="30"/>
+            <RowDefinition x:Name="Username_entry" Height="40"/>
+            <RowDefinition x:Name="Password_label" Height="30"/>
+            <RowDefinition x:Name="Password_entry" Height="40"/>
+            <RowDefinition x:Name="Remember_username_tick" Height="30"/>
+            <RowDefinition x:Name="Remember_password_tick" Height="40"/>
+            <RowDefinition x:Name="Empty" Height="20"/>
+            <RowDefinition x:Name="Login_button" Height="40"/>
+            <RowDefinition x:Name="Empty_2" Height="40"/>
+            <RowDefinition x:Name="Spacing" Height="*"/>
+        </Grid.RowDefinitions>
+
+
+        <Frame  Margin="0" Grid.RowSpan="10" Grid.ColumnSpan="4" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+            <Frame.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFDADADA" Offset="1"/>
+                    <GradientStop Color="#FFF4F4F4" Offset="0.017"/>
+                </LinearGradientBrush>
+            </Frame.Background>
+        </Frame>
+
+
+        <Label Content="Username" Margin="20,0" VerticalContentAlignment="Bottom" UseLayoutRounding="False" Grid.Row="1" Padding="0"/>
+        <Button Content="Create account" Margin="20,0" Grid.Row="8" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="#FFD1D1D1" Click="Create_Account_Button_Clicked" FontSize="16" BorderThickness="0" Grid.ColumnSpan="2">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Background" Value="Green"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type Button}">
+                                <Border Background="{TemplateBinding Background}">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#0019196A"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+        <Label Content="Password" Margin="20,0" VerticalContentAlignment="Bottom" UseLayoutRounding="False" Grid.Row="3" Padding="0"/>
+        <Label Content="Swaggy Netty" Margin="20,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" UseLayoutRounding="True" Padding="6,5,5,5" Grid.ColumnSpan="2" FontSize="30" FontFamily="Segoe UI Historic"/>
+        <TextBox x:Name="username_textbox" Grid.ColumnSpan="2" Margin="20,5,20,10" Grid.Row="2" TextWrapping="Wrap" VerticalContentAlignment="Center" Padding="5"/>
+        <PasswordBox x:Name="password_textbox" Grid.ColumnSpan="2" Margin="20,5,20,10" Grid.Row="4" VerticalContentAlignment="Center" Padding="5"/>
+        <Image Grid.Column="2" Margin="5" Grid.RowSpan="8" Grid.ColumnSpan="2" Source="Content/deusvulttransparent.png" Stretch="Uniform"  />
+        <Popup x:Name="Error_Popup" IsOpen="False" PlacementTarget="{Binding ElementName=username, Mode=OneWay}" PopupAnimation="Fade" AllowsTransparency="True" StaysOpen="False" Grid.Row="5" Grid.RowSpan="3" Grid.ColumnSpan="2" Margin="20,5" ClipToBounds="True" UseLayoutRounding="True" HorizontalAlignment="Center" VerticalAlignment="Center" Placement="Relative" VerticalOffset="250" HorizontalOffset="20">
+            <TextBlock x:Name="Error_Popup_Label" Background="#FFFF005C" Text="Username already exists" TextAlignment="Left" Padding="5" TextWrapping="Wrap" VerticalAlignment="Top" Width="275.2" UseLayoutRounding="True" Foreground="White" LineHeight="6" FontStyle="Italic"/>
+        </Popup>
+        <Label Content="Confirm password" Margin="20,0" VerticalContentAlignment="Bottom" UseLayoutRounding="False" Grid.Row="4" Padding="0" Grid.RowSpan="2"/>
+        <PasswordBox x:Name="password_confirm_textbox" Grid.ColumnSpan="2" Margin="20,5,20,10" Grid.Row="6" VerticalContentAlignment="Center" Padding="5"/>
+    </Grid>
+</Page>
