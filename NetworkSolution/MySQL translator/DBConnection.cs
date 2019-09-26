@@ -2,6 +2,7 @@
 using MySql.Data;
 using System;
 using System.Collections.Generic;
+using GlobalVariablesLib;
 
 namespace MySQL_translator
 {
@@ -149,7 +150,7 @@ namespace MySQL_translator
         /// SELECT user_id, password_hash FROM users WHERE user_id = _user_id
         /// </summary>
         /// <param name="_user_id"></param>
-        public User Select (User _user) {
+        public UserModel Select (UserModel _user) {
             using (MySqlConnection connection = CreateConnection()) {
                 try {
                     connection.Open();
@@ -170,16 +171,16 @@ namespace MySQL_translator
                         createdAt = DateTimeOffset.Parse(reader [ "created_at" ].ToString());
                     }
                     if (!string.IsNullOrEmpty(userID))
-                        return new User() { UserID = userID, PswdHash = userPass, CreatedAt = createdAt, RequestType = GlobalVariablesLib.RequestTypes.Get_User, RequestStatus = GlobalVariablesLib.RequestStatus.Success };
+                        return new UserModel() { UserID = userID, PswdHash = userPass, CreatedAt = createdAt, RequestType = GlobalVariablesLib.RequestTypes.Get_User, Status = GlobalVariablesLib.RequestStatus.Success };
 
                     else {
                         Console.WriteLine("User with ID " + _user.UserID + " does not exist, or couldn't be found");
-                        return new User() { UserID = _user.UserID, RequestType = GlobalVariablesLib.RequestTypes.Get_User, RequestStatus = GlobalVariablesLib.RequestStatus.DoesNotExist };
+                        return new UserModel() { UserID = _user.UserID, RequestType = GlobalVariablesLib.RequestTypes.Get_User, Status = GlobalVariablesLib.RequestStatus.DoesNotExist };
                     }
                 }
                 catch (Exception e) {
                     Console.WriteLine("ERROR: " + e.Message);
-                    return new User() { UserID = _user.UserID, RequestType = GlobalVariablesLib.RequestTypes.Get_User, RequestStatus = GlobalVariablesLib.RequestStatus.ConnectionError };
+                    return new UserModel() { UserID = _user.UserID, RequestType = GlobalVariablesLib.RequestTypes.Get_User, Status = GlobalVariablesLib.RequestStatus.ConnectionError };
                 }
             }
         }
@@ -226,7 +227,7 @@ namespace MySQL_translator
         /// </summary>
         /// <param name="_user"></param>
         /// <returns></returns>
-        public User Insert (User _user) {
+        public UserModel Insert (UserModel _user) {
             using (MySqlConnection connection = CreateConnection()) {
                 try {
                     connection.Open();
@@ -241,16 +242,16 @@ namespace MySQL_translator
                     try {
                         int rowsAffected = command.ExecuteNonQuery();
                         Console.WriteLine("User " + _user.UserID + " inserted");
-                        return new User() { UserID = _user.UserID, PswdHash = _user.PswdHash, RequestType = GlobalVariablesLib.RequestTypes.Create_User, RequestStatus = GlobalVariablesLib.RequestStatus.Success };
+                        return new UserModel() { UserID = _user.UserID, PswdHash = _user.PswdHash, RequestType = GlobalVariablesLib.RequestTypes.Create_User, Status = GlobalVariablesLib.RequestStatus.Success };
                     }
                     catch (Exception e) {
                         Console.WriteLine("ERROR: " + e.Message);
-                        return new User() { UserID = _user.UserID, PswdHash = _user.PswdHash, RequestType = GlobalVariablesLib.RequestTypes.Create_User, RequestStatus = GlobalVariablesLib.RequestStatus.AlreadyExists };
+                        return new UserModel() { UserID = _user.UserID, PswdHash = _user.PswdHash, RequestType = GlobalVariablesLib.RequestTypes.Create_User, Status = GlobalVariablesLib.RequestStatus.AlreadyExists };
                     }
                 }
                 catch (Exception e) {
                     Console.WriteLine("ERROR: " + e.Message);
-                    return new User() { UserID = _user.UserID, PswdHash = _user.PswdHash, RequestType = GlobalVariablesLib.RequestTypes.Create_User, RequestStatus = GlobalVariablesLib.RequestStatus.ConnectionError };
+                    return new UserModel() { UserID = _user.UserID, PswdHash = _user.PswdHash, RequestType = GlobalVariablesLib.RequestTypes.Create_User, Status = GlobalVariablesLib.RequestStatus.ConnectionError };
                 }
             }
         }

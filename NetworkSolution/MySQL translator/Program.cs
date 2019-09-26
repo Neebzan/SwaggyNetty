@@ -6,6 +6,7 @@ using System.Messaging;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using GlobalVariablesLib;
 
 namespace MySQL_translator
 {
@@ -18,7 +19,6 @@ namespace MySQL_translator
             mQHandler.NewInputRecieved += InputRecieved;
 
             SetupDBConnection();
-
             ConsoleInputLoop();
         }
 
@@ -31,7 +31,7 @@ namespace MySQL_translator
         }
 
         private static void InputRecieved (object sender, InputRecievedEventArgs e) {
-            User newUser = null;
+            UserModel newUser = null;
 
             switch (e.requestType) {
                 case GlobalVariablesLib.RequestTypes.Get_User:
@@ -51,7 +51,7 @@ namespace MySQL_translator
         }
 
         private static void ConsoleInputLoop () {
-            User newUser = null;
+            UserModel newUser = null;
 
             while (true) {
 
@@ -71,9 +71,9 @@ namespace MySQL_translator
                         Console.Write("user_id: ");
                         user_id = Console.ReadLine();
 
-                        newUser = DBConnection.Instance().Select(new User() { UserID = user_id });
+                        newUser = DBConnection.Instance().Select(new UserModel() { UserID = user_id });
 
-                        if (newUser.RequestStatus == GlobalVariablesLib.RequestStatus.Success) {
+                        if (newUser.Status == GlobalVariablesLib.RequestStatus.Success) {
                             Console.WriteLine("UserID: {0}, PswdHash: {1}, CreatedAt: {2}", newUser.UserID, newUser.PswdHash, newUser.CreatedAt);
                         }
                         break;
@@ -88,9 +88,9 @@ namespace MySQL_translator
                         Console.Write("password_hash: ");
                         password_hash = Console.ReadLine();
 
-                        newUser = DBConnection.Instance().Insert(new User() { UserID = user_id, PswdHash = password_hash });
+                        newUser = DBConnection.Instance().Insert(new UserModel() { UserID = user_id, PswdHash = password_hash });
                         
-                        if (newUser.RequestStatus == GlobalVariablesLib.RequestStatus.Success) {
+                        if (newUser.Status == GlobalVariablesLib.RequestStatus.Success) {
                             Console.WriteLine("UserID: {0}, PswdHash: {1}", newUser.UserID, newUser.PswdHash);
                         }
                         
