@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GlobalVariablesLib
 {
-    public enum TokenResponse { Valid, Invalid, Created }
+    public enum TokenResponse { Valid, Invalid, Created, Unauthorized }
     public enum TokenRequestType { VerifyToken, CreateToken }
     public enum RequestTypes { Get_User, Create_User, Update_User, Delete_User, Response }
     public enum RequestStatus { Success, AlreadyExists, DoesNotExist, ConnectionError }

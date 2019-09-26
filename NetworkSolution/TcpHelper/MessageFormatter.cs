@@ -5,18 +5,21 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TcpHelper {
-    public static class MessageFormatter {
+namespace TcpHelper
+{
+    public static class MessageFormatter
+    {
 
         /// <summary>
         /// Takes in a string, converts to byte array, adds a integer header before message, which value is the length of the byte message. Then returns the full package
         /// </summary>
         /// <param name="_message"></param>
         /// <returns></returns>
-        public static byte [ ] MessageBytes (string _message) {
-            byte [ ] packageData = System.Text.Encoding.ASCII.GetBytes(_message);
+        public static byte[] MessageBytes(string _message)
+        {
+            byte[] packageData = System.Text.Encoding.ASCII.GetBytes(_message);
 
-            byte [ ] totalPackage = AddSizeHeaderToPackage(packageData);
+            byte[] totalPackage = AddSizeHeaderToPackage(packageData);
 
             return totalPackage;
         }
@@ -27,23 +30,25 @@ namespace TcpHelper {
         /// <typeparam name="T">The type of object to JSON serialize</typeparam>
         /// <param name="obj">The object to serialize as a message</param>
         /// <returns></returns>
-        public static byte [ ] MessageBytes<T> (T obj) {
+        public static byte[] MessageBytes<T>(T obj)
+        {
             string packageJson = Newtonsoft.Json.JsonConvert.SerializeObject(obj);
             string msg = packageJson;
             //Convert to JSON
-            byte [ ] packageData = System.Text.Encoding.ASCII.GetBytes(msg);
+            byte[] packageData = System.Text.Encoding.ASCII.GetBytes(msg);
 
-            byte [ ] totalPackage = AddSizeHeaderToPackage(packageData);
+            byte[] totalPackage = AddSizeHeaderToPackage(packageData);
 
             return totalPackage;
         }
 
 
-        private static byte [ ] AddSizeHeaderToPackage (byte [ ] _package) {
+        private static byte[] AddSizeHeaderToPackage(byte[] _package)
+        {
             //Create a uint containing the length of the package, and encode to byte array
             int pckLen = _package.Length;
-            byte [ ] packageHeader = BitConverter.GetBytes(pckLen);
-            byte [ ] totalPackage = new byte [ packageHeader.Length + _package.Length ];
+            byte[] packageHeader = BitConverter.GetBytes(pckLen);
+            byte[] totalPackage = new byte[packageHeader.Length + _package.Length];
             //Merge byte arrays
             System.Buffer.BlockCopy(packageHeader, 0, totalPackage, 0, packageHeader.Length);
             System.Buffer.BlockCopy(_package, 0, totalPackage, packageHeader.Length, _package.Length);
@@ -56,28 +61,61 @@ namespace TcpHelper {
         /// </summary>
         /// <param name="stream"></param>
         /// <returns></returns>
-        public static string ReadMessage (NetworkStream stream) {
+        public static string ReadMessage(NetworkStream stream)
+        {
             string msg = string.Empty;
 
-            byte [ ] readBuffer = new byte [ 4 ];
+            byte[] readBuffer = new byte[4];
 
             int packagesRead = 0;
-            while (stream.DataAvailable && packagesRead < 8) {
+            while (stream.DataAvailable && packagesRead < 8)
+            {
                 int bytesRead = 0;
 
-                while (bytesRead < 4) {
+                while (bytesRead < 4)
+                {
                     bytesRead += stream.Read(readBuffer, bytesRead, 4 - bytesRead);
                 }
 
                 bytesRead = 0;
-                byte [ ] buffer = new byte [ BitConverter.ToInt32(readBuffer, 0) ];
+                byte[] buffer = new byte[BitConverter.ToInt32(readBuffer, 0)];
 
-                while (bytesRead < buffer.Length) {
+                while (bytesRead < buffer.Length)
+                {
                     bytesRead += stream.Read(buffer, bytesRead, buffer.Length - bytesRead);
                 }
                 msg = System.Text.Encoding.UTF8.GetString(buffer);
             }
             return msg;
+        }
+
+        public static bool Connected(TcpClient tcpClient)
+        {
+            try
+            {
+                if (tcpClient.Client != null && tcpClient.Client.Connected)
+                {
+                    if (tcpClient.Client.Poll(0, SelectMode.SelectRead))
+                    {
+                        byte[] buff = new byte[1];
+
+                        if (tcpClient.Client.Receive(buff, SocketFlags.Peek) == 0)
+                        {
+                            return false;
+                        }
+
+                        return true;
+                    }
+
+                    return true;
+                }
+
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

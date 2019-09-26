@@ -7,6 +7,10 @@ using MSMQHelperUtilities;
 using GlobalVariablesLib;
 using System.Messaging;
 using JWTlib;
+using System.Net.Sockets;
+using TcpHelper;
+using System.Net;
+using System.Threading;
 
 namespace TestProject
 {
@@ -17,27 +21,68 @@ namespace TestProject
         static MessageQueue beaconResponseMQ = MSMQHelper.CreateMessageQueue(GlobalVariables.BEACON_RESPONSE_QUEUE_NAME);
         static MessageQueue testMQ = MSMQHelper.CreateMessageQueue(GlobalVariables.TEST_QUEUE_NAME);
 
+        static string token = string.Empty;
 
         static void Main(string[] args)
         {
-            Console.WriteLine("1. Request new JWT Token");
-            ConsoleKey key = Console.ReadKey().Key;
+            bool exit = false;
+            TcpClient beaconClient = null;
 
-            switch(key)
-            {
-                case ConsoleKey.D1:
-                    {
-                        RequestJWTToken();
-                        break;
-                    }
+            while (!exit)
+            {                
+                Console.WriteLine("1. Request new JWT Token");
+                Console.WriteLine("2. Connect to TokenSystem - Tcp");
+                if (beaconClient == null)
+                    Console.WriteLine("3. Connect to beacon - Tcp");
+                else
+                    Console.WriteLine("3. Disconnect from beacon - Tcp");
+                Console.WriteLine("Esc to quit");
+                ConsoleKey key = Console.ReadKey().Key;
+
+                switch (key)
+                {
+                    case ConsoleKey.D1:
+                        {
+                            Console.Clear();
+                            RequestJWTToken();
+                            break;
+                        }
+                    case ConsoleKey.D2:
+                        {
+                            Console.Clear();
+                            ConnectoToTokenSystemTcp();
+                            break;
+                        }
+                    case ConsoleKey.D3:
+                        {
+                            Console.Clear();
+                            if (beaconClient == null)
+                            {
+                                Console.WriteLine("Trying to connect");
+                                beaconClient = new TcpClient("127.0.0.1", GlobalVariables.BEACON_PORT);
+                                Console.WriteLine("Connected to beacon");
+                            }
+                            else
+                            {
+                                beaconClient.Close();
+                                beaconClient.Dispose();
+                                beaconClient = null;
+                            }
+                            break;
+                        }
+                    case ConsoleKey.Escape:
+                        {
+                            exit = true;
+                            break;
+                        }
+                }
+
             }
-
-            Console.ReadKey();
         }
 
         static void RequestJWTToken()
         {
-            Console.WriteLine("Username:");
+            Console.Write("Username:");
             string username = Console.ReadLine();
             UserModel userModel = new UserModel() { UserID = username };
 
@@ -48,7 +93,7 @@ namespace TestProject
             Message msg = MSMQHelper.ReceiveMessage(testMQ);
             msg.Formatter = new JsonMessageFormatter();
 
-            string token = MSMQHelper.GetMessageBody<string>(msg);
+            token = MSMQHelper.GetMessageBody<string>(msg);
 
             JWTPayload payload = JWTManager.GetModelFromToken<JWTPayload>(token);
 
@@ -64,6 +109,72 @@ namespace TestProject
             {
                 Console.WriteLine(item.IP + ":" + item.Port);
             }
+
+        }
+
+        static void ConnectoToTokenSystemTcp()
+        {
+            Console.WriteLine("Trying to connect");
+            TcpClient client = new TcpClient("127.0.0.1", GlobalVariables.TOKENSYSTEM_PORT);
+            Console.WriteLine("Connected to token system");
+            bool exit = false;
+            while (!exit)
+            {
+                Console.WriteLine("1. Send invalid token");
+                if (token != string.Empty)
+                    Console.WriteLine("2. Send valid token");
+                else
+                {
+                    Console.WriteLine("2. Request a new token");
+                }
+                Console.WriteLine("Escape to go back");
+                ConsoleKey key = Console.ReadKey().Key;
+                switch (key)
+                {
+                    case ConsoleKey.D1:
+                        {
+                            Console.Clear();
+                            byte[] data = MessageFormatter.MessageBytes("Invalid token");
+                            client.GetStream().Write(data, 0, data.Length);
+                            Console.WriteLine("Invalid token sent to TokenSystem");
+                            Console.WriteLine("Awaiting response");
+                            Thread.Sleep(200);
+                            string txt = string.Empty;
+
+                            txt = MessageFormatter.ReadMessage(client.GetStream());
+                            //Enum.TryParse(MessageFormatter.ReadMessage(client.GetStream()), out response);
+                            Console.WriteLine("Response received: {0}", txt);
+                            break;
+                        }
+                    case ConsoleKey.D2:
+                        {
+                            Console.Clear();
+                            if (token == string.Empty)
+                                RequestJWTToken();
+                            else
+                            {
+                                byte[] data = MessageFormatter.MessageBytes(token);
+                                client.GetStream().Write(data, 0, data.Length);
+                                Console.WriteLine("Valid token sent to TokenSystem");
+                                Console.WriteLine("Awaiting response");
+                                Thread.Sleep(200);
+                                string txt = string.Empty;
+
+                                txt = MessageFormatter.ReadMessage(client.GetStream());
+                                //Enum.TryParse(MessageFormatter.ReadMessage(client.GetStream()), out response);
+                                Console.WriteLine("Response received: {0}", txt);
+                            }
+                            break;
+                        }
+                    case ConsoleKey.Escape:
+                        {
+                            Console.Clear();
+                            exit = true;
+                            break;
+                        }
+                }
+            }
+
 
         }
     }
