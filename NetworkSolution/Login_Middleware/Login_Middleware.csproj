@@ -36,8 +36,8 @@
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -65,7 +65,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="JsonMessageFormatter.cs" />
     <Compile Include="Json_Obj.cs" />
     <Compile Include="Middleware_Client.cs" />
     <Compile Include="Middleware_Main.cs" />
@@ -77,6 +76,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GlobalVariablesLib\GlobalVariablesLib.csproj">
+      <Project>{fa66e8ef-4684-4487-94cf-042a955f904d}</Project>
+      <Name>GlobalVariablesLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MSMQHelper\MSMQHelperUtilities.csproj">
+      <Project>{33dfe7ee-dd0d-47c8-ab86-0b62a35ecec0}</Project>
+      <Name>MSMQHelperUtilities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TcpHelper\TcpHelper.csproj">
       <Project>{812fcb5e-7617-4944-aee9-7a2935e952c8}</Project>
       <Name>TcpHelper</Name>

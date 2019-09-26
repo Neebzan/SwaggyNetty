@@ -11,6 +11,7 @@ using MSMQHelperUtilities;
 using TcpHelper;
 using System.IO;
 using System.Threading;
+using GlobalVariablesLib;
 
 namespace Login_Middleware
 {
@@ -25,20 +26,17 @@ namespace Login_Middleware
         private NetworkStream stream;
         private bool isAlive;
 
+
         public Middleware_Client(TcpClient client)
         {
             Console.WriteLine("Middleware_Client Created!");
 
             isAlive = true;
-            if (!MessageQueue.Exists(".\\private$\\TestQueue"))
-            {
-                MessageQueue.Create(".\\private$\\TestQueue");
-            }
             // Sets the correct queue for the client to send and recieve from
-            databaseRequestQueue = new MessageQueue(".\\private$\\TestQueue");
-            databaseResponseQueue = new MessageQueue(".\\private$\\TestQueue");
-            tokenRequestQueue = new MessageQueue(".\\private$\\QueueName");
-            tokenResponseQueue = new MessageQueue(".\\private$\\QueueName");
+            databaseRequestQueue = MSMQHelper.CreateMessageQueue(GlobalVariables.DATABASE_CONSUMER_QUEUE_NAME);
+            databaseResponseQueue = MSMQHelper.CreateMessageQueue(GlobalVariables.DATABASE_PRODUCER_QUEUE_NAME);
+            tokenRequestQueue = MSMQHelper.CreateMessageQueue(GlobalVariables.TOKEN_INPUT_QUEUE_NAME);
+            tokenResponseQueue = MSMQHelper.CreateMessageQueue(GlobalVariables.TOKEN_RESPONSE_QUEUE_NAME);
 
 
 
@@ -65,12 +63,21 @@ namespace Login_Middleware
 
                 string data = MessageFormatter.ReadMessage(stream);
 
-                Console.WriteLine("{0} Received: {1}\nAttempting To Convert To Json Object", this.ToString(), data);
+                // Console info when recieveing data.
+                {
+                    Console.WriteLine
+                        ("_______________________________\n" +
+                        "Received: {0}\nAttempting To Convert To Json Object" +
+                        "\n_______________________________", data);
+                }
+
+                // Tries to convert recieved data to an object.
                 try
                 {
+                    // Deserialises to local obj
                     user_obj = DeserializeRequest(data);
 
-                    // Queues request from client to db
+                    // Queues request from client to db with object, containing recieved data from client
                     QueueRequest(user_obj);
                 }
                 catch (Exception e)
@@ -124,6 +131,29 @@ namespace Login_Middleware
             }
         }
 
+        private string HandleError(Json_Obj ErrorObject)
+        {
+            string errorMessage = "";
+            switch (ErrorObject.Status)
+            {
+                case Json_Obj.RequestStatus.Success:
+                    errorMessage = "Wrong Username or Password";
+                    break;
+                case Json_Obj.RequestStatus.AlreadyExists:
+                    break;
+                case Json_Obj.RequestStatus.DoesNotExist:
+                    errorMessage = "Wrong Username or Password";
+                    break;
+                case Json_Obj.RequestStatus.ConnectionError:
+                    errorMessage = "Connection Error!";
+                    break;
+                default:
+                    errorMessage = "Unexpected Failure!";
+                    break;
+            }
+            return errorMessage;
+        }
+
 
         private Message RequestToken(Json_Obj databaseMessageObj)
         {
@@ -140,9 +170,10 @@ namespace Login_Middleware
 
             switch (userImputData.RequestType)
             {
+                /// Case: Requests User information from the Database, based on recieved user data
                 case Json_Obj.RequestTypes.Get_User:
 
-                    // Setup DB request
+                    // Setup DB request message
                     Message getRequest = new Message()
                     {
                         Body = userImputRequestString,
@@ -169,6 +200,7 @@ namespace Login_Middleware
                     // Wait for response
                     while (!success)
                     {
+                        // Peeks top of queue, and only when it's the right pulls it from the queue;
                         if (databaseResponseQueue.Peek().Label == userImputData.UserID)
                         {
 
@@ -184,26 +216,11 @@ namespace Login_Middleware
                             }
                             else
                             {
-                                string errorMessage = "";
-                                switch (dataBaseResponseObj.Status)
-                                {
-                                    case Json_Obj.RequestStatus.Success:
-                                        errorMessage = "Wrong Username or Password";
-                                        break;
-                                    case Json_Obj.RequestStatus.DoesNotExist:
-                                        errorMessage = "Wrong Username or Password";
-                                        break;
-                                    case Json_Obj.RequestStatus.ConnectionError:
-                                        errorMessage = "Connection Error!";
-                                        break;
-                                    default:
-                                        errorMessage = "Unexpected Failure!";
-                                        break;
-                                }
+                                
                                 // Json client response setup
                                 Json_Obj response = new Json_Obj()
                                 {
-                                    Message = $"ERROR: {errorMessage}.\n Please Try again",
+                                    Message = $"ERROR: {HandleError(dataBaseResponseObj)}.\n Please Try again",
                                     RequestType = Json_Obj.RequestTypes.Error,
                                     Status = dataBaseResponseObj.Status
                                 };
@@ -226,23 +243,31 @@ namespace Login_Middleware
                         }
                     }
                     break;
+
+                /// Case: Requests Create call on data base, based on recieved user data
                 case Json_Obj.RequestTypes.Create_User:
-                    // Setup DB request
+
+                    // Setup of DB request message
                     Message createRequest = new Message()
                     {
                         Body = userImputRequestString,
                         Label = userImputData.UserID,
                         Formatter = new JsonMessageFormatter()
                     };
-                    // Send DB request
-                    Console.WriteLine("Queing Request...");
+
+                    // Sending DB request message to message queue
+                    // Debug Message
+                    Console.WriteLine("Queing Create Request...");
                     databaseRequestQueue.Send(createRequest);
+
+                    /// Client Response Message
                     {
                         // Json client response setup
                         Json_Obj response = new Json_Obj()
                         {
                             Message = $"Signup Request For: [ {userImputData.UserID} ], Sent to Database",
-                            RequestType = Json_Obj.RequestTypes.Response
+                            RequestType = Json_Obj.RequestTypes.Response,
+                            Status = Json_Obj.RequestStatus.Success
                         };
 
                         // Get bytes from data (string)
@@ -250,6 +275,7 @@ namespace Login_Middleware
                         //sends message to client
                         stream.Write(msg, 0, msg.Length);
                     }
+
 
 
 
