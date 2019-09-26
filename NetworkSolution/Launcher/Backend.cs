@@ -8,21 +8,28 @@ using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Launcher {
     public static class Backend {
 
-        private static string middlewareIP = "127.0.0.1";
-        private static int middlewarePort = 420;
+        private static string middlewareIP = "10.131.69.129";
+        private static int middlewarePort = 13005;
         
 
         public static async Task SendLoginCredentials (string username, SecureString password) {
-            TcpClient client = new TcpClient(middlewareIP, middlewarePort);
+            TcpClient client = new TcpClient();
 
             string unsecurePassword = ConvertToUnsecureString(password);
             string hashedPassword = GetPasswordHash(unsecurePassword);
 
             await client.ConnectAsync(middlewareIP, middlewarePort);
+
+            GlobalVariablesLib.UserModel user = new GlobalVariablesLib.UserModel() { UserID = username, PswdHash = hashedPassword, RequestType = GlobalVariablesLib.RequestTypes.Get_User };
+
+            byte[] msg = TcpHelper.MessageFormatter.MessageBytes<GlobalVariablesLib.UserModel>(user);
+
+            client.GetStream().Write(msg, 0, msg.Length);
         }
 
         private static string GetPasswordHash (string password) {
@@ -47,6 +54,22 @@ namespace Launcher {
             }
             finally {
                 Marshal.ZeroFreeGlobalAllocUnicode(unmanagedString);
+            }
+        }
+
+        private static void ReadForAnswer () {
+            //TcpHelper.MessageFormatter.ReadForMessages(new NetworkStre));
+        }
+
+        public static bool CheckPassUniformity (SecureString _password, SecureString _confirmPass) {
+            string pass = ConvertToUnsecureString(_password);
+            string confirmPass = ConvertToUnsecureString(_confirmPass);
+
+            if (pass == confirmPass) {
+                return true;
+            }
+            else {
+                return false;
             }
         }
     }

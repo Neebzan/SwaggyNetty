@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -20,21 +21,12 @@ namespace Launcher {
     /// </summary>
     public partial class MainWindow : Window {
 
-        TextBox usernameBox;
-        PasswordBox passwordBox;
-
         public MainWindow () {
             InitializeComponent();
 
-            usernameBox = username_textbox;
-            passwordBox = password_textbox;
+            this.Content = new LoginPage();            
         }
 
-        private async void Button_Click (object sender, RoutedEventArgs e) {
-            SecureString password = passwordBox.SecurePassword;
-            string username = usernameBox.Text;
-
-            await Backend.SendLoginCredentials(username, password);
-        }
+      
     }
 }

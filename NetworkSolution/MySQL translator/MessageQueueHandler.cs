@@ -5,6 +5,7 @@ using System.Linq;
 using System.Messaging;
 using System.Text;
 using System.Threading.Tasks;
+using GlobalVariablesLib;
 
 namespace MySQL_translator
 {
@@ -12,7 +13,7 @@ namespace MySQL_translator
     public class InputRecievedEventArgs : EventArgs
     {
         public GlobalVariablesLib.RequestTypes requestType { get; set; }
-        public User User { get; set; }
+        public UserModel User { get; set; }
     }
 
     public class MessageQueueHandler
@@ -51,7 +52,7 @@ namespace MySQL_translator
             Console.WriteLine("Message recieved: " + m.Body);
 
             try {
-                User user = Newtonsoft.Json.JsonConvert.DeserializeObject<User>(m.Body.ToString());
+                UserModel user = Newtonsoft.Json.JsonConvert.DeserializeObject<UserModel>(m.Body.ToString());
                 GlobalVariablesLib.RequestTypes requestType = GlobalVariablesLib.RequestTypes.Get_User;
 
                 switch (user.RequestType) {
@@ -78,7 +79,7 @@ namespace MySQL_translator
         /// Pushes a message to the producer queue
         /// </summary>
         /// <param name="_user"></param>
-        public void PushProducerQueue (User _user) {
+        public void PushProducerQueue (UserModel _user) {
             Message msg = new Message(Newtonsoft.Json.JsonConvert.SerializeObject(_user));
             msg.Label = _user.UserID;
             MSMQHelperUtilities.MSMQHelper.SendMessage(producerQueue, msg);
