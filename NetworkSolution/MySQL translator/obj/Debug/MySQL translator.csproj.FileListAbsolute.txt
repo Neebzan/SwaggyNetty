@@ -54,3 +54,7 @@ D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\obj\Debug\MySQL tran
 D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\obj\Debug\MySQL translator.csproj.CopyComplete
 D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\obj\Debug\MySQL translator.exe
 D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\obj\Debug\MySQL translator.pdb
+D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\MySql.Data.dll
+D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\Google.Protobuf.dll
+D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\BouncyCastle.Crypto.dll
+D:\GithubRepos\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\MySql.Data.xml
