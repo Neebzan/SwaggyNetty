@@ -11,24 +11,22 @@ public class ChatClient : MonoBehaviour
     NetworkStream stream;
     TcpClient client;
     Task task;
-
-
-
-
+    ChatSystem chatSystem;
 
     // Start is called before the first frame update
     void Start()
     {
+        chatSystem = gameObject.GetComponent<ChatSystem>();
 
         int port = 13001;
         string IpAdress = "127.0.0.1";
         client = new TcpClient(IpAdress, port);
-        client.NoDelay = true;
+        //client.NoDelay = true;
         Debug.Log("Connected?");
 
-        stream = client.GetStream();
+        //stream = client.GetStream();
         StartCoroutine(ListenToServer());
-        // task = Task.Factory.StartNew(ListenToServer, TaskCreationOptions.LongRunning);
+        //task = Task.Factory.StartNew(ListenToServer, TaskCreationOptions.LongRunning);
 
     }
 
@@ -72,8 +70,8 @@ public class ChatClient : MonoBehaviour
 
     public void Message(string msg)
     {
-        TCPHelper.MessageBytes(msg);
-
+        byte[] data = TCPHelper.MessageBytes(msg);
+        client.GetStream().Write(data, 0, data.Length);
 
         Debug.Log("Sent: " + msg);
     }
@@ -81,19 +79,24 @@ public class ChatClient : MonoBehaviour
     public IEnumerator ListenToServer()
     {
         Debug.Log("ListenToServer Started");
+
         while (true)
         {
-
-            string packet = TCPHelper.ReadMessage(stream);
-            if (packet != "")
+            if (client.GetStream().DataAvailable)
             {
-
-                Debug.Log("Read: " + packet);
+                string packetString = TCPHelper.ReadMessage(client.GetStream());
+                ChatDataPackage packet = JsonUtility.FromJson<ChatDataPackage>(packetString);
+                foreach (var item in packet.ChatDataPackages)
+                {
+                    chatSystem.SendMessageToChat(item.Message, Messages.messageTypeColor.playerMessage);
+                    //Debug.Log("Read: " + packet);
+                }
             }
-
             yield return null;
         }
 
 
     }
+
 }
+

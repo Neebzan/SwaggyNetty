@@ -18,7 +18,7 @@ public class ChatSystem : MonoBehaviour
 
 
     [SerializeField]
-    private List<Messages> chatHistory = new List<Messages>();
+    public List<Messages> chatHistory = new List<Messages>();
 
     
 
@@ -50,7 +50,7 @@ public class ChatSystem : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Return))
             {
-                SendMessageToChat(chatBox.text, Messages.messageTypeColor.playerMessage);
+                //SendMessageToChat(chatBox.text, Messages.messageTypeColor.playerMessage);
                 try
                 {
                     //cClient.SendMessage(chatBox.text, Messages.messageTypeColor.info); 

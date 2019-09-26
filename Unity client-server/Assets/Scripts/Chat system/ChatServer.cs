@@ -11,16 +11,19 @@ public class ChatServer : MonoBehaviour
 
     public const char MESSAGE_TYPE_INDICATOR = '?';
     public const int SERVER_PORT = 13001;
-    public static IPAddress iPAd = IPAddress.Parse("10.131.69.158");
     public static ConcurrentQueue<TcpClient> tcpClients = new ConcurrentQueue<TcpClient>();
     public static List<ChatServerClient> Clients = new List<ChatServerClient>();
     static TcpListener listener = new TcpListener(IPAddress.Any, SERVER_PORT);
+
+    public Chat chatGUI;
+
+    public static ChatDataPackage tickMessages = new ChatDataPackage();
 
     public static uint PlayersConnected;
     // Start is called before the first frame update
     void Start()
     {
-        
+       
     }
 
     // Update is called once per frame
@@ -30,13 +33,13 @@ public class ChatServer : MonoBehaviour
 
     void Update()
     {
-        SendString();
+        SendToAll();
     }
 
-    public  string GetLocalIPAddress()
+    public string GetLocalIPAddress()
     {
         var host = Dns.GetHostEntry(Dns.GetHostName());
-       
+
         foreach (var ip in host.AddressList)
         {
             if (ip.AddressFamily == AddressFamily.InterNetwork)
@@ -60,34 +63,29 @@ public class ChatServer : MonoBehaviour
 
     public static void Disconnect(ChatServerClient disconnectedClient)
     {
-        
-            Clients.Remove(disconnectedClient);   
-
+        Clients.Remove(disconnectedClient);
     }
 
-
-
-    public static byte[] AddSizeHeaderToPackage(byte[] package)
+    public void SendToAll()
     {
-        //Create a uint containing the length of the package, and encode to byte array
-        int pckLen = package.Length;
-        byte[] packageHeader = BitConverter.GetBytes(pckLen);
-        byte[] totalPackage = new byte[packageHeader.Length + package.Length];
-        //Merge byte arrays
-        System.Buffer.BlockCopy(packageHeader, 0, totalPackage, 0, packageHeader.Length);
-        System.Buffer.BlockCopy(package, 0, totalPackage, packageHeader.Length, package.Length);
-
-        return totalPackage;
-    }
-
-    public void SendString()
-    {
-        for (int i = 0; i < Clients.Count; i++)
+        if (tickMessages.ChatDataPackages.Count > 0)
         {
-           byte[] mes =  TCPHelper.MessageBytes("oh no");
-            Clients[i].SendToClient(mes);
+            //DEBUG
+            if (chatGUI != null)
+                foreach (var item in tickMessages.ChatDataPackages)
+                {
+                    chatGUI.chatHistorie.Add(item.Message);
+                }
+
+
+            byte[] mes = TCPHelper.MessageBytes(tickMessages);
+            for (int i = 0; i < Clients.Count; i++)
+            {
+                Clients[i].SendToClient(mes);
+            }
+            tickMessages.ChatDataPackages.Clear();
         }
     }
-   
- 
+
+
 }

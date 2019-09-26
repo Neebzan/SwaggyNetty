@@ -12,18 +12,18 @@ public class ChatServerClient : MonoBehaviour
     public List<KeyCode> ActiveInputs = new List<KeyCode>();
     NetworkStream networkStream;
     bool isDisconnecting = false;
-    
-    
+
+
 
     public ChatServerClient(TcpClient _tcpClient)
     {
         tcpClient = _tcpClient;
-      
+
         networkStream = tcpClient.GetStream();
         tcpClient.NoDelay = true;
-        
-        ChatServer.Clients.Add(this);        
-       
+
+        ChatServer.Clients.Add(this);
+
     }
 
     // skal modtage besked. og sende den videre.
@@ -35,14 +35,16 @@ public class ChatServerClient : MonoBehaviour
     /// <returns></returns>
     public IEnumerator ListenForMessages()
     {
-   
-
         while (!isDisconnecting)
         {
             if (Connected)
             {
-                TCPHelper.ReadMessage(networkStream);
-                
+                if (networkStream.DataAvailable)
+                {
+                    string msg = TCPHelper.ReadMessage(networkStream);
+                    ChatServer.tickMessages.ChatDataPackages.Add(new ChatData() { SenderName = "Test", Message = msg });
+                    Debug.Log(msg);
+                }
                 yield return null;
             }
             else
@@ -58,24 +60,25 @@ public class ChatServerClient : MonoBehaviour
         isDisconnecting = true;
         tcpClient.Close();
         ChatServer.Disconnect(this);
+        Debug.Log("Client disconnected");
     }
 
     private void ClientConnected(uint playerID)
     {
-        PositionDataPackage package = new PositionDataPackage()
-        {
-            PlayerID = playerID,
-           
-        };
-        MessageType msgType = MessageType.Connect;
-        string jsonPackage = JsonUtility.ToJson(package);
-        string msg = ((int)msgType).ToString();
-        msg += ChatServer.MESSAGE_TYPE_INDICATOR + jsonPackage;
-        byte[] byteData = System.Text.Encoding.ASCII.GetBytes(msg);
+        //PositionDataPackage package = new PositionDataPackage()
+        //{
+        //    PlayerID = playerID,
 
-        byte[] totalPackage = ChatServer.AddSizeHeaderToPackage(byteData);
+        //};
+        //MessageType msgType = MessageType.Connect;
+        //string jsonPackage = JsonUtility.ToJson(package);
+        //string msg = ((int)msgType).ToString();
+        //msg += ChatServer.MESSAGE_TYPE_INDICATOR + jsonPackage;
+        //byte[] byteData = System.Text.Encoding.ASCII.GetBytes(msg);
 
-        SendToClient(totalPackage);
+        //byte[] totalPackage = ChatServer.AddSizeHeaderToPackage(byteData);
+
+        //SendToClient(totalPackage);
     }
 
 
@@ -116,28 +119,28 @@ public class ChatServerClient : MonoBehaviour
     //skal nok sende til grupper
     void HandleInputMessage(string msg)
     {
-        
+
 
         string[] msgSplit = msg.Split('*');
-        
+
 
 
         for (int i = 0; i < msgSplit.Length; i++)
         {
             string input = msgSplit[i];
-           
-            if(input.Contains("*"))
+
+            if (input.Contains("*"))
             {
 
-            }  
+            }
 
-          
+
         }
     }
 
-    public string recievFromClient()
+    public string ReceiveFromClient()
     {
-         string packetICarry = TCPHelper.ReadMessage(networkStream);
+        string packetICarry = TCPHelper.ReadMessage(networkStream);
         return packetICarry;
     }
 
@@ -145,7 +148,7 @@ public class ChatServerClient : MonoBehaviour
     {
         //StreamWriter writer = new StreamWriter(networkStream);
 
-         //TCPHelper.MessageBytes(data);
+        //TCPHelper.MessageBytes(data);
         networkStream.Write(data, 0, data.Length);
 
     }
