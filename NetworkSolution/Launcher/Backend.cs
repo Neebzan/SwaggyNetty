@@ -25,7 +25,7 @@ namespace Launcher {
 
             await client.ConnectAsync(middlewareIP, middlewarePort);
 
-            GlobalVariablesLib.UserModel user = new GlobalVariablesLib.UserModel() { UserID = username, PswdHash = hashedPassword, RequestType = GlobalVariablesLib.UserModel.RequestTypes.Get_User };
+            GlobalVariablesLib.UserModel user = new GlobalVariablesLib.UserModel() { UserID = username, PswdHash = hashedPassword, RequestType = GlobalVariablesLib.RequestTypes.Get_User };
 
             byte[] msg = TcpHelper.MessageFormatter.MessageBytes<GlobalVariablesLib.UserModel>(user);
 
@@ -54,6 +54,22 @@ namespace Launcher {
             }
             finally {
                 Marshal.ZeroFreeGlobalAllocUnicode(unmanagedString);
+            }
+        }
+
+        private static void ReadForAnswer () {
+            //TcpHelper.MessageFormatter.ReadForMessages(new NetworkStre));
+        }
+
+        public static bool CheckPassUniformity (SecureString _password, SecureString _confirmPass) {
+            string pass = ConvertToUnsecureString(_password);
+            string confirmPass = ConvertToUnsecureString(_confirmPass);
+
+            if (pass == confirmPass) {
+                return true;
+            }
+            else {
+                return false;
             }
         }
     }

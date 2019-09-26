@@ -71,7 +71,7 @@
         <Popup x:Name="Error_Popup" IsOpen="False" PlacementTarget="{Binding ElementName=username, Mode=OneWay}" PopupAnimation="Fade" AllowsTransparency="True" StaysOpen="False" Grid.Row="5" Grid.RowSpan="3" Grid.ColumnSpan="2" Margin="20,5" ClipToBounds="True" UseLayoutRounding="True" HorizontalAlignment="Center" VerticalAlignment="Center" Placement="Relative" VerticalOffset="250" HorizontalOffset="20">
             <TextBlock x:Name="Error_Popup_Label" Background="#FFFF005C" Text="Username already exists" TextAlignment="Left" Padding="5" TextWrapping="Wrap" VerticalAlignment="Top" Width="275.2" UseLayoutRounding="True" Foreground="White" LineHeight="6" FontStyle="Italic"/>
         </Popup>
-        <Label Content="Confirm password" Margin="20,0" VerticalContentAlignment="Bottom" UseLayoutRounding="False" Grid.Row="4" Padding="0" Grid.RowSpan="2"/>
+        <Label Content="Confirm password" Margin="20,0" VerticalContentAlignment="Bottom" UseLayoutRounding="False" Grid.Row="5" Padding="0"/>
         <PasswordBox x:Name="password_confirm_textbox" Grid.ColumnSpan="2" Margin="20,5,20,10" Grid.Row="6" VerticalContentAlignment="Center" Padding="5"/>
     </Grid>
 </Page>
