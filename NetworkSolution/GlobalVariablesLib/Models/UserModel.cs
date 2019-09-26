@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GlobalVariablesLib
 {
-    [Serializable]
+    //[Serializable]
     public class UserModel
     {
         public string UserID { get; set; }

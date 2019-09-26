@@ -66,7 +66,6 @@ C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debu
 C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\MySQL translator.pdb
 C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\GlobalVariablesLib.dll
 C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\MSMQHelperUtilities.dll
-C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\Newtonsoft.Json.dll
 C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\GlobalVariablesLib.pdb
 C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\MSMQHelperUtilities.pdb
 C:\Users\Gesspar\Documents\SwaggyNetty\NetworkSolution\MySQL translator\bin\Debug\Newtonsoft.Json.xml
