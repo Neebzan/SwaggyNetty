@@ -1,10 +1,6 @@
-<<<<<<< HEAD
 .vs/
 *.ide-shm
-NetworkSolution/.vs/NetworkSolution/v15/.suo
 *.ide-wal
 NetworkSolution/.vs/NetworkSolution/v15/.suo
-=======
 NetworkSolution/.vs/NetworkSolution/v16/TestStore/0/000-0000.testlog
 NetworkSolution/.vs/NetworkSolution/v16/TestStore/0/testlog.manifest
->>>>>>> Middleware_Regist_Login_Token_Bjerg
