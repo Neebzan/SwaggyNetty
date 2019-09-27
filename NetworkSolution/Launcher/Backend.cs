@@ -1,6 +1,7 @@
 ﻿using GlobalVariablesLib;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -20,11 +21,11 @@ namespace Launcher
 
         public static UserModel loggedUser { get; private set; }
 
-        //static Backend () {
-        //    loggedUser = new UserModel() {
-        //        UserID = "Nebberen"
-        //    };
-        //}
+        static Backend () {
+            loggedUser = new UserModel() {
+                UserID = "Nebberen"
+            };
+        }
 
 
         public static async Task<bool> SendLoginCredentials (string username, SecureString password) {
@@ -86,6 +87,10 @@ namespace Launcher
             }
 
             return true;
+        }
+
+        public static void LaunchGame () {
+            Process.Start("F:/Steam/steamapps/common/Cube World/cubeworld.exe");
         }
 
         private static string GetPasswordHash (string password) {

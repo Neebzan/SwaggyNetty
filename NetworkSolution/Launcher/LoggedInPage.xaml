@@ -82,7 +82,7 @@
                 </Style>
             </Button.Style>
         </Button>
-        <Button Content="Play" Margin="0,19.6,20,20.4" Grid.Row="8" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Column="2" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" Width="117" Grid.ColumnSpan="2">
+        <Button Content="Play" Margin="0,19.6,20,20.4" Grid.Row="8" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Column="2" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" Width="117" Grid.ColumnSpan="2" Click="Play_Button_Click">
             <Button.Effect>
                 <DropShadowEffect Opacity="0.25"/>
             </Button.Effect>

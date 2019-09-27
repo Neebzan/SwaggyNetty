@@ -24,7 +24,6 @@ namespace Launcher
     /// </summary>
     public partial class LoginPage : Page
     {
-
         TextBox usernameBox;
         PasswordBox passwordBox;
         Popup errorPopup;

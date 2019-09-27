@@ -35,5 +35,8 @@ namespace Launcher
             Application.Current.MainWindow.Content = new LoginPage();
         }
 
+        private void Play_Button_Click (object sender, RoutedEventArgs e) {
+            Backend.LaunchGame();
+        }
     }
 }
