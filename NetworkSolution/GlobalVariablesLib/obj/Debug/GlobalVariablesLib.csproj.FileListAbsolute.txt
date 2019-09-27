@@ -22,3 +22,12 @@ D:\GithubRepos\SwaggyNetty\NetworkSolution\GlobalVariablesLib\obj\Debug\GlobalVa
 D:\GithubRepos\SwaggyNetty\NetworkSolution\GlobalVariablesLib\obj\Debug\GlobalVariablesLib.csproj.CopyComplete
 D:\GithubRepos\SwaggyNetty\NetworkSolution\GlobalVariablesLib\obj\Debug\GlobalVariablesLib.dll
 D:\GithubRepos\SwaggyNetty\NetworkSolution\GlobalVariablesLib\obj\Debug\GlobalVariablesLib.pdb
+F:\Coding projects\SwaggyNetty\NetworkSolution\GlobalVariablesLib\bin\Debug\GlobalVariablesLib.dll
+F:\Coding projects\SwaggyNetty\NetworkSolution\GlobalVariablesLib\bin\Debug\GlobalVariablesLib.pdb
+F:\Coding projects\SwaggyNetty\NetworkSolution\GlobalVariablesLib\bin\Debug\Newtonsoft.Json.dll
+F:\Coding projects\SwaggyNetty\NetworkSolution\GlobalVariablesLib\bin\Debug\Newtonsoft.Json.xml
+F:\Coding projects\SwaggyNetty\NetworkSolution\GlobalVariablesLib\obj\Debug\GlobalVariablesLib.csprojAssemblyReference.cache
+F:\Coding projects\SwaggyNetty\NetworkSolution\GlobalVariablesLib\obj\Debug\GlobalVariablesLib.csproj.CoreCompileInputs.cache
+F:\Coding projects\SwaggyNetty\NetworkSolution\GlobalVariablesLib\obj\Debug\GlobalVariablesLib.csproj.CopyComplete
+F:\Coding projects\SwaggyNetty\NetworkSolution\GlobalVariablesLib\obj\Debug\GlobalVariablesLib.dll
+F:\Coding projects\SwaggyNetty\NetworkSolution\GlobalVariablesLib\obj\Debug\GlobalVariablesLib.pdb

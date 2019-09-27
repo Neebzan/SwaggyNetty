@@ -113,7 +113,7 @@
                 <DropShadowEffect Opacity="0.25"/>
             </PasswordBox.Effect>
         </PasswordBox>
-        <Button Content="back to login" Margin="5,5,20,5" Grid.Row="8" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Click="BackToLogin_Button_Clicked" FontSize="10" BorderThickness="0" Grid.Column="1">
+        <Button Content="back to login" Margin="5,5,20,5" Grid.Row="8" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Click="BackToLogin_Button_Clicked" BorderThickness="0" Grid.Column="1">
             <Button.Effect>
                 <DropShadowEffect Opacity="0.25"/>
             </Button.Effect>

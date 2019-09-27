@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GlobalVariablesLib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -10,41 +11,81 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Launcher {
+namespace Launcher
+{
     public static class Backend {
 
         private static string middlewareIP = "10.131.69.129";
         private static int middlewarePort = 13010;
-        
 
-        public static async Task SendLoginCredentials (string username, SecureString password) {
+        public static UserModel loggedUser { get; private set; }
+
+        //static Backend () {
+        //    loggedUser = new UserModel() {
+        //        UserID = "Nebberen"
+        //    };
+        //}
+
+
+        public static async Task<bool> SendLoginCredentials (string username, SecureString password) {
             TcpClient client = new TcpClient();
 
             string unsecurePassword = ConvertToUnsecureString(password);
             string hashedPassword = GetPasswordHash(unsecurePassword);
 
-            await client.ConnectAsync(middlewareIP, middlewarePort);
+            try {
+
+                await client.ConnectAsync(middlewareIP, middlewarePort);
+            }
+            catch (Exception) {
+                return false;
+            }
+
 
             GlobalVariablesLib.UserModel user = new GlobalVariablesLib.UserModel() { UserID = username, PswdHash = hashedPassword, RequestType = GlobalVariablesLib.RequestTypes.Get_User };
 
-            byte[] msg = TcpHelper.MessageFormatter.MessageBytes<GlobalVariablesLib.UserModel>(user);
+            byte [ ] msg = TcpHelper.MessageFormatter.MessageBytes<GlobalVariablesLib.UserModel>(user);
 
-            client.GetStream().Write(msg, 0, msg.Length);
+            try {
+                client.GetStream().Write(msg, 0, msg.Length);
+            }
+            catch (Exception) {
+                return false;
+            }
+
+            return true;
         }
 
-        public static async Task SendRegisterRequest (string username, SecureString password) {
+        public static void Logout () {
+            loggedUser = null;
+        }
+
+        public static async Task<bool> SendRegisterRequest (string username, SecureString password) {
             TcpClient client = new TcpClient();
 
             string unsecurePassword = ConvertToUnsecureString(password);
             string hashedPassword = GetPasswordHash(unsecurePassword);
 
-            await client.ConnectAsync(middlewareIP, middlewarePort);
+            try {
+
+                await client.ConnectAsync(middlewareIP, middlewarePort);
+            }
+            catch (Exception) {
+                return false;
+            }
 
             GlobalVariablesLib.UserModel user = new GlobalVariablesLib.UserModel() { UserID = username, PswdHash = hashedPassword, RequestType = GlobalVariablesLib.RequestTypes.Create_User };
 
             byte [ ] msg = TcpHelper.MessageFormatter.MessageBytes<GlobalVariablesLib.UserModel>(user);
 
-            client.GetStream().Write(msg, 0, msg.Length);
+            try {
+                client.GetStream().Write(msg, 0, msg.Length);
+            }
+            catch (Exception) {
+                return false;
+            }
+
+            return true;
         }
 
         private static string GetPasswordHash (string password) {
