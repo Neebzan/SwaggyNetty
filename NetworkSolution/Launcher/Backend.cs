@@ -15,7 +15,6 @@ using System.Windows;
 namespace Launcher
 {
     public static class Backend {
-
         private static string middlewareIP = "10.131.69.129";
         private static int middlewarePort = 13010;
 

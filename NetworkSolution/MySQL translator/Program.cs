@@ -33,7 +33,7 @@ namespace MySQL_translator
         private static void InputRecieved (object sender, InputRecievedEventArgs e) {
             UserModel newUser = null;
 
-            switch (e.requestType) {
+            switch (e.RequestType) {
                 case GlobalVariablesLib.RequestTypes.Get_User:
                     newUser = DBConnection.Instance().Select(e.User);
                     mQHandler.PushProducerQueue(newUser);
