@@ -13,8 +13,8 @@ using System.Windows;
 namespace Launcher {
     public static class Backend {
 
-        private static string middlewareIP = "10.131.69.129";
-        private static int middlewarePort = 13005;
+        private static string middlewareIP = "127.0.0.1";
+        private static int middlewarePort = 13010;
         
 
         public static async Task SendLoginCredentials (string username, SecureString password) {
