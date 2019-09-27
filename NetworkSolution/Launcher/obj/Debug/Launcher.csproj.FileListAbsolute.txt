@@ -49,3 +49,29 @@ D:\GitProjects\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\Launcher.csproj.Ge
 D:\GitProjects\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\Launcher.csproj.CopyComplete
 D:\GitProjects\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\Launcher.exe
 D:\GitProjects\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\Launcher.pdb
+F:\Coding projects\SwaggyNetty\NetworkSolution\Launcher\bin\Debug\Launcher.exe.config
+F:\Coding projects\SwaggyNetty\NetworkSolution\Launcher\bin\Debug\Launcher.exe
+F:\Coding projects\SwaggyNetty\NetworkSolution\Launcher\bin\Debug\Launcher.pdb
+F:\Coding projects\SwaggyNetty\NetworkSolution\Launcher\bin\Debug\GlobalVariablesLib.dll
+F:\Coding projects\SwaggyNetty\NetworkSolution\Launcher\bin\Debug\TcpHelper.dll
+F:\Coding projects\SwaggyNetty\NetworkSolution\Launcher\bin\Debug\GlobalVariablesLib.pdb
+F:\Coding projects\SwaggyNetty\NetworkSolution\Launcher\bin\Debug\TcpHelper.pdb
+F:\Coding projects\SwaggyNetty\NetworkSolution\Launcher\bin\Debug\Newtonsoft.Json.xml
+F:\Coding projects\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\Launcher.csprojAssemblyReference.cache
+F:\Coding projects\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\LoginPage.g.cs
+F:\Coding projects\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\MainWindow.g.cs
+F:\Coding projects\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\RegisterPage.g.cs
+F:\Coding projects\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\App.g.cs
+F:\Coding projects\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\Launcher_MarkupCompile.cache
+F:\Coding projects\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\Launcher_MarkupCompile.lref
+F:\Coding projects\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\LoginPage.baml
+F:\Coding projects\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\MainWindow.baml
+F:\Coding projects\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\RegisterPage.baml
+F:\Coding projects\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\Launcher.g.resources
+F:\Coding projects\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\Launcher.Properties.Resources.resources
+F:\Coding projects\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\Launcher.csproj.GenerateResource.cache
+F:\Coding projects\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\Launcher.csproj.CoreCompileInputs.cache
+F:\Coding projects\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\Launcher.csproj.CopyComplete
+F:\Coding projects\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\Launcher.exe
+F:\Coding projects\SwaggyNetty\NetworkSolution\Launcher\obj\Debug\Launcher.pdb
+F:\Coding projects\SwaggyNetty\NetworkSolution\Launcher\bin\Debug\Newtonsoft.Json.dll
