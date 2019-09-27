@@ -61,7 +61,7 @@ namespace Login_Middleware
             while (isAlive)
             {
 
-                string data = MessageFormatter.ReadMessage(stream);
+                string data = MessageFormatter.ReadStreamOnce(stream);
 
                 // Console info when recieveing data.
                 {
