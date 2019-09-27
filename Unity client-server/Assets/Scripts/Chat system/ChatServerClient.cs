@@ -42,7 +42,7 @@ public class ChatServerClient : MonoBehaviour
                 if (networkStream.DataAvailable)
                 {
                     string msg = TCPHelper.ReadMessage(networkStream);
-                    ChatServer.tickMessages.ChatDataPackages.Add(new ChatData() { SenderName = "Test", Message = msg });
+                    ChatServer.tickMessages.ChatDataPackages.Add(new ChatData() { SenderName = ChatServer.tcpClients.ToString(), Message = msg });
                     Debug.Log(msg);
                 }
                 yield return null;

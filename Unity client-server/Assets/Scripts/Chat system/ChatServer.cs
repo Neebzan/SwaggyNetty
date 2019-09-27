@@ -74,7 +74,7 @@ public class ChatServer : MonoBehaviour
             if (chatGUI != null)
                 foreach (var item in tickMessages.ChatDataPackages)
                 {
-                    chatGUI.chatHistorie.Add(item.Message);
+                    chatGUI.chatHistorie.Add(item.SenderName + " " + item.Message);
                 }
 
 

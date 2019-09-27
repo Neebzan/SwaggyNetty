@@ -11,16 +11,16 @@ public class ChatSystem : MonoBehaviour
     private string currentMessage = string.Empty;
     private int maxMessages = 30;
     public InputField chatBox;
-    public Color playerMessage, info, fail;
+    public Color playerMessage, group, fail, all;
     public ChatClient cClient;
 
-    
+
 
 
     [SerializeField]
     public List<Messages> chatHistory = new List<Messages>();
 
-    
+
 
 
     public void SendMessageToChat(string text, Messages.messageTypeColor mstype)
@@ -39,8 +39,6 @@ public class ChatSystem : MonoBehaviour
         newMessage.textObject.color = MessageTypeColor(mstype);
         chatHistory.Add(newMessage);
 
-
-
     }
 
     public void Update()
@@ -50,19 +48,35 @@ public class ChatSystem : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Return))
             {
-                //SendMessageToChat(chatBox.text, Messages.messageTypeColor.playerMessage);
-                try
-                {
-                    //cClient.SendMessage(chatBox.text, Messages.messageTypeColor.info); 
-                    cClient.Message(chatBox.text); //sent to server
-
-                }
-                catch (Exception e)
+                if (chatBox.text.Contains("/" + cClient.name))
                 {
 
-                    SendMessageToChat(e.ToString(), Messages.messageTypeColor.fail);
                 }
-                chatBox.text = "";
+                if (chatBox.text.StartsWith("/all"))
+                {
+                    
+                    try
+                    {
+
+                        //cClient.SendMessage(chatBox.text, Messages.messageTypeColor.info); 
+                        cClient.Message(chatBox.text); //sent to server
+
+                    }
+                    catch (Exception e)
+                    {
+
+
+
+                        SendMessageToChat(e.ToString(), Messages.messageTypeColor.fail);
+                    }
+                    chatBox.text = "";
+                }
+                if (chatBox.text.Contains("/group"))
+                {
+
+                }
+                
+
             }
         }
         else
@@ -81,39 +95,35 @@ public class ChatSystem : MonoBehaviour
 
                 cClient.ListenToServer();
 
-               
 
-              
+
+
             }
             catch (Exception e)
             {
                 Debug.Log(e);
             }
         }
-        
-        
-        //if (!chatBox.isFocused)
-        //{
-
-
-        //    if (Input.GetKeyDown(KeyCode.Return))
-        //    {
-        //        SendMessageToChat("W yo", Messages.messageTypeColor.info);
-        //    }
-        //}      
+     
     }
 
     public Color MessageTypeColor(Messages.messageTypeColor messageType)
     {
-        Color color = info;
+        Color color = group;
 
         switch (messageType)
         {
             case Messages.messageTypeColor.playerMessage:
                 color = playerMessage;
                 break;
-            case Messages.messageTypeColor.info:
-                color = info;
+            case Messages.messageTypeColor.group:
+                color = group;
+                break;
+            case Messages.messageTypeColor.fail:
+                color = fail;
+                break;
+            case Messages.messageTypeColor.all:
+                color = all;
                 break;
             default:
                 break;
@@ -132,8 +142,9 @@ public class Messages
     public enum messageTypeColor
     {
         playerMessage,
-        info,
-        fail
+        group,
+        fail,
+        all
 
     }
 }

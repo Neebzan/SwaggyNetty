@@ -6,7 +6,15 @@ using UnityEngine;
 public class ChatData
 {
     public string SenderName;
-    public string Message;
+    public string Message;  
+    public enum messageTypeColor
+    {
+        playerMessage,
+        group,
+        fail,
+        all
+
+    }
 }
 
 [Serializable]
