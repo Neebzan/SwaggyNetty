@@ -5,14 +5,18 @@ using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
-namespace Patchmanager
+namespace FileCheckerLib
 {
     public static class FileChecker
     {
-       
+        public static event EventHandler<GetFilesDictionaryProgressEventArgs> GetFilesDictionaryProgress = delegate { };
+        private static void OnGetFilesDictionaryProgress(GetFilesDictionaryProgressEventArgs e)
+        {
+            var handler = GetFilesDictionaryProgress;
+            handler(null, e);
+        }
 
         //public FileChecker()
         //{
@@ -36,8 +40,7 @@ namespace Patchmanager
         //    Console.ReadKey();
         //    //List<string> r = CompareFileDictionaries(myValidFiles, myInvalidFiles);
         //}
-        
-        
+
 
         /// <summary>
         /// Returns a list of paths if there are any different or missing files from the master
@@ -74,7 +77,7 @@ namespace Patchmanager
             Dictionary<string, string> validFiles = new Dictionary<string, string>();
 
             for (int i = 0; i < files.Length; i++)
-            {                
+            {
                 validFiles.Add(GetRelativePath(files[i], currentDirectory), GetChecksum(files[i]));
                 //checksumsGenerated++;
                 //Console.Clear();
@@ -97,6 +100,32 @@ namespace Patchmanager
 
         //    return validFiles;
         //}
+
+        /// <summary>
+        /// Generate a dictionary from a collection of file paths and a base directory
+        /// The function reports the current progress through the two ref parameters
+        /// </summary>
+        /// <param name="files"></param>
+        /// <param name="directory"></param>
+        /// <returns></returns>
+        public static void GetFilesDictionary(out Dictionary<string, string> result)
+        {
+            GetFilesDictionaryProgressEventArgs args = new GetFilesDictionaryProgressEventArgs();
+            result = null;
+            string currentDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            string[] files = Directory.GetFiles(currentDirectory, "*.*", SearchOption.AllDirectories);
+            args.FilesFound = files.Length;
+            args.ChecksumsGenerated = 0;
+            OnGetFilesDictionaryProgress(args);
+            Dictionary<string, string> validFilesDictionary = new Dictionary<string, string>();
+            for (int i = 0; i < files.Length; i++)
+            {
+                validFilesDictionary.Add(GetRelativePath(files[i], currentDirectory), GetChecksum(files[i]));
+                args.ChecksumsGenerated++;
+                OnGetFilesDictionaryProgress(args);
+            }
+            result = validFilesDictionary;
+        }
 
         /// <summary>
         /// Generate a dictionary from a collection of file paths and a base directory

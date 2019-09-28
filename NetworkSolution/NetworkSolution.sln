@@ -21,7 +21,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "TestProject\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JWTlib", "JWTlib\JWTlib.csproj", "{B64CF3DE-1D55-476C-8EE1-D8152253D66D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Patchmanager", "Patchmanager\Patchmanager.csproj", "{3593DB5F-3520-4A37-ACBF-222EB7A259E2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatchManagerClient", "Patchmanager\PatchManagerClient.csproj", "{3593DB5F-3520-4A37-ACBF-222EB7A259E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatchManagerServer", "PatchManagerServer\PatchManagerServer.csproj", "{A80A00CB-9628-4641-8411-2FD1133177C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileCheckerLib", "FileCheckerLib\FileCheckerLib.csproj", "{4036D89C-7AD8-485E-AFCE-9C70B0ADB44F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +73,14 @@ Global
 		{3593DB5F-3520-4A37-ACBF-222EB7A259E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3593DB5F-3520-4A37-ACBF-222EB7A259E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3593DB5F-3520-4A37-ACBF-222EB7A259E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A80A00CB-9628-4641-8411-2FD1133177C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A80A00CB-9628-4641-8411-2FD1133177C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A80A00CB-9628-4641-8411-2FD1133177C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A80A00CB-9628-4641-8411-2FD1133177C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4036D89C-7AD8-485E-AFCE-9C70B0ADB44F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4036D89C-7AD8-485E-AFCE-9C70B0ADB44F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4036D89C-7AD8-485E-AFCE-9C70B0ADB44F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4036D89C-7AD8-485E-AFCE-9C70B0ADB44F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

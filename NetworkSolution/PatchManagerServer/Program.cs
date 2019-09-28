@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PatchmanagerClient
+namespace PatchManagerServer
 {
     class Program
     {
         static void Main(string[] args)
         {
-            PatchmanagerClient c = new PatchmanagerClient();
+            PatchmanagerServer pms = new PatchmanagerServer();
+            Console.ReadKey();
         }
     }
 }

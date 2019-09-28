@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Patchmanager
+namespace FileChecker
 {
-    public class FileCheckerMaster
+    public class Class1
     {
     }
 }

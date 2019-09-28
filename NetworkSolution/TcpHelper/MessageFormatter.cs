@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -30,9 +31,9 @@ namespace TcpHelper
         /// <typeparam name="T">The type of object to JSON serialize</typeparam>
         /// <param name="obj">The object to serialize as a message</param>
         /// <returns></returns>
-        public static byte[] MessageBytes<T>(T obj)
+        public static byte[] MessageBytes<T>(T obj, Formatting format = 0)
         {
-            string packageJson = Newtonsoft.Json.JsonConvert.SerializeObject(obj);
+            string packageJson = JsonConvert.SerializeObject(obj, format);
             string msg = packageJson;
             //Convert to JSON
             byte[] packageData = System.Text.Encoding.ASCII.GetBytes(msg);
