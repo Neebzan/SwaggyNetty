@@ -6,8 +6,7 @@
       xmlns:fa="http://schemas.fontawesome.io/icons/"
       xmlns:local="clr-namespace:Launcher"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
-      Title="LoggedInPage">
+      Title="LoggedInPage" Style="{StaticResource BasePageStyle}">
 
     <Grid Margin="0" Height="419.5">
         <Grid.ColumnDefinitions>

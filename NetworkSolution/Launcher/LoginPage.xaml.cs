@@ -3,6 +3,7 @@ using Launcher.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -103,6 +105,12 @@ namespace Launcher
             if (!string.IsNullOrEmpty(savedUsername)) {
                 savedUsername = string.Empty;
                 Settings.Default.username = string.Empty;
+            }
+        }
+
+        private void Rectangle_MouseDown (object sender, MouseButtonEventArgs e) {
+            if (e.ChangedButton == MouseButton.Left) {
+                Application.Current.MainWindow.DragMove();
             }
         }
 
