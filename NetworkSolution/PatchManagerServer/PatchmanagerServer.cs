@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -70,28 +71,27 @@ namespace PatchManagerServer
                 if (patchClient.client.GetStream().DataAvailable)
                 {
                     if (patchClient.fileList == null)
-                        try
-                        {
-                            patchClient.fileList = JsonConvert.DeserializeObject<Dictionary<string, string>>(MessageFormatter.ReadMessage(patchClient.client.GetStream()));
-                            Console.WriteLine("Filelist received!");
 
-                            Console.WriteLine("Comparing files to master list");
-                            filesToDownload = FileChecker.CompareFileDictionaries(masterFiles, patchClient.fileList);
+                        patchClient.fileList = JsonConvert.DeserializeObject<Dictionary<string, string>>(MessageFormatter.ReadMessage(patchClient.client.GetStream()));
+                    Console.WriteLine("Filelist received!");
 
-                            Console.WriteLine("Missing files on client:");
-                            foreach (var item in filesToDownload)
-                            {
-                                Console.WriteLine(item);
-                            }
+                    Console.WriteLine("Comparing files to master list");
+                    filesToDownload = FileChecker.CompareFileDictionaries(masterFiles, patchClient.fileList);
 
-                            Console.WriteLine("Sending a test file");
-                            patchClient.client.Client.SendFile("CurseClientSetup.exe");
-                            Console.WriteLine("Test file send");
-                        }
-                        catch
-                        {
-                            Console.WriteLine("Did not receive filelist!");
-                        }
+                    Console.WriteLine("Missing files on client:");
+                    foreach (var item in filesToDownload)
+                    {
+                        Console.WriteLine(item);
+                    }
+
+                    Console.WriteLine("Sending a test file");
+                    string filePath = "Vedlaeg.zip";
+                    FileInfo fi = new FileInfo(filePath);
+                    Console.WriteLine("Test file size: {0}", fi.Length);
+                    byte[] preBuffer = BitConverter.GetBytes((int)fi.Length);
+                    patchClient.client.Client.SendFile(filePath, preBuffer, null, TransmitFileOptions.UseDefaultWorkerThread);
+                    Console.WriteLine("Test file send");
+
 
 
                 }

@@ -20,7 +20,7 @@ namespace PatchmanagerClient
 
         public PatchmanagerClient()
         {
-            
+
             FileChecker.GetFilesDictionaryProgress += ProgressUpdateReceived;
             Task.Run(() => FileChecker.GetFilesDictionary(out allFilesDictionary));
 
@@ -30,26 +30,59 @@ namespace PatchmanagerClient
             }
             Console.WriteLine("FilesDictionary created");
             Console.WriteLine("Sending FilesDictionary to server");
-            client = new TcpClient("127.0.0.1", 14000);
+            //client = new TcpClient("178.155.161.248", 14000);
+            while (client == null)
+            {
+                try
+                {
+                    client = new TcpClient("127.0.0.1", 14000);
+                }
+                catch
+                {
+
+                }
+            }
+
             SendFileDictionaryToServer();
 
             while (true)
             {
                 if (MessageFormatter.Connected(client))
                 {
-                    using (var output = File.Create("TESTFILE.exe"))
+                    byte[] readBuffer = new byte[4];
+                    while (client.GetStream().DataAvailable)
                     {
-                        Console.WriteLine("Client connected. Starting to receive the file");
+                        int bytesRead = 0;
 
-                        // read the file in chunks of 1KB
-                        var buffer = new byte[1024];
-                        int bytesRead;
-                        while ((bytesRead = client.Client.Receive(buffer, buffer.Length, SocketFlags.None)) > 0)
+                        while (bytesRead < 4)
                         {
-                            output.Write(buffer, 0, bytesRead);
-                            Console.WriteLine("{0} bytes read", bytesRead);
+                            bytesRead += client.GetStream().Read(readBuffer, bytesRead, 4 - bytesRead);
+                        }
+
+                        int totalFileSize = BitConverter.ToInt32(readBuffer, 0);
+
+                        Console.WriteLine("Size of incoming file {0}", totalFileSize);
+
+                        using (var output = File.Create("TEST.zip"))
+                        {
+                            Console.WriteLine("Client connected. Starting to receive the file");
+
+                            // read the file in chunks of 1KB
+                            var buffer = new byte[1024];
+                            bytesRead = 0;
+                            int totalBytesRead = 0;
+                            while (totalBytesRead < totalFileSize)
+                            {
+                                Console.WriteLine("Size of incoming file {0}", totalFileSize);
+                                bytesRead = client.Client.Receive(buffer, buffer.Length, SocketFlags.None);
+                                output.Write(buffer, 0, bytesRead);
+                                totalBytesRead += bytesRead;
+                                Console.WriteLine("{0} bytes read", totalBytesRead);
+                            }
+                            Console.WriteLine("File received!");
                         }
                     }
+
                 }
             }
         }
