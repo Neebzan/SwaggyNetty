@@ -47,3 +47,8 @@ D:\GitHub\SwaggyNetty\NetworkSolution\TokenSystem\obj\Debug\TokenSystem.pdb
 D:\GitHub\SwaggyNetty\NetworkSolution\TokenSystem\bin\Debug\JWTlib.dll.config
 D:\GitHub\SwaggyNetty\NetworkSolution\TokenSystem\bin\Debug\TcpHelper.dll
 D:\GitHub\SwaggyNetty\NetworkSolution\TokenSystem\bin\Debug\TcpHelper.pdb
+C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\TokenSystem\bin\Debug\JWTlib.dll
+C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\TokenSystem\bin\Debug\TcpHelper.dll
+C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\TokenSystem\bin\Debug\JWTlib.pdb
+C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\TokenSystem\bin\Debug\JWTlib.dll.config
+C:\Users\Henrik\Documents\GitHub\SwaggyNetty\NetworkSolution\TokenSystem\bin\Debug\TcpHelper.pdb

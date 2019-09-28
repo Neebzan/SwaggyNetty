@@ -26,6 +26,8 @@ namespace GlobalVariablesLib
 
         public const int TOKENSYSTEM_PORT = 13005;
         public const int BEACON_PORT = 13006;
+        public const int PATCHMANAGER_PORT = 13007;
+
 
         public const int MYSQL_LOGIN_DB_PORT = 3306;
         public const string MYSQL_LOGIN_DB_IP = "178.155.161.248";
