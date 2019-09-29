@@ -5,6 +5,67 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Launcher"
         mc:Ignorable="d"
-        Title="Swaggy Netty" Style="{StaticResource BaseWindowStyle}">
+        Title="Swaggy Netty" Style="{StaticResource BaseWindowStyle}" WindowStartupLocation="CenterScreen" AllowsTransparency="True" WindowStyle="None" Width="800" Height="410">
 
+    <Window.Background>
+        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FFAAAAAA" Offset="1"/>
+            <GradientStop Color="White"/>
+        </LinearGradientBrush>
+    </Window.Background>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="400"/>
+            <ColumnDefinition Width="400"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="300"/>
+            <RowDefinition Height="60"/>
+        </Grid.RowDefinitions>
+
+        <Label Content="Swaggy Netty" Margin="20,5" Grid.Row="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" UseLayoutRounding="True" Grid.ColumnSpan="1" FontSize="30" FontFamily="Segoe UI Historic" d:IsLocked="True">
+            <Label.Effect>
+                <DropShadowEffect Opacity="0.25"/>
+            </Label.Effect>
+        </Label>
+
+        <Frame x:Name="frame" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1" Grid.RowSpan="1" Navigating="Frame_Navigating"  NavigationUIVisibility="Hidden" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        <Image Margin="20" Grid.Column="1" Grid.Row="1" Source="Content/deusvulttransparent.png" Stretch="Uniform">
+            <Image.Effect>
+                <DropShadowEffect Opacity="0.25"/>
+            </Image.Effect>
+        </Image>
+        <ProgressBar Margin="20,13,161,12" VerticalContentAlignment="Center" Grid.ColumnSpan="2" Height="15" Grid.Row="2">
+            <ProgressBar.Effect>
+                <DropShadowEffect Opacity="0.25"/>
+            </ProgressBar.Effect>
+        </ProgressBar>
+        <Button Content="Play" Margin="20,5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Column="1" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" Width="117" Opacity="0.5" Grid.Row="2">
+            <Button.Effect>
+                <DropShadowEffect Opacity="0.25"/>
+            </Button.Effect>
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Background" Value="#FFE84141"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type Button}">
+                                <Border Background="{TemplateBinding Background}">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#FFE84141"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+    </Grid>
 </Window>

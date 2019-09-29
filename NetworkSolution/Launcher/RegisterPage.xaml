@@ -4,170 +4,57 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Launcher"
+      xmlns:fa="http://schemas.fontawesome.io/icons/"
       mc:Ignorable="d" 
-      Title="RegisterPage" Style="{StaticResource BasePageStyle}">
+      Title="RegisterPage" Style="{StaticResource BasePageStyle}" >
 
-    <Grid Margin="0" Height="419.5">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="150" />
-            <ColumnDefinition Width="150"/>
-            <ColumnDefinition Width="400"/>
-            <ColumnDefinition Width="100*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition x:Name="Game_title" Height="100"/>
-            <RowDefinition x:Name="Username_label" Height="30"/>
-            <RowDefinition x:Name="Username_entry" Height="40"/>
-            <RowDefinition x:Name="Password_label" Height="30"/>
-            <RowDefinition x:Name="Password_entry" Height="40"/>
-            <RowDefinition x:Name="Remember_username_tick" Height="30"/>
-            <RowDefinition x:Name="Remember_password_tick" Height="40"/>
-            <RowDefinition x:Name="Empty" Height="20"/>
-            <RowDefinition x:Name="Login_button" Height="40"/>
-            <RowDefinition x:Name="Empty_2" Height="40"/>
-            <RowDefinition x:Name="Spacing" Height="*"/>
-        </Grid.RowDefinitions>
+    <Frame x:Name="frame" Navigating="Frame_Navigating" Background="Transparent">
+        <Frame.Content>
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left">
+                <Label Content="Username" Margin="20,20,20,0" VerticalContentAlignment="Bottom" UseLayoutRounding="False" Grid.Row="1" Padding="0">
+                    <Label.Effect>
+                        <DropShadowEffect Opacity="0.25"/>
+                    </Label.Effect>
+                </Label>
 
-
-        <Frame  Margin="0" Grid.RowSpan="10" Grid.ColumnSpan="4" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-            <Frame.Background>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="#FFE0E0E0" Offset="1"/>
-                    <GradientStop Color="White" Offset="0.017"/>
-                </LinearGradientBrush>
-            </Frame.Background>
-        </Frame>
-
-
-        <Label Content="Username" Margin="20,0" VerticalContentAlignment="Bottom" UseLayoutRounding="False" Grid.Row="1" Padding="0">
-            <Label.Effect>
-                <DropShadowEffect Opacity="0.25"/>
-            </Label.Effect>
-        </Label>
-        <Button Content="Register" Margin="20,5,20,15" Grid.Row="7" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Click="Create_Account_Button_Clicked" FontSize="16" BorderThickness="0" FontWeight="Bold" Grid.RowSpan="2">
-            <Button.Effect>
-                <DropShadowEffect Opacity="0.25"/>
-            </Button.Effect>
-            <Button.Style>
-                <Style TargetType="{x:Type Button}">
-                    <Setter Property="Background" Value="#FFD1D1D1"/>
-                    <Setter Property="Foreground" Value="White"/>
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type Button}">
-                                <Border Background="{TemplateBinding Background}">
-                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </Border>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                    <Style.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="Green"/>
-                            <Setter Property="Foreground" Value="White"/>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
-        </Button>
-        <Label Content="Password" Margin="20,0" VerticalContentAlignment="Bottom" UseLayoutRounding="False" Grid.Row="3" Padding="0">
-            <Label.Effect>
-                <DropShadowEffect Opacity="0.25"/>
-            </Label.Effect>
-        </Label>
-        <Label Content="Swaggy Netty" Margin="20,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" UseLayoutRounding="True" Padding="6,5,5,5" Grid.ColumnSpan="2" FontSize="30" FontFamily="Segoe UI Historic">
-            <Label.Effect>
-                <DropShadowEffect Opacity="0.25"/>
-            </Label.Effect>
-        </Label>
-        <TextBox x:Name="username_textbox" Grid.ColumnSpan="2" Margin="20,5,20,10" Grid.Row="2" TextWrapping="Wrap" VerticalContentAlignment="Center" Padding="5" FontSize="10">
-            <TextBox.Effect>
-                <DropShadowEffect Opacity="0.25"/>
-            </TextBox.Effect>
-        </TextBox>
-        <PasswordBox x:Name="password_textbox" Grid.ColumnSpan="2" Margin="20,5,20,10" Grid.Row="4" VerticalContentAlignment="Center" Padding="5" FontSize="10">
-            <PasswordBox.Effect>
-                <DropShadowEffect Opacity="0.25"/>
-            </PasswordBox.Effect>
-        </PasswordBox>
-        <Image Grid.Column="2" Margin="5" Grid.RowSpan="8" Grid.ColumnSpan="2" Source="Content/deusvulttransparent.png" Stretch="Uniform"  >
-            <Image.Effect>
-                <DropShadowEffect Opacity="0.25"/>
-            </Image.Effect>
-        </Image>
-        <Popup x:Name="Error_Popup" IsOpen="False" PlacementTarget="{Binding ElementName=username, Mode=OneWay}" PopupAnimation="Fade" AllowsTransparency="True" StaysOpen="False" Grid.Row="5" Grid.RowSpan="3" Grid.ColumnSpan="2" Margin="20,5" ClipToBounds="True" UseLayoutRounding="True" HorizontalAlignment="Center" VerticalAlignment="Center" Placement="Relative" VerticalOffset="250" HorizontalOffset="20">
-            <TextBlock x:Name="Error_Popup_Label" Background="#FFFF005C" Text="Username already exists" TextAlignment="Left" Padding="5" TextWrapping="Wrap" VerticalAlignment="Top" Width="275.2" UseLayoutRounding="True" Foreground="White" LineHeight="6" FontStyle="Italic">
-                <TextBlock.Effect>
-                    <DropShadowEffect Opacity="0.25"/>
-                </TextBlock.Effect>
-            </TextBlock>
-        </Popup>
-        <Label Content="Confirm password" Margin="20,0" VerticalContentAlignment="Bottom" UseLayoutRounding="False" Grid.Row="5" Padding="0">
-            <Label.Effect>
-                <DropShadowEffect Opacity="0.25"/>
-            </Label.Effect>
-        </Label>
-        <PasswordBox x:Name="password_confirm_textbox" Grid.ColumnSpan="2" Margin="20,5,20,10" Grid.Row="6" VerticalContentAlignment="Center" Padding="5" FontSize="10">
-            <PasswordBox.Effect>
-                <DropShadowEffect Opacity="0.25"/>
-            </PasswordBox.Effect>
-        </PasswordBox>
-        <Button Content="back to login" Margin="5,10,20,20" Grid.Row="7" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Click="BackToLogin_Button_Clicked" BorderThickness="0" Grid.Column="1" Grid.RowSpan="2">
-            <Button.Effect>
-                <DropShadowEffect Opacity="0.25"/>
-            </Button.Effect>
-            <Button.Style>
-                <Style TargetType="{x:Type Button}">
-                    <Setter Property="Background" Value="Transparent"/>
-                    <Setter Property="Foreground" Value="Red"/>
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type Button}">
-                                <Border Background="{TemplateBinding Background}">
-                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </Border>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                    <Style.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="Transparent"/>
-                            <Setter Property="Foreground" Value="White"/>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
-        </Button>
-        <ProgressBar Margin="20,32.6,60.8,32.4" VerticalContentAlignment="Center" Grid.Row="8" Grid.ColumnSpan="3" Height="15" Grid.RowSpan="2">
-            <ProgressBar.Effect>
-                <DropShadowEffect Opacity="0.25"/>
-            </ProgressBar.Effect>
-        </ProgressBar>
-        <Button Content="Play" Margin="0,19.6,20,20.4" Grid.Row="8" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Column="2" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" Width="117" Grid.ColumnSpan="2" Opacity="0.5" Grid.RowSpan="2">
-            <Button.Effect>
-                <DropShadowEffect Opacity="0.25"/>
-            </Button.Effect>
-            <Button.Style>
-                <Style TargetType="{x:Type Button}">
-                    <Setter Property="Background" Value="#FFE84141"/>
-                    <Setter Property="Foreground" Value="White"/>
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type Button}">
-                                <Border Background="{TemplateBinding Background}">
-                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </Border>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                    <Style.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="#FFE84141"/>
-                            <Setter Property="Foreground" Value="White"/>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
-        </Button>
-    </Grid>
+                <TextBox x:Name="username_textbox" Grid.ColumnSpan="2" Margin="20,5,20,10" Grid.Row="2" TextWrapping="Wrap" VerticalContentAlignment="Center" Padding="5" FontSize="10">
+                    <TextBox.Effect>
+                        <DropShadowEffect Opacity="0.25"/>
+                    </TextBox.Effect>
+                </TextBox>
+                <Label Content="Password" Margin="20,10,20,0" VerticalContentAlignment="Bottom" UseLayoutRounding="False" Grid.Row="3" Padding="0">
+                    <Label.Effect>
+                        <DropShadowEffect Opacity="0.25"/>
+                    </Label.Effect>
+                </Label>
+                <PasswordBox x:Name="password_textbox" Grid.ColumnSpan="2" Margin="20,5,20,10" Grid.Row="4" VerticalContentAlignment="Center" Padding="5" FontSize="10">
+                    <PasswordBox.Effect>
+                        <DropShadowEffect Opacity="0.25"/>
+                    </PasswordBox.Effect>
+                </PasswordBox>
+                <Label Content="Confirm password" Margin="20,10,20,0" VerticalContentAlignment="Bottom" UseLayoutRounding="False" Grid.Row="3" Padding="0">
+                    <Label.Effect>
+                        <DropShadowEffect Opacity="0.25"/>
+                    </Label.Effect>
+                </Label>
+                <PasswordBox x:Name="password_confirm_textbox" Grid.ColumnSpan="2" Margin="20,5,20,10" Grid.Row="4" VerticalContentAlignment="Center" Padding="5" FontSize="10">
+                    <PasswordBox.Effect>
+                        <DropShadowEffect Opacity="0.25"/>
+                    </PasswordBox.Effect>
+                </PasswordBox>
+                <StackPanel Margin="20,20" Orientation="Horizontal" Height="46">
+                    <Button Content="Register" Style="{StaticResource BaseButtonStyle}" Click="Create_Account_Button_Clicked" Width="111"/>
+                    <Button Content="Back to login" Style="{StaticResource BaseButtonStyleNoBackground}" Margin="20,5,20,5" Grid.Row="7" Click="BackToLogin_Button_Clicked"/>
+                    <fa:ImageAwesome x:Name="spinner_imageawesome" Icon="Spinner" Spin="True" Grid.Row="5" Grid.Column="1" Width="25" Height="25" Margin="0" Grid.RowSpan="2"/>
+                </StackPanel>
+                <Popup x:Name="Error_Popup" IsOpen="False" PlacementTarget="{Binding ElementName=username, Mode=OneWay}" PopupAnimation="Fade" AllowsTransparency="True" StaysOpen="False" Grid.Row="5" Grid.RowSpan="3" Grid.ColumnSpan="2" Margin="20,5" ClipToBounds="True" UseLayoutRounding="True" HorizontalAlignment="Center" VerticalAlignment="Center" Placement="Relative" VerticalOffset="250" HorizontalOffset="20">
+                    <TextBlock x:Name="Error_Popup_Label" Background="#FFFF005C" Text="Username already exists" TextAlignment="Left" Padding="5" TextWrapping="Wrap" VerticalAlignment="Top" Width="275.2" UseLayoutRounding="True" Foreground="White" LineHeight="6" FontStyle="Italic">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Opacity="0.25"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
+                </Popup>
+            </StackPanel>
+        </Frame.Content>
+    </Frame>
 </Page>

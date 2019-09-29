@@ -6,24 +6,25 @@
     <Application.Resources>
         <Style x:Key="BaseWindowStyle" TargetType="Window">
             <Setter Property="WindowStyle" Value="None"/>
-            <Setter Property="WindowState" Value="Maximized"/>
+            <Setter Property="WindowState" Value="Normal"/>
             <Setter Property="AllowsTransparency" Value="True"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="ResizeMode" Value="CanResize"/>
-            <Setter Property="Width" Value="450"/>
-            <Setter Property="Height" Value="800"/>
+            <!--<Setter Property="Background" Value="Transparent"/>-->
+            <Setter Property="ResizeMode" Value="CanMinimize"/>
+            <!--<Setter Property="Width" Value="800"/>
+            <Setter Property="Height" Value="450"/>-->
+            <Setter Property="SizeToContent" Value="WidthAndHeight"/>
             <Setter Property="WindowChrome.WindowChrome">
                 <Setter.Value>
                     <WindowChrome GlassFrameThickness="0" CornerRadius="0" CaptionHeight="0"/>
                 </Setter.Value>
             </Setter>
         </Style>
-        
-        
+
+
 
         <Style x:Key="BasePageStyle" TargetType="Page">
-            <Setter Property="Width" Value="800"/>
-            <Setter Property="Height" Value="800"/>
+            <Setter Property="Width" Value="auto"/>
+            <Setter Property="Height" Value="auto"/>
         </Style>
 
         <Style x:Key="BaseButtonStyleNoBackground" TargetType="Button">

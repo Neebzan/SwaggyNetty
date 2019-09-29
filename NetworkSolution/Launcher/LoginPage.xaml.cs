@@ -15,6 +15,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -85,7 +86,8 @@ namespace Launcher
                             Settings.Default.username = username;
                             Settings.Default.Save();
                         }
-                        Application.Current.MainWindow.Content = new LoggedInPage();
+                        this.NavigationService.Navigate(new LoggedInPage());
+                        //Application.Current.MainWindow.Content = new LoggedInPage();
                     }
 
                 }
@@ -108,16 +110,28 @@ namespace Launcher
             }
         }
 
-        private void Rectangle_MouseDown (object sender, MouseButtonEventArgs e) {
-            if (e.ChangedButton == MouseButton.Left) {
-                Application.Current.MainWindow.DragMove();
+        private void Frame_Navigating (object sender, NavigatingCancelEventArgs e) {
+            var ta = new ThicknessAnimation();
+            ta.Duration = TimeSpan.FromSeconds(0.3);
+            ta.DecelerationRatio = 0.7;
+            ta.To = new Thickness(0, 0, 0, 0);
+            if (e.NavigationMode == NavigationMode.New) {
+                ta.From = new Thickness(500, 0, 0, 0);
             }
+
+            else if (e.NavigationMode == NavigationMode.Back) {
+                ta.From = new Thickness(0, 0, 500, 0);
+            }
+
+            //(e.Content as Page).BeginAnimation(MarginProperty, ta);
         }
 
         private void Register_Button_Clicked (object sender, RoutedEventArgs e) {
             //errorPopup.IsOpen = true;
             //errorPopupMessage.Text = "Could not create an account.\n\nThis feature is not yet implemented dum dum.";
-            Application.Current.MainWindow.Content = new RegisterPage();
+            //Application.Current.MainWindow.NavigatePage();
+            frame.NavigationService.Navigate(new RegisterPage());
+            //Application.Current.MainWindow.Content = new RegisterPage();
         }
     }
 }
