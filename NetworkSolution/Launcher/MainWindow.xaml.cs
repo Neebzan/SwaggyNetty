@@ -26,6 +26,7 @@ namespace Launcher
     {
         public Frame mainFrame;
         public Button playButton;
+        private ProgressBar progressBar;
 
         public MainWindow () {
 
@@ -35,6 +36,9 @@ namespace Launcher
             playButton = play_button;
             playButton.IsEnabled = false;
             playButton.Opacity = .5;
+            progressBar = progress_bar;
+            progressBar.Value = Backend.PatchingProcess;
+            patchpercentage_label.Content = Backend.PatchingProcess.ToString() + "%";
             //this.Content = new LoginPage();
             mainFrame.NavigationService.Navigate(new LoginPage());
         }
