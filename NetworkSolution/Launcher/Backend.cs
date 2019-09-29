@@ -17,7 +17,6 @@ namespace Launcher
     public static class Backend {
         private static string middlewareIP = "10.131.69.129";
         private static int middlewarePort = 13010;
-
         public static UserModel loggedUser { get; private set; }
 
         static Backend () {
@@ -25,7 +24,6 @@ namespace Launcher
                 UserID = "Nebberen"
             };
         }
-
 
         public static async Task<bool> SendLoginCredentials (string username, SecureString password) {
             TcpClient client = new TcpClient();

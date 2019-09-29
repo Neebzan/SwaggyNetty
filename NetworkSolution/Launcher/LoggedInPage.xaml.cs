@@ -19,7 +19,7 @@ namespace Launcher
     /// <summary>
     /// Interaction logic for LoggedInPage.xaml
     /// </summary>
-    public partial class LoggedInPage : Page
+    public partial class LoggedInPage : BasePage
     {
         Label loggedInAs;
 
@@ -29,32 +29,21 @@ namespace Launcher
 
             loggedInAs = logged_in_as_label;
             loggedInAs.Content += " " + Backend.loggedUser.UserID;
+            (Application.Current.MainWindow as MainWindow).playButton.IsEnabled = true;
+            (Application.Current.MainWindow as MainWindow).playButton.Opacity = 1;
         }
 
-        private void Logout_Button_Clicked(object sender, RoutedEventArgs e) {
+        private async void Logout_Button_Clicked(object sender, RoutedEventArgs e) {
             Backend.Logout();
-            frame.NavigationService.Navigate(new LoginPage());
-            //Application.Current.MainWindow.Content = new LoginPage();
+            (Application.Current.MainWindow as MainWindow).playButton.IsEnabled = false;
+            (Application.Current.MainWindow as MainWindow).playButton.Opacity = .5;
+
+            await AnimateOut();
+            (Application.Current.MainWindow as MainWindow).mainFrame.NavigationService.Navigate(new LoginPage());
         }
 
         private void Play_Button_Click (object sender, RoutedEventArgs e) {
             Backend.LaunchGame();
-        }
-
-        private void Frame_Navigating (object sender, NavigatingCancelEventArgs e) {
-            var ta = new ThicknessAnimation();
-            ta.Duration = TimeSpan.FromSeconds(0.3);
-            ta.DecelerationRatio = 0.7;
-            ta.To = new Thickness(0, 0, 0, 0);
-            if (e.NavigationMode == NavigationMode.New) {
-                ta.From = new Thickness(500, 0, 0, 0);
-            }
-
-            else if (e.NavigationMode == NavigationMode.Back) {
-                ta.From = new Thickness(0, 0, 500, 0);
-            }
-
-            //(e.Content as Page).BeginAnimation(MarginProperty, ta);
         }
     }
 }

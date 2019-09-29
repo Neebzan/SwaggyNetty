@@ -62,6 +62,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Animations\PageAnimation.cs" />
+    <Compile Include="Animations\PageAnimations.cs" />
+    <Compile Include="Animations\StoryboardHelpers.cs" />
     <Compile Include="BasePage.cs" />
     <Compile Include="LoggedInPage.xaml.cs">
       <DependentUpon>LoggedInPage.xaml</DependentUpon>

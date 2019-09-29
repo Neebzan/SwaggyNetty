@@ -21,7 +21,7 @@ namespace Launcher
     /// <summary>
     /// Interaction logic for RegisterPage.xaml
     /// </summary>
-    public partial class RegisterPage : Page
+    public partial class RegisterPage : BasePage
     {
 
         TextBox usernameBox;
@@ -61,25 +61,11 @@ namespace Launcher
 
         }
 
-        private void BackToLogin_Button_Clicked (object sender, RoutedEventArgs e) {
-            frame.NavigationService.Navigate(new LoginPage());
-            //Application.Current.MainWindow.Content = new LoginPage();
+        private async void BackToLogin_Button_Clicked (object sender, RoutedEventArgs e) {
+            await AnimateOut();
+            (Application.Current.MainWindow as MainWindow).mainFrame.NavigationService.Navigate(new LoginPage());
         }
 
-        private void Frame_Navigating (object sender, NavigatingCancelEventArgs e) {
-            var ta = new ThicknessAnimation();
-            ta.Duration = TimeSpan.FromSeconds(0.3);
-            ta.DecelerationRatio = 0.7;
-            ta.To = new Thickness(0, 0, 0, 0);
-            if (e.NavigationMode == NavigationMode.New) {
-                ta.From = new Thickness(500, 500, 0, 0);
-            }
-            else if (e.NavigationMode == NavigationMode.Back) {
-                ta.From = new Thickness(0, 0, 500, 0);
-            }
-
-            //(e.Content as Frame).BeginAnimation(MarginProperty, ta);
-        }
 
         private async void Create_Account_Button_Clicked (object sender, RoutedEventArgs e) {
             if (!string.IsNullOrEmpty(passwordBox.Password) && !string.IsNullOrEmpty(usernameBox.Text) && !string.IsNullOrEmpty(confirmPassBox.Password)) {

@@ -9,7 +9,7 @@ namespace Launcher.Animations
     public enum PageAnimation
     {
         None = 0,
-        SlideAndFadeInFromRight = 1,
-        SlideAndFadeOutToLeft = 2,
+        SlideAndFadeInFromLeft = 1,
+        SlideAndFadeOutToRight = 2,
     }
 }

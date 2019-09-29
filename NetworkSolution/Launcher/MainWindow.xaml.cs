@@ -17,34 +17,26 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Launcher {
+namespace Launcher
+{
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window {
-
+    public partial class MainWindow : Window
+    {
+        public Frame mainFrame;
+        public Button playButton;
 
         public MainWindow () {
 
-        InitializeComponent ();
+            InitializeComponent();
 
+            mainFrame = frame;
+            playButton = play_button;
+            playButton.IsEnabled = false;
+            playButton.Opacity = .5;
             //this.Content = new LoginPage();
-            frame.NavigationService.Navigate(new LoginPage());
-        }
-
-        private void Frame_Navigating (object sender, NavigatingCancelEventArgs e) {
-            var ta = new ThicknessAnimation();
-            ta.Duration = TimeSpan.FromSeconds(0.3);
-            ta.DecelerationRatio = 0.7;
-            ta.To = new Thickness(0, 0, 0, 0);
-            if (e.NavigationMode == NavigationMode.New) {
-                ta.From = new Thickness(500, 500, 0, 0);
-            }
-            else if (e.NavigationMode == NavigationMode.Back) {
-                ta.From = new Thickness(0, 0, 500, 0);
-            }
-
-            //(e.Content as Page).BeginAnimation(MarginProperty, ta);
+            mainFrame.NavigationService.Navigate(new LoginPage());
         }
     }
 }
