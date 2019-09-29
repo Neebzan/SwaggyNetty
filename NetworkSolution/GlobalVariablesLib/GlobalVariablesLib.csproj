@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="GlobalVariables.cs" />
     <Compile Include="Models\ConnectionModel.cs" />
+    <Compile Include="Models\FileTransferModel.cs" />
     <Compile Include="Models\JWTPayload.cs" />
     <Compile Include="Models\ServerData.cs" />
     <Compile Include="Models\UserModel.cs" />

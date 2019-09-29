@@ -103,16 +103,23 @@ namespace FileCheckerLib
 
         /// <summary>
         /// Generate a dictionary from a collection of file paths and a base directory
-        /// The function reports the current progress through the two ref parameters
+        /// Progress can be fetched from the OnGetFilesDictionaryProgress event
         /// </summary>
         /// <param name="files"></param>
         /// <param name="directory"></param>
         /// <returns></returns>
-        public static void GetFilesDictionary(out Dictionary<string, string> result)
+        public static void GetFilesDictionary(out Dictionary<string, string> result, string path = "")
         {
             GetFilesDictionaryProgressEventArgs args = new GetFilesDictionaryProgressEventArgs();
             result = null;
             string currentDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            if(path != "")
+            {
+                if (currentDirectory[currentDirectory.Length - 1] != '\\')
+                    currentDirectory += "\\";
+
+                currentDirectory += path;
+            }
             string[] files = Directory.GetFiles(currentDirectory, "*.*", SearchOption.AllDirectories);
             args.FilesFound = files.Length;
             args.ChecksumsGenerated = 0;
@@ -155,9 +162,10 @@ namespace FileCheckerLib
         {
             System.Uri uri1 = new Uri(filePath);
 
-            System.Uri uri2 = new Uri(directory);
+            System.Uri uri2 = new Uri(directory+"\\");
 
             //return Path.GetFileName(filePath);
+            string t = uri2.MakeRelativeUri(uri1).ToString();
             return Uri.UnescapeDataString(uri2.MakeRelativeUri(uri1).ToString());
         }
 

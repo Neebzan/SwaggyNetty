@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -88,6 +89,50 @@ namespace TcpHelper
                 msg = System.Text.Encoding.UTF8.GetString(buffer);
             }
             return msg;
+        }
+
+        public static bool ReadFile(TcpClient client, string fileName, string saveDirectory = "")
+        {
+            byte[] readBuffer = new byte[4];
+
+            if (saveDirectory != "")
+            {
+                if (saveDirectory[saveDirectory.Length - 1] != '\\')
+                    saveDirectory += "\\";
+            }
+
+            while (client.GetStream().DataAvailable)
+            {
+                int bytesRead = 0;
+
+                while (bytesRead < 4)
+                {
+                    bytesRead += client.GetStream().Read(readBuffer, bytesRead, 4 - bytesRead);
+                }
+
+                int totalFileSize = BitConverter.ToInt32(readBuffer, 0);
+
+                //Create subfolders if needed
+                string[] pathSplit = fileName.Split('/');
+                string subfolders = fileName.Replace(pathSplit[pathSplit.Length - 1], "");
+                Directory.CreateDirectory(saveDirectory+subfolders);
+
+                using (var output = File.Create(saveDirectory+fileName))
+                {
+                    // read the file in chunks of 1KB
+                    var buffer = new byte[1024];
+                    bytesRead = 0; bytesRead = 0;
+                    int totalBytesRead = 0;
+                    while (totalBytesRead < totalFileSize)
+                    {
+                        bytesRead = client.Client.Receive(buffer, buffer.Length, SocketFlags.None);
+                        output.Write(buffer, 0, bytesRead);
+                        totalBytesRead += bytesRead;
+                    }
+                    return true;
+                }
+            }
+            return false;
         }
 
         public static bool Connected(TcpClient tcpClient)
