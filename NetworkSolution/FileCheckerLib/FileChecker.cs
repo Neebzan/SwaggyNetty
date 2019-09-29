@@ -18,30 +18,6 @@ namespace FileCheckerLib
             handler(null, e);
         }
 
-        //public FileChecker()
-        //{
-        //    string currentDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-        //    string correctArchiveFolder = Path.Combine(currentDirectory, "correct");
-        //    string invalidArchiveFolder = Path.Combine(currentDirectory, "invalid");
-        //    string[] correctFiles = Directory.GetFiles(correctArchiveFolder, "*.*", SearchOption.AllDirectories);
-        //    string[] invalidFiles = Directory.GetFiles(invalidArchiveFolder, "*.*", SearchOption.AllDirectories);
-
-
-        //    //Directory.GetFiles()
-        //    //Dictionary<string, string> allFilesDictionary = GetFilesDictionary();
-        //    //string[] checkSums = GetChecksums(files);
-
-        //    Thread t = new Thread(GetFilesDictionary);
-        //    t.IsBackground = true;
-        //    t.Start();
-
-        //    //Dictionary<string, string> myValidFiles = GetFilesDictionary(correctFiles, correctArchiveFolder);
-        //    //Dictionary<string, string> myInvalidFiles = GetFilesDictionary(invalidFiles, invalidArchiveFolder);
-        //    Console.ReadKey();
-        //    //List<string> r = CompareFileDictionaries(myValidFiles, myInvalidFiles);
-        //}
-
-
         /// <summary>
         /// Returns a list of paths if there are any different or missing files from the master
         /// </summary>
@@ -72,34 +48,14 @@ namespace FileCheckerLib
             string currentDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
             string[] files = Directory.GetFiles(currentDirectory, "*.*", SearchOption.AllDirectories);
 
-            //filesFound = files.Length;
-
             Dictionary<string, string> validFiles = new Dictionary<string, string>();
 
             for (int i = 0; i < files.Length; i++)
             {
                 validFiles.Add(GetRelativePath(files[i], currentDirectory), GetChecksum(files[i]));
-                //checksumsGenerated++;
-                //Console.Clear();
-                //Console.WriteLine("Checksums generated: {0}/{1}", checksumsGenerated, filesFound);
             }
         }
 
-        //public Dictionary<string, string> GetFilesDictionary()
-        //{
-        //    string currentDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-        //    string[] files = Directory.GetFiles(currentDirectory, "*.*", SearchOption.AllDirectories);
-
-
-        //    Dictionary<string, string> validFiles = new Dictionary<string, string>();
-
-        //    for (int i = 0; i < files.Length; i++)
-        //    {
-        //        validFiles.Add(GetRelativePath(files[i], currentDirectory), GetChecksum(files[i]));
-        //    }
-
-        //    return validFiles;
-        //}
 
         /// <summary>
         /// Generate a dictionary from a collection of file paths and a base directory

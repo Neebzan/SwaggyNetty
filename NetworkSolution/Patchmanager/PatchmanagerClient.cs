@@ -63,14 +63,6 @@ namespace PatchmanagerClient
                     {
                         while (client.GetStream().DataAvailable)
                         {
-                            //    int bytesRead = 0;
-
-                            //    while (bytesRead < 4)
-                            //    {
-                            //        bytesRead += client.GetStream().Read(readBuffer, bytesRead, 4 - bytesRead);
-                            //    }
-
-                            //Wait for a response from the patch server
 
                             Console.WriteLine("Awaiting missing files list from Patch Server");
                             string jsonList = MessageFormatter.ReadMessage(client.GetStream());
@@ -82,29 +74,8 @@ namespace PatchmanagerClient
                             {
                                 Console.WriteLine("Missing: {0}", item.FilePath);
                             }
-
-                            //int totalFileSize = BitConverter.ToInt32(readBuffer, 0);
-
-                            //Console.WriteLine("Size of incoming file {0}", totalFileSize);
-
-                            //using (var output = File.Create("TEST.mp4"))
-                            //{
-                            //    Console.WriteLine("Client connected. Starting to receive the file");
-
-                            //    // read the file in chunks of 1KB
-                            //    var buffer = new byte[1024];
-                            //    bytesRead = 0;bytesRead = 0;
-                            //    int totalBytesRead = 0;
-                            //    while (totalBytesRead < totalFileSize)
-                            //    {
-                            //        Console.WriteLine("Size of incoming file {0}", totalFileSize);
-                            //        bytesRead = client.Client.Receive(buffer, buffer.Length, SocketFlags.None);
-                            //        output.Write(buffer, 0, bytesRead);
-                            //        totalBytesRead += bytesRead;
-                            //        Console.WriteLine("{0} bytes read", totalBytesRead);
-                            //    }
-                            //    Console.WriteLine("File received!");
-                            //}
+                            if (missingFiles.Files.Count == 0)
+                                completed = true;
                         }
                     }
                     //Start requesting missing files from server
