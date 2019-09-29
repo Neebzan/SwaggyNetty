@@ -19,7 +19,7 @@ namespace PatchmanagerClient
 
         TcpClient client;
 
-        string downloadDirectory = "GameFiles";
+        string downloadDirectory = @"D:\Race'n'Blaze\tesDL";
 
         public PatchmanagerClient()
         {

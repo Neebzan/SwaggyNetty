@@ -18,7 +18,7 @@ namespace PatchManagerServer
     {
         public Dictionary<string, string> masterFiles = null;
         List<PatchClient> clients = new List<PatchClient>();
-        string masterFilesPath = "MasterFiles";
+        string masterFilesPath = @"D:\Race'n'Blaze\Race'n'Blaze Release";
 
         public PatchmanagerServer()
         {

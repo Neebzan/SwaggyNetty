@@ -68,14 +68,22 @@ namespace FileCheckerLib
         {
             GetFilesDictionaryProgressEventArgs args = new GetFilesDictionaryProgressEventArgs();
             result = null;
-            string currentDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-            if(path != "")
+            string currentDirectory;
+            if (!Path.IsPathRooted(path))
             {
-                if (currentDirectory[currentDirectory.Length - 1] != '\\')
-                    currentDirectory += "\\";
+                currentDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+                if (path != "")
+                {
+                    if (currentDirectory[currentDirectory.Length - 1] != '\\')
+                        currentDirectory += "\\";
 
-                currentDirectory += path;
+                    currentDirectory += path;
+                }
             }
+            else
+                currentDirectory = path;
+
+
             string[] files = Directory.GetFiles(currentDirectory, "*.*", SearchOption.AllDirectories);
             args.FilesFound = files.Length;
             args.ChecksumsGenerated = 0;
@@ -118,7 +126,7 @@ namespace FileCheckerLib
         {
             System.Uri uri1 = new Uri(filePath);
 
-            System.Uri uri2 = new Uri(directory+"\\");
+            System.Uri uri2 = new Uri(directory + "\\");
 
             //return Path.GetFileName(filePath);
             string t = uri2.MakeRelativeUri(uri1).ToString();
