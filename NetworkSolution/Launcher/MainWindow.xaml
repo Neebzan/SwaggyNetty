@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Launcher"
         mc:Ignorable="d"
-        Title="Swaggy Netty" Style="{StaticResource BaseWindowStyle}" WindowStartupLocation="CenterScreen" AllowsTransparency="True" WindowStyle="None" Width="800" Height="410">
+        Title="Swaggy Netty" Style="{StaticResource BaseWindowStyle}" WindowStartupLocation="CenterScreen">
 
     <Window.Background>
         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -21,6 +21,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="70"/>
             <RowDefinition Height="300"/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="60"/>
         </Grid.RowDefinitions>
 
@@ -36,18 +37,27 @@
                 <DropShadowEffect Opacity="0.25"/>
             </Image.Effect>
         </Image>
-        <ProgressBar x:Name="progress_bar" Margin="20,13,161,12" VerticalContentAlignment="Center" Grid.ColumnSpan="2" Height="15" Grid.Row="2">
-            <ProgressBar.Effect>
-                <DropShadowEffect Opacity="0.25"/>
-            </ProgressBar.Effect>
-        </ProgressBar>
-        <Button x:Name="play_button" Content="Play" Margin="20,5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Column="1" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" Width="117" Opacity="1" Grid.Row="2">
+        <StackPanel Grid.ColumnSpan="2" Grid.Row="2">            
+        <Label Content="Files Remaining: " Margin="20,0" FontSize="10"/>
+        <Label Content="Downloading: " Margin="20,0" FontSize="10"/>
+
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.ColumnSpan="2" VerticalAlignment="Center">
+            <Label Content="0%" FontSize="10" Margin="20,0,0,0" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
+            <ProgressBar x:Name="progress_bar" Margin="5" VerticalContentAlignment="Center" Width="610" Height="15" BorderThickness="1" Background="#FF444444" BorderBrush="Black" Foreground="Red">
+                <ProgressBar.Effect>
+                    <DropShadowEffect Opacity="0.25"/>
+                </ProgressBar.Effect>
+            </ProgressBar>
+        </StackPanel>
+
+        <Button x:Name="play_button" Content="Play" Margin="20,5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Column="1" FontWeight="Bold" FontSize="18" HorizontalAlignment="Right" Width="117" Opacity="1" Grid.Row="3">
             <Button.Effect>
                 <DropShadowEffect Opacity="0.25"/>
             </Button.Effect>
             <Button.Style>
                 <Style TargetType="{x:Type Button}">
-                    <Setter Property="Background" Value="#FFE84141"/>
+                    <Setter Property="Background" Value="#FFBD2222"/>
                     <Setter Property="Foreground" Value="White"/>
                     <Setter Property="Template">
                         <Setter.Value>
@@ -58,10 +68,10 @@
                             </ControlTemplate>
                         </Setter.Value>
                     </Setter>
-                    
+
                     <Style.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="Green"/>
+                            <Setter Property="Background" Value="#FFF11212"/>
                             <Setter Property="Foreground" Value="White"/>
                         </Trigger>
                     </Style.Triggers>
