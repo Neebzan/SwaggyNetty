@@ -9,7 +9,7 @@ using UnityEngine;
 public class ChatClient : MonoBehaviour
 {
 
-    NetworkStream stream;
+
     TcpClient client;
     // Task task;
     ChatSystem chatSystem;
@@ -34,12 +34,6 @@ public class ChatClient : MonoBehaviour
         //stream = client.GetStream();
         StartCoroutine(ListenToServer());
         //task = Task.Factory.StartNew(ListenToServer, TaskCreationOptions.LongRunning);
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
 
     }
 
@@ -95,7 +89,7 @@ public class ChatClient : MonoBehaviour
                 ChatDataPackage packet = JsonUtility.FromJson<ChatDataPackage>(packetString);
                 foreach (var item in packet.ChatDataPackages)
                 {
-
+                    // dele op i grupper her
                   
 
                     chatSystem.SendMessageToChat(item.Message, Messages.messageTypeColor.all);

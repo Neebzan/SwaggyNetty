@@ -120,12 +120,7 @@ public class ChatServerClient : MonoBehaviour
     //skal nok sende til grupper
     void HandleInputMessage(string msg)
     {
-
-
         string[] msgSplit = msg.Split('*');
-
-
-
         for (int i = 0; i < msgSplit.Length; i++)
         {
             string input = msgSplit[i];
@@ -134,8 +129,6 @@ public class ChatServerClient : MonoBehaviour
             {
 
             }
-
-
         }
     }
 
@@ -147,9 +140,6 @@ public class ChatServerClient : MonoBehaviour
 
     public void SendToClient(byte[] data)
     {
-        //StreamWriter writer = new StreamWriter(networkStream);
-
-        //TCPHelper.MessageBytes(data);
         networkStream.Write(data, 0, data.Length);
 
     }

@@ -90,11 +90,31 @@ public class ChatServer : MonoBehaviour
     public void SendWhisper()
     {
 
+        if (tickMessages.ChatDataPackages.Count > 0)
+        {
+            //sende til en ip perosn. skal hente ip på person ud fra et navn clienten sender
+            byte[] mes = TCPHelper.MessageBytes(tickMessages);
+            for (int i = 0; i < Clients.Count; i++)
+            {
+                Clients[i].SendToClient(mes);
+            }
+            tickMessages.ChatDataPackages.Clear();
+        }
     }
 
     public void SendToGoupe()
     {
-
+ 
+        if (tickMessages.ChatDataPackages.Count > 0)
+        {
+            // skal tjekke igennem en liste at gruppen kan der  problem. hvordan får man fat i en gruppe genneralt når vi ikke ved hvad det er for en liste som skal bruges
+            byte[] mes = TCPHelper.MessageBytes(tickMessages);
+            for (int i = 0; i < Clients.Count; i++)
+            {
+                Clients[i].SendToClient(mes);
+            }
+            tickMessages.ChatDataPackages.Clear();
+        }
     }
 
 

@@ -13,6 +13,7 @@ public class ChatSystem : MonoBehaviour
     public InputField chatBox;
     public Color playerMessage, group, fail, all;
     public ChatClient cClient;
+    
 
 
 
@@ -61,7 +62,7 @@ public class ChatSystem : MonoBehaviour
                 chatBox.text = "";
 
                 //send to a person
-                
+
 
                 // send to groupe
 
@@ -80,11 +81,7 @@ public class ChatSystem : MonoBehaviour
 
             try
             {
-
                 cClient.ListenToServer();
-
-
-
 
             }
             catch (Exception e)
