@@ -5,15 +5,14 @@ using System.Linq;
 using System.Messaging;
 using System.Text;
 using System.Threading.Tasks;
-using GlobalVariablesLib;
 
 namespace MySQL_translator
 {
 
     public class InputRecievedEventArgs : EventArgs
     {
-        public GlobalVariablesLib.RequestTypes RequestType { get; set; }
-        public UserModel User { get; set; }
+        public GlobalVariablesLib.RequestTypes requestType { get; set; }
+        public User User { get; set; }
     }
 
     public class MessageQueueHandler
@@ -29,7 +28,7 @@ namespace MySQL_translator
         public MessageQueueHandler () {
             SetupQueues();
             consumerQueue.BeginReceive();
-            //consumerQueue.Formatter = new XmlMessageFormatter(new Type [ ] { typeof(string) });
+            consumerQueue.Formatter = new XmlMessageFormatter(new Type [ ] { typeof(string) });
             consumerQueue.ReceiveCompleted += OnConsumerInputRecieved;
         }
 
@@ -49,11 +48,10 @@ namespace MySQL_translator
         private void OnConsumerInputRecieved (object sender, ReceiveCompletedEventArgs e) {
             MessageQueue mQ = (MessageQueue)sender;
             Message m = mQ.EndReceive(e.AsyncResult);
-            m.Formatter = new JsonMessageFormatter();
             Console.WriteLine("Message recieved: " + m.Body);
 
             try {
-                UserModel user = Newtonsoft.Json.JsonConvert.DeserializeObject<UserModel>(m.Body.ToString());
+                User user = Newtonsoft.Json.JsonConvert.DeserializeObject<User>(m.Body.ToString());
                 GlobalVariablesLib.RequestTypes requestType = GlobalVariablesLib.RequestTypes.Get_User;
 
                 switch (user.RequestType) {
@@ -68,7 +66,7 @@ namespace MySQL_translator
                 }
 
                 EventHandler<InputRecievedEventArgs> handler = NewInputRecieved;
-                handler?.Invoke(this, new InputRecievedEventArgs() { User = user, RequestType = requestType });
+                handler?.Invoke(this, new InputRecievedEventArgs() { User = user, requestType = requestType });
             }
             catch (Exception eM) {
                 Console.WriteLine(eM.Message);
@@ -80,10 +78,9 @@ namespace MySQL_translator
         /// Pushes a message to the producer queue
         /// </summary>
         /// <param name="_user"></param>
-        public void PushProducerQueue (UserModel _user) {
+        public void PushProducerQueue (User _user) {
             Message msg = new Message(Newtonsoft.Json.JsonConvert.SerializeObject(_user));
             msg.Label = _user.UserID;
-            msg.Formatter = new JsonMessageFormatter();
             MSMQHelperUtilities.MSMQHelper.SendMessage(producerQueue, msg);
         }
     }

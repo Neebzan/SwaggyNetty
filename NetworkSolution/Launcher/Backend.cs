@@ -1,7 +1,5 @@
-﻿using GlobalVariablesLib;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -10,85 +8,21 @@ using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 
-namespace Launcher
-{
+namespace Launcher {
     public static class Backend {
-        private static string middlewareIP = "10.131.69.129";
-        private static int middlewarePort = 13010;
-        public static UserModel loggedUser { get; private set; }
-        public static float PatchingProcess = 43f;
 
-        static Backend () {
-            loggedUser = new UserModel() {
-                UserID = "Nebberen"
-            };
-        }
+        private static string middlewareIP = "127.0.0.1";
+        private static int middlewarePort = 420;
+        
 
-        public static async Task<bool> SendLoginCredentials (string username, SecureString password) {
-            TcpClient client = new TcpClient();
+        public static async Task SendLoginCredentials (string username, SecureString password) {
+            TcpClient client = new TcpClient(middlewareIP, middlewarePort);
 
             string unsecurePassword = ConvertToUnsecureString(password);
             string hashedPassword = GetPasswordHash(unsecurePassword);
 
-            try {
-
-                await client.ConnectAsync(middlewareIP, middlewarePort);
-            }
-            catch (Exception) {
-                return false;
-            }
-
-
-            GlobalVariablesLib.UserModel user = new GlobalVariablesLib.UserModel() { UserID = username, PswdHash = hashedPassword, RequestType = GlobalVariablesLib.RequestTypes.Get_User };
-
-            byte [ ] msg = TcpHelper.MessageFormatter.MessageBytes<GlobalVariablesLib.UserModel>(user);
-
-            try {
-                client.GetStream().Write(msg, 0, msg.Length);
-            }
-            catch (Exception) {
-                return false;
-            }
-
-            return true;
-        }
-
-        public static void Logout () {
-            loggedUser = null;
-        }
-
-        public static async Task<bool> SendRegisterRequest (string username, SecureString password) {
-            TcpClient client = new TcpClient();
-
-            string unsecurePassword = ConvertToUnsecureString(password);
-            string hashedPassword = GetPasswordHash(unsecurePassword);
-
-            try {
-
-                await client.ConnectAsync(middlewareIP, middlewarePort);
-            }
-            catch (Exception) {
-                return false;
-            }
-
-            GlobalVariablesLib.UserModel user = new GlobalVariablesLib.UserModel() { UserID = username, PswdHash = hashedPassword, RequestType = GlobalVariablesLib.RequestTypes.Create_User };
-
-            byte [ ] msg = TcpHelper.MessageFormatter.MessageBytes<GlobalVariablesLib.UserModel>(user);
-
-            try {
-                client.GetStream().Write(msg, 0, msg.Length);
-            }
-            catch (Exception) {
-                return false;
-            }
-
-            return true;
-        }
-
-        public static void LaunchGame () {
-            Process.Start("F:/Steam/steamapps/common/Cube World/cubeworld.exe");
+            await client.ConnectAsync(middlewareIP, middlewarePort);
         }
 
         private static string GetPasswordHash (string password) {
@@ -115,23 +49,5 @@ namespace Launcher
                 Marshal.ZeroFreeGlobalAllocUnicode(unmanagedString);
             }
         }
-
-        private static void ReadForAnswer () {
-            //TcpHelper.MessageFormatter.ReadForMessages(new NetworkStre));
-        }
-
-        public static bool CheckPassUniformity (SecureString _password, SecureString _confirmPass) {
-            string pass = ConvertToUnsecureString(_password);
-            string confirmPass = ConvertToUnsecureString(_confirmPass);
-
-            if (pass == confirmPass) {
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-
-
     }
 }
