@@ -15,6 +15,9 @@ public class ChatServer : MonoBehaviour
     public static List<ChatServerClient> Clients = new List<ChatServerClient>();
     static TcpListener listener = new TcpListener(IPAddress.Any, SERVER_PORT);
 
+   
+    
+
     public Chat chatGUI;
 
     public static ChatDataPackage tickMessages = new ChatDataPackage();
