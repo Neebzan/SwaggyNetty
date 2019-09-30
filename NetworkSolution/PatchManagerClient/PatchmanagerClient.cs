@@ -14,7 +14,7 @@ using TcpHelper;
 
 namespace PatchManagerClient {
 
-    public enum PatchStatus { Connecting, Downloading, Done};
+    public enum PatchStatus { Connecting, Downloading, Done, CheckingFiles};
 
     public static class PatchmanagerClient {
         public static Dictionary<string, string> allFilesDictionary = null;

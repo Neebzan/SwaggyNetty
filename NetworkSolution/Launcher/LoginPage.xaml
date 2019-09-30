@@ -11,11 +11,11 @@
     <Frame x:Name="frame"  Background="Transparent">
         <Frame.Content>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left">
-                <Label Content="Username" Margin="20,20,20,0" FontSize="16" VerticalContentAlignment="Bottom"  Grid.Row="1" Padding="0"/>
+                <Label Content="Username" Margin="20,20,20,0" FontSize="14" VerticalContentAlignment="Bottom"  Grid.Row="1" Padding="0"/>
 
                 <TextBox x:Name="username_textbox">
                 </TextBox>
-                <Label Content="Password" Margin="20,20,20,0" FontSize="16" VerticalContentAlignment="Bottom" UseLayoutRounding="False" Grid.Row="3" Padding="0"/>
+                <Label Content="Password" Margin="20,20,20,0" FontSize="14" VerticalContentAlignment="Bottom" UseLayoutRounding="False" Grid.Row="3" Padding="0"/>
                 <PasswordBox x:Name="password_textbox"/>
                 <CheckBox x:Name="remember_username_tick" Content="  Remember username" Margin="20,5,20,1" Grid.Row="5" Padding="0" VerticalContentAlignment="Center" Grid.ColumnSpan="2" Unchecked="Remember_username_tick_Unchecked">
                     <CheckBox.Effect>

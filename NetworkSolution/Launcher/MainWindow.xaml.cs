@@ -36,7 +36,8 @@ namespace Launcher {
             playButton.IsEnabled = false;
             playButton.Opacity = .5;
             progressBar = progress_bar;
-            Backend.InitiatePatchClient();
+            
+            Loaded += StartBackend;
             //progressBar.Value = Backend.PatchProgress;
             //patchpercentage_label.Content = Backend.PatchProgress.ToString() + "%";
 
@@ -75,6 +76,10 @@ namespace Launcher {
                     }
                 });
             };
+        }
+
+        private void StartBackend (object sender, RoutedEventArgs e) {
+            Backend.InitiatePatchClient();
         }
     }
 }
