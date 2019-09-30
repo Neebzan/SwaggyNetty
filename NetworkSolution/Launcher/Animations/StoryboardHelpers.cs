@@ -55,5 +55,16 @@ namespace Launcher.Animations
             Storyboard.SetTargetProperty(animation, new PropertyPath("Opacity"));
             storyboard.Children.Add(animation);
         }
+
+        public static void AddValueFadeChange (this Storyboard storyboard,float oldValue, float newValue, float seconds) {
+            var animation = new DoubleAnimation {
+                Duration = new Duration(TimeSpan.FromSeconds(seconds)),
+                From = oldValue,
+                To = newValue,
+                DecelerationRatio=.99
+            };
+            Storyboard.SetTargetProperty(animation, new PropertyPath("Value"));
+            storyboard.Children.Add(animation);
+        }
     }
 }

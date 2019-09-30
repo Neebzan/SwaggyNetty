@@ -30,7 +30,7 @@ namespace Launcher {
             if (PatchmanagerClient.MissingFiles.RemainingSize == 0) {
                 PatchProgress = 100;
             }
-            else
+            else 
                 PatchProgress = ((1.0f - ((float)PatchmanagerClient.MissingFiles.RemainingSize / (float)PatchmanagerClient.MissingFiles.TotalSize)) * 100.0f);
         }
 

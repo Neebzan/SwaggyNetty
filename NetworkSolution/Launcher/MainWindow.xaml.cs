@@ -19,14 +19,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Launcher {
+namespace Launcher
+{
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window {
+    public partial class MainWindow : Window
+    {
         public Frame mainFrame;
         public Button playButton;
-        private ProgressBar progressBar;
+        private BaseProgressBar progressBar;
 
         public MainWindow () {
 
@@ -34,9 +36,9 @@ namespace Launcher {
             mainFrame = frame;
             playButton = play_button;
             playButton.IsEnabled = false;
-            playButton.Opacity = .5;
+            playButton.Opacity = .8;
             progressBar = progress_bar;
-            
+
             Loaded += StartBackend;
             //progressBar.Value = Backend.PatchProgress;
             //patchpercentage_label.Content = Backend.PatchProgress.ToString() + "%";
@@ -47,15 +49,22 @@ namespace Launcher {
             PatchmanagerClient.MissingFilesUpdated += (object sender, EventArgs e) => {
                 patchpercentage_label.Dispatcher.Invoke(() => {
                     patchpercentage_label.Content = String.Format("{0:0.##}", Backend.PatchProgress) + "%";
-                    progressBar.Value = Backend.PatchProgress;
-                    files_remaining_label.Content = "Files remaining: " + PatchmanagerClient.MissingFiles.Files.Count.ToString();
-                    file_label.Content = "File: " + PatchmanagerClient.MissingFiles.Files [ 0 ].FilePath;
+                    //progressBar.Value = Backend.PatchProgress;
+                    progressBar.NewValueGiven?.Invoke(this, new ProgressBarValueChangedEventArgs((float)progressBar.Value, Backend.PatchProgress));
+                    if (PatchmanagerClient.MissingFiles.Files.Count > 0) {
+                        files_remaining_label.Content = "Files remaining: " + PatchmanagerClient.MissingFiles.Files.Count.ToString();
+                        file_label.Content = "File: " + PatchmanagerClient.MissingFiles.Files [ 0 ].FilePath;
+                    }
                 });
             };
 
             PatchmanagerClient.DownloadComplete += (object sender, EventArgs e) => {
                 patchpercentage_label.Dispatcher.Invoke(() => {
-                    files_remaining_label.Content = "Files remaining: " + PatchmanagerClient.MissingFiles.Files.Count.ToString();
+                    patchpercentage_label.Content = String.Format("{0:0.##}", Backend.PatchProgress) + "%";
+                    //progressBar.Value = Backend.PatchProgress;
+                    progressBar.NewValueGiven?.Invoke(this, new ProgressBarValueChangedEventArgs((float)progressBar.Value, Backend.PatchProgress));
+                    files_remaining_label.Content = "";
+                    file_label.Content = "";
                 });
             };
 

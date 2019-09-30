@@ -17,7 +17,7 @@ namespace PatchManagerServer {
     public class PatchmanagerServer {
         public Dictionary<string, string> masterFiles = null;
         List<PatchClient> clients = new List<PatchClient>();
-        string masterFilesPath = @"C:\Users\Esben\Desktop\Minecraft RLCraft Server";
+        string masterFilesPath = @"C:\Users\esben\Desktop\RLCraft Server (new)";
 
         public PatchmanagerServer () {
             FileChecker.GetFilesDictionaryProgress += ProgressUpdateReceived;
