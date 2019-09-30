@@ -29,10 +29,7 @@ namespace Launcher
 
 
         private async void BaseProgressBarValueChanged (object sender, ProgressBarValueChangedEventArgs e) {
-            //this.ValueChanged -= BaseProgressBarValueChanged;
-            await AnimateBar(e.OldValue, e.NewValue);
-            //this.ValueChanged += BaseProgressBarValueChanged;
-            
+            await AnimateBar(e.OldValue, e.NewValue);                        
         }
 
         private async Task AnimateBar (double oldValue, double newValue) {

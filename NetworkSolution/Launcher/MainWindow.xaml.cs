@@ -36,7 +36,7 @@ namespace Launcher
             mainFrame = frame;
             playButton = play_button;
             playButton.IsEnabled = false;
-            playButton.Opacity = .8;
+            playButton.Opacity = .3;
             progressBar = progress_bar;
 
             Loaded += StartBackend;
