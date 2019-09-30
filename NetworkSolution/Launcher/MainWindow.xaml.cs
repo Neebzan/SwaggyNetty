@@ -41,12 +41,38 @@ namespace Launcher {
             //patchpercentage_label.Content = Backend.PatchProgress.ToString() + "%";
 
             mainFrame.NavigationService.Navigate(new LoginPage());
+            patch_status_label.Content = "Connecting to patch server";
 
 
             PatchmanagerClient.MissingFilesUpdated += (object sender, EventArgs e) => {
                 patchpercentage_label.Dispatcher.Invoke(() => {
                     patchpercentage_label.Content = String.Format("{0:0.##}", Backend.PatchProgress) + "%";
                     progressBar.Value = Backend.PatchProgress;
+                    files_remaining_label.Content = "Files remaining: " + PatchmanagerClient.MissingFiles.Files.Count.ToString();
+                });
+            };
+
+            PatchmanagerClient.DownloadComplete += (object sender, EventArgs e) => {
+                patchpercentage_label.Dispatcher.Invoke(() => {
+                    files_remaining_label.Content = "Files remaining: " + PatchmanagerClient.MissingFiles.Files.Count.ToString();
+                });
+            };
+
+            PatchmanagerClient.StatusChanged += (object sender, EventArgs e) => {
+                patchpercentage_label.Dispatcher.Invoke(() => {
+                    switch (PatchmanagerClient.Status) {
+                        case PatchStatus.Connecting:
+                            patch_status_label.Content = "Connecting..";
+                            break;
+                        case PatchStatus.Downloading:
+                            patch_status_label.Content = "Downloading..";
+                            break;
+                        case PatchStatus.Done:
+                            patch_status_label.Content = "Download completed";
+                            break;
+                        default:
+                            break;
+                    }
                 });
             };
         }

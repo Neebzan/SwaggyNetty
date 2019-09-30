@@ -13,15 +13,21 @@ using System.Threading.Tasks;
 using TcpHelper;
 
 namespace PatchManagerClient {
+
+    public enum PatchStatus { Connecting, Downloading, Done};
+
     public static class PatchmanagerClient {
         public static Dictionary<string, string> allFilesDictionary = null;
         public static FileTransferModel MissingFiles = null;
         static TcpClient client;
+        public static PatchStatus Status = PatchStatus.Connecting;
+
 
         static string downloadDirectory = @"";
 
         public static EventHandler MissingFilesUpdated = delegate { };
         public static EventHandler DownloadComplete = delegate { };
+        public static EventHandler StatusChanged = delegate { };
 
 
         public static void StartPatchCheck (string dir) {
@@ -42,6 +48,9 @@ namespace PatchManagerClient {
                 }
             }
 
+            Status = PatchStatus.Downloading;
+            StatusChanged.Invoke(null, new EventArgs());
+
             SendFileDictionaryToServer();
             MissingFiles = null;
             bool completed = false;
@@ -57,6 +66,8 @@ namespace PatchManagerClient {
                             MissingFilesUpdated.Invoke(null, new EventArgs());
                             if (MissingFiles.Files.Count == 0) {
                                 DownloadComplete.Invoke(null, new EventArgs());
+                                Status = PatchStatus.Done;
+                                StatusChanged.Invoke(null, new EventArgs());
                                 completed = true;
                             }
                         }
@@ -80,6 +91,8 @@ namespace PatchManagerClient {
                         if (MissingFiles.Files.Count == 0) {
                             waitingForFile = false;
                             DownloadComplete.Invoke(null, new EventArgs());
+                            Status = PatchStatus.Done;
+                            StatusChanged.Invoke(null, new EventArgs());
                             completed = true;
                         }
                     }
