@@ -12,8 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Launcher
-{
+namespace Launcher {
     public static class Backend {
         private static string middlewareIP = "10.131.69.129";
         private static int middlewarePort = 13010;
@@ -33,12 +32,13 @@ namespace Launcher
             string hashedPassword = GetPasswordHash(unsecurePassword);
 
             try {
-
                 await client.ConnectAsync(middlewareIP, middlewarePort);
             }
+            
             catch (Exception) {
                 return false;
             }
+            
 
 
             GlobalVariablesLib.UserModel user = new GlobalVariablesLib.UserModel() { UserID = username, PswdHash = hashedPassword, RequestType = GlobalVariablesLib.RequestTypes.Get_User };
