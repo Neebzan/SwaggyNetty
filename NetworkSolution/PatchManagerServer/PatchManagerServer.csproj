@@ -4,16 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FA66E8EF-4684-4487-94CF-042A955F904D}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GlobalVariablesLib</RootNamespace>
-    <AssemblyName>GlobalVariablesLib</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <ProjectGuid>{F093DBDF-C9F9-412C-A85D-3A1313F70795}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>PatchManagerServer</RootNamespace>
+    <AssemblyName>PatchManagerServer</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,6 +24,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -44,17 +46,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GlobalVariables.cs" />
-    <Compile Include="Models\ConnectionModel.cs" />
-    <Compile Include="Models\FileTransferModel.cs" />
-    <Compile Include="Models\JWTPayload.cs" />
-    <Compile Include="Models\ServerData.cs" />
-    <Compile Include="Models\UserModel.cs" />
+    <Compile Include="PatchClient.cs" />
+    <Compile Include="PatchmanagerServer.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include=".editorconfig" />
+    <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GlobalVariablesLib\GlobalVariablesLib.csproj">
+      <Project>{fa66e8ef-4684-4487-94cf-042a955f904d}</Project>
+      <Name>GlobalVariablesLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TcpHelper\TcpHelper.csproj">
+      <Project>{812fcb5e-7617-4944-aee9-7a2935e952c8}</Project>
+      <Name>TcpHelper</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Esben\Desktop\FileCheckerLib\FileCheckerLib.csproj">
+      <Project>{4036d89c-7ad8-485e-afce-9c70b0adb44f}</Project>
+      <Name>FileCheckerLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,5 +1,6 @@
 ﻿using FileCheckerLib;
 using GlobalVariablesLib;
+using GlobalVariablesLib.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TcpHelper;
 
-namespace PatchmanagerClient
+namespace PatchManagerClient
 {
     public class PatchmanagerClient
     {
@@ -19,13 +20,10 @@ namespace PatchmanagerClient
 
         TcpClient client;
 
-        string downloadDirectory = @"D:\Race'n'Blaze\tesDL";
+        string downloadDirectory = @"";
 
         public PatchmanagerClient()
         {
-            if (downloadDirectory != "")
-                downloadDirectory += "\\";
-
             FileChecker.GetFilesDictionaryProgress += ProgressUpdateReceived;
             Task.Run(() => FileChecker.GetFilesDictionary(out allFilesDictionary, downloadDirectory));
 
@@ -65,7 +63,7 @@ namespace PatchmanagerClient
                         {
 
                             Console.WriteLine("Awaiting missing files list from Patch Server");
-                            string jsonList = MessageFormatter.ReadMessage(client.GetStream());
+                            string jsonList = MessageFormatter.ReadStreamOnce(client.GetStream());
                             missingFiles = JsonConvert.DeserializeObject<FileTransferModel>(jsonList);
                             Console.WriteLine("Missing files list received");
                             Console.WriteLine("{0} files missing in total", missingFiles.Files.Count);

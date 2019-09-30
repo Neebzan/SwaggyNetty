@@ -1,5 +1,6 @@
 ﻿using FileCheckerLib;
 using GlobalVariablesLib;
+using GlobalVariablesLib.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace PatchManagerServer
     {
         public Dictionary<string, string> masterFiles = null;
         List<PatchClient> clients = new List<PatchClient>();
-        string masterFilesPath = @"D:\Race'n'Blaze\Race'n'Blaze Release";
+        string masterFilesPath = @"";
 
         public PatchmanagerServer()
         {
@@ -74,7 +75,7 @@ namespace PatchManagerServer
                 {
                     if (patchClient.fileList == null)
                     {
-                        patchClient.fileList = JsonConvert.DeserializeObject<Dictionary<string, string>>(MessageFormatter.ReadMessage(patchClient.client.GetStream()));
+                        patchClient.fileList = JsonConvert.DeserializeObject<Dictionary<string, string>>(MessageFormatter.ReadStreamOnce(patchClient.client.GetStream()));
                         Console.WriteLine("Filelist received!");
 
                         Console.WriteLine("Comparing files to master list");
@@ -108,7 +109,7 @@ namespace PatchManagerServer
                     //Start handling file requests
                     else
                     {
-                        string fileToSend = MessageFormatter.ReadMessage(patchClient.client.GetStream());
+                        string fileToSend = MessageFormatter.ReadStreamOnce(patchClient.client.GetStream());
                         FileInfo fi = new FileInfo(masterFilesPath+'/'+fileToSend);
                         Console.WriteLine("{0} size: {1}", fi.Name, fi.Length);
                         byte[] preBuffer = BitConverter.GetBytes((int)fi.Length);
