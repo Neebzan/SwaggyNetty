@@ -1,4 +1,6 @@
-﻿using System;
+﻿using GlobalVariablesLib.Models;
+using PatchManagerClient;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -17,13 +19,11 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Launcher
-{
+namespace Launcher {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
-    {
+    public partial class MainWindow : Window {
         public Frame mainFrame;
         public Button playButton;
         private ProgressBar progressBar;
@@ -31,16 +31,24 @@ namespace Launcher
         public MainWindow () {
 
             InitializeComponent();
-
             mainFrame = frame;
             playButton = play_button;
             playButton.IsEnabled = false;
             playButton.Opacity = .5;
             progressBar = progress_bar;
-            progressBar.Value = Backend.PatchingProcess;
-            patchpercentage_label.Content = Backend.PatchingProcess.ToString() + "%";
-            //this.Content = new LoginPage();
+            Backend.InitiatePatchClient();
+            //progressBar.Value = Backend.PatchProgress;
+            //patchpercentage_label.Content = Backend.PatchProgress.ToString() + "%";
+
             mainFrame.NavigationService.Navigate(new LoginPage());
+
+
+            PatchmanagerClient.MissingFilesUpdated += (object sender, EventArgs e) => {
+                patchpercentage_label.Dispatcher.Invoke(() => {
+                    patchpercentage_label.Content = String.Format("{0:0.##}", Backend.PatchProgress) + "%";
+                    progressBar.Value = Backend.PatchProgress;
+                });
+            };
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using GlobalVariablesLib;
+using GlobalVariablesLib.Models;
+using PatchManagerClient;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,12 +19,28 @@ namespace Launcher {
         private static string middlewareIP = "10.131.69.129";
         private static int middlewarePort = 13010;
         public static UserModel loggedUser { get; private set; }
-        public static float PatchingProcess = 43f;
+        public static float PatchProgress = 0f;
+        public static FileTransferModel PatchData = new FileTransferModel() {
+            TotalSize = 0,
+            RemainingSize = 0
+        };
 
         static Backend () {
             loggedUser = new UserModel() {
                 UserID = "Nebberen"
             };
+            PatchmanagerClient.MissingFilesUpdated += PatchDataUpdated;
+        }
+
+        private static void PatchDataUpdated (object sender, EventArgs e) {
+            PatchProgress = ((1.0f - ((float)PatchmanagerClient.MissingFiles.RemainingSize / (float)PatchmanagerClient.MissingFiles.TotalSize)) * 100.0f);
+        }
+
+        public static void InitiatePatchClient () {
+            Task t = new Task(() => PatchmanagerClient.StartPatchCheck(@"Downloads"));
+            t.Start();
+            PatchData = PatchmanagerClient.MissingFiles;
+            
         }
 
         public static async Task<bool> SendLoginCredentials (string username, SecureString password) {
