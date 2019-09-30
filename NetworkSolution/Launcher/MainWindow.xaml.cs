@@ -18,7 +18,14 @@ namespace Launcher {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+<<<<<<< HEAD
     public partial class MainWindow : Window {
+=======
+    public partial class MainWindow : Window
+    {
+        public Frame mainFrame;
+        public Button playButton;
+>>>>>>> parent of 7e1d543... Updated UI
 
         TextBox usernameBox;
         PasswordBox passwordBox;
@@ -26,6 +33,7 @@ namespace Launcher {
         public MainWindow () {
             InitializeComponent();
 
+<<<<<<< HEAD
             usernameBox = username_textbox;
             passwordBox = password_textbox;
         }
@@ -35,6 +43,14 @@ namespace Launcher {
             string username = usernameBox.Text;
 
             await Backend.SendLoginCredentials(username, password);
+=======
+            mainFrame = frame;
+            playButton = play_button;
+            playButton.IsEnabled = false;
+            playButton.Opacity = .5;
+            //this.Content = new LoginPage();
+            mainFrame.NavigationService.Navigate(new LoginPage());
+>>>>>>> parent of 7e1d543... Updated UI
         }
     }
 }

@@ -11,6 +11,12 @@ using System.Threading.Tasks;
 
 namespace Launcher {
     public static class Backend {
+<<<<<<< HEAD
+=======
+        private static string middlewareIP = "10.131.69.129";
+        private static int middlewarePort = 13010;
+        public static UserModel loggedUser { get; private set; }
+>>>>>>> parent of 7e1d543... Updated UI
 
         private static string middlewareIP = "127.0.0.1";
         private static int middlewarePort = 420;
