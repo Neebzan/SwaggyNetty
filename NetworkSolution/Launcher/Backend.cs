@@ -16,23 +16,21 @@ using System.Windows;
 
 namespace Launcher {
     public static class Backend {
-        private static string middlewareIP = "10.131.69.129";
+        private static string middlewareIP = "10.131.68.42";
         private static int middlewarePort = 13010;
-        public static UserModel loggedUser { get; private set; }
+        public static UserModel loggedUser { get; private set; } = null;
         public static float PatchProgress = 0f;
-        public static FileTransferModel PatchData = new FileTransferModel() {
-            TotalSize = 0,
-            RemainingSize = 0
-        };
+        public static FileTransferModel PatchData = null;
 
         static Backend () {
-            loggedUser = new UserModel() {
-                UserID = "Nebberen"
-            };
             PatchmanagerClient.MissingFilesUpdated += PatchDataUpdated;
         }
 
         private static void PatchDataUpdated (object sender, EventArgs e) {
+            if (PatchmanagerClient.MissingFiles.RemainingSize == 0) {
+                PatchProgress = 100;
+            }
+            else
             PatchProgress = ((1.0f - ((float)PatchmanagerClient.MissingFiles.RemainingSize / (float)PatchmanagerClient.MissingFiles.TotalSize)) * 100.0f);
         }
 

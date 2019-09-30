@@ -81,7 +81,7 @@ namespace Launcher
 
                 try {
                     spinner.Visibility = Visibility.Visible;
-                    if (/*await Backend.SendLoginCredentials(username, password)*/true) {
+                    if (await Backend.SendLoginCredentials(username, password)) {
                         if (rememberUsername.IsChecked == true) {
                             Settings.Default.username = username;
                             Settings.Default.Save();

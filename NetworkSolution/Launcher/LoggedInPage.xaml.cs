@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PatchManagerClient;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,6 +27,15 @@ namespace Launcher {
 
             loggedInAs = logged_in_as_label;
             loggedInAs.Content += " " + Backend.loggedUser.UserID;
+
+            PatchmanagerClient.DownloadComplete += (object sender, EventArgs e) => {
+                loggedInAs.Dispatcher.Invoke(() => {
+                    (Application.Current.MainWindow as MainWindow).playButton.IsEnabled = true;
+                    (Application.Current.MainWindow as MainWindow).playButton.Opacity = 1;
+                });
+            };
+
+
             if (Backend.PatchData != null && Backend.PatchData?.RemainingSize == 0) {
                 (Application.Current.MainWindow as MainWindow).playButton.IsEnabled = true;
                 (Application.Current.MainWindow as MainWindow).playButton.Opacity = 1;

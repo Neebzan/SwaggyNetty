@@ -21,6 +21,7 @@ namespace PatchManagerClient {
         static string downloadDirectory = @"";
 
         public static EventHandler MissingFilesUpdated = delegate { };
+        public static EventHandler DownloadComplete = delegate { };
 
 
         public static void StartPatchCheck (string dir) {
@@ -54,8 +55,10 @@ namespace PatchManagerClient {
                             string jsonList = MessageFormatter.ReadStreamOnce(client.GetStream());
                             MissingFiles = JsonConvert.DeserializeObject<FileTransferModel>(jsonList);
                             MissingFilesUpdated.Invoke(null, new EventArgs());
-                            if (MissingFiles.Files.Count == 0)
+                            if (MissingFiles.Files.Count == 0) {
+                                DownloadComplete.Invoke(null, new EventArgs());
                                 completed = true;
+                            }
                         }
                     }
                     //Start requesting missing files from server
@@ -76,6 +79,7 @@ namespace PatchManagerClient {
                         }
                         if (MissingFiles.Files.Count == 0) {
                             waitingForFile = false;
+                            DownloadComplete.Invoke(null, new EventArgs());
                             completed = true;
                         }
                     }
