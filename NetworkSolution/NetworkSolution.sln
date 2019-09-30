@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.572
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29306.81
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TokenSystem", "TokenSystem\TokenSystem.csproj", "{5F3BC860-6C1A-4CC5-A626-998268C74E08}"
 EndProject
@@ -21,11 +21,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "TestProject\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JWTlib", "JWTlib\JWTlib.csproj", "{B64CF3DE-1D55-476C-8EE1-D8152253D66D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatchManagerClient", "Patchmanager\PatchManagerClient.csproj", "{3593DB5F-3520-4A37-ACBF-222EB7A259E2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatchManagerServer", "PatchManagerServer\PatchManagerServer.csproj", "{A80A00CB-9628-4641-8411-2FD1133177C1}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileCheckerLib", "FileCheckerLib\FileCheckerLib.csproj", "{4036D89C-7AD8-485E-AFCE-9C70B0ADB44F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Login_Middleware", "Login_Middleware\Login_Middleware.csproj", "{4E5D6909-867B-4FA6-8A6E-919CC7D07F10}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,18 +65,10 @@ Global
 		{B64CF3DE-1D55-476C-8EE1-D8152253D66D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B64CF3DE-1D55-476C-8EE1-D8152253D66D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B64CF3DE-1D55-476C-8EE1-D8152253D66D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3593DB5F-3520-4A37-ACBF-222EB7A259E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3593DB5F-3520-4A37-ACBF-222EB7A259E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3593DB5F-3520-4A37-ACBF-222EB7A259E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3593DB5F-3520-4A37-ACBF-222EB7A259E2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A80A00CB-9628-4641-8411-2FD1133177C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A80A00CB-9628-4641-8411-2FD1133177C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A80A00CB-9628-4641-8411-2FD1133177C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A80A00CB-9628-4641-8411-2FD1133177C1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4036D89C-7AD8-485E-AFCE-9C70B0ADB44F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4036D89C-7AD8-485E-AFCE-9C70B0ADB44F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4036D89C-7AD8-485E-AFCE-9C70B0ADB44F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4036D89C-7AD8-485E-AFCE-9C70B0ADB44F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E5D6909-867B-4FA6-8A6E-919CC7D07F10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E5D6909-867B-4FA6-8A6E-919CC7D07F10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E5D6909-867B-4FA6-8A6E-919CC7D07F10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E5D6909-867B-4FA6-8A6E-919CC7D07F10}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

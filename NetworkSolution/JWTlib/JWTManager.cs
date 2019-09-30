@@ -11,20 +11,22 @@ using System.Threading.Tasks;
 namespace JWTlib
 {
     public static class JWTManager
-    {    
+    {
+        static string key = "Pleadssssssssssssssssssssssssssssssssssssssssh";   //Overvej at gøre brug af asymmetric keys og gem nøglen lokalt på serveren     
+
         /// <summary>
         /// Generate a JWT token with provided claims that is valid for X amount of days
         /// </summary>
         /// <param name="claims"></param>
         /// <param name="validDays"></param>
         /// <returns></returns>
-        public static JwtSecurityToken CreateJWT(ClaimsIdentity claims, int validDays, string secretKey)
+        public static JwtSecurityToken CreateJWT(ClaimsIdentity claims, int validDays)
         {
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateJwtSecurityToken(
                 expires: DateTime.UtcNow.AddDays(validDays),
                 subject: claims,
-                signingCredentials: new SigningCredentials(GetSymmetricSecurityKey(secretKey), SecurityAlgorithms.HmacSha256Signature)
+                signingCredentials: new SigningCredentials(GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256Signature)
                 );
 
             return token;
@@ -73,11 +75,11 @@ namespace JWTlib
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static bool VerifyToken(string token, string key)
+        public static bool VerifyToken(string token)
         {
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
 
-            TokenValidationParameters validationParameters = GetTokenValidationParameters(key);
+            TokenValidationParameters validationParameters = GetTokenValidationParameters();
             try
             {
                 ClaimsPrincipal tokenValid = tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
@@ -95,7 +97,7 @@ namespace JWTlib
         /// Turn a key(string) into a SymmetricSecurityKey
         /// </summary>
         /// <returns></returns>
-        private static SecurityKey GetSymmetricSecurityKey(string key)
+        private static SecurityKey GetSymmetricSecurityKey()
         {
             byte[] symmetricKey = Encoding.Default.GetBytes(key);
             return new SymmetricSecurityKey(symmetricKey);
@@ -105,13 +107,13 @@ namespace JWTlib
         /// Get the Token Validation Parameters for the validation process
         /// </summary>
         /// <returns></returns>
-        private static TokenValidationParameters GetTokenValidationParameters(string key)
+        private static TokenValidationParameters GetTokenValidationParameters()
         {
             return new TokenValidationParameters()
             {
                 ValidateIssuer = false,
                 ValidateAudience = false,
-                IssuerSigningKey = GetSymmetricSecurityKey(key)
+                IssuerSigningKey = GetSymmetricSecurityKey()
             };
         }
     }
