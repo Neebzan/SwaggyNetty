@@ -90,10 +90,9 @@ public class ChatClient : MonoBehaviour
                 foreach (var item in packet.ChatDataPackages)
                 {
                     // dele op i grupper her
-                  
 
-                    chatSystem.SendMessageToChat(item.Message, Messages.messageTypeColor.all);
-                    //Debug.Log("Read: " + packet);
+                    chatSystem.SendMessageToChat(item.Message, Messages.messageTypeColor.playerMessage);
+                    
                 }
             }
             yield return null;

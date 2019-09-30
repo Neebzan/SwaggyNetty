@@ -14,9 +14,10 @@ public class ChatServer : MonoBehaviour
     public static ConcurrentQueue<TcpClient> tcpClients = new ConcurrentQueue<TcpClient>();
     public static List<ChatServerClient> Clients = new List<ChatServerClient>();
     static TcpListener listener = new TcpListener(IPAddress.Any, SERVER_PORT);
+    public string playerName;
 
-   
-    
+
+
 
     public Chat chatGUI;
 
@@ -26,7 +27,7 @@ public class ChatServer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-       
+
     }
 
     // Update is called once per frame
@@ -78,13 +79,16 @@ public class ChatServer : MonoBehaviour
                 foreach (var item in tickMessages.ChatDataPackages)
                 {
                     chatGUI.chatHistorie.Add(item.SenderName + " : " + item.port + " : " + item.Message);
+                    
                 }
-
+            // DEBUG end
 
             byte[] mes = TCPHelper.MessageBytes(tickMessages);
             for (int i = 0; i < Clients.Count; i++)
             {
+                
                 Clients[i].SendToClient(mes);
+               // chatGUI.chatHistorie.Add(Clients[i].ToString());
             }
             tickMessages.ChatDataPackages.Clear();
         }
@@ -95,11 +99,16 @@ public class ChatServer : MonoBehaviour
 
         if (tickMessages.ChatDataPackages.Count > 0)
         {
+
             //sende til en ip perosn. skal hente ip på person ud fra et navn clienten sender
             byte[] mes = TCPHelper.MessageBytes(tickMessages);
             for (int i = 0; i < Clients.Count; i++)
             {
-                Clients[i].SendToClient(mes);
+                if (Clients[i].ToString() == playerName)
+                {
+                    Clients[i].SendToClient(mes);
+
+                }
             }
             tickMessages.ChatDataPackages.Clear();
         }
@@ -107,7 +116,7 @@ public class ChatServer : MonoBehaviour
 
     public void SendToGoupe()
     {
- 
+
         if (tickMessages.ChatDataPackages.Count > 0)
         {
             // skal tjekke igennem en liste at gruppen kan der  problem. hvordan får man fat i en gruppe genneralt når vi ikke ved hvad det er for en liste som skal bruges

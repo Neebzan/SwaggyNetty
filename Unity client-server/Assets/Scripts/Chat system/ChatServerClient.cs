@@ -9,7 +9,6 @@ using UnityEngine;
 public class ChatServerClient : MonoBehaviour
 {
     private TcpClient tcpClient;
-    public event Action<List<KeyCode>> OnNewInputsRecieved;
     public List<KeyCode> ActiveInputs = new List<KeyCode>();
     NetworkStream networkStream;
     bool isDisconnecting = false;
@@ -43,7 +42,8 @@ public class ChatServerClient : MonoBehaviour
                 if (networkStream.DataAvailable)
                 {
                     string msg = TCPHelper.ReadMessage(networkStream);
-                    ChatServer.tickMessages.ChatDataPackages.Add(new ChatData() { SenderName = ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Address.ToString(), Message = msg, port = ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Port.ToString() });
+                    ChatServer.tickMessages.ChatDataPackages.Add(new ChatData() { SenderName = ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Address.ToString(),
+                        Message = msg, port = ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Port.ToString() });
                     Debug.Log(msg);
                 }
                 yield return null;
@@ -63,26 +63,6 @@ public class ChatServerClient : MonoBehaviour
         ChatServer.Disconnect(this);
         Debug.Log("Client disconnected");
     }
-
-    private void ClientConnected(uint playerID)
-    {
-        //PositionDataPackage package = new PositionDataPackage()
-        //{
-        //    PlayerID = playerID,
-
-        //};
-        //MessageType msgType = MessageType.Connect;
-        //string jsonPackage = JsonUtility.ToJson(package);
-        //string msg = ((int)msgType).ToString();
-        //msg += ChatServer.MESSAGE_TYPE_INDICATOR + jsonPackage;
-        //byte[] byteData = System.Text.Encoding.ASCII.GetBytes(msg);
-
-        //byte[] totalPackage = ChatServer.AddSizeHeaderToPackage(byteData);
-
-        //SendToClient(totalPackage);
-    }
-
-
 
     public bool Connected
     {
@@ -116,21 +96,6 @@ public class ChatServerClient : MonoBehaviour
         }
     }
 
-
-    //skal nok sende til grupper
-    void HandleInputMessage(string msg)
-    {
-        string[] msgSplit = msg.Split('*');
-        for (int i = 0; i < msgSplit.Length; i++)
-        {
-            string input = msgSplit[i];
-
-            if (input.Contains("*"))
-            {
-
-            }
-        }
-    }
 
     public string ReceiveFromClient()
     {

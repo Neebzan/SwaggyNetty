@@ -12,7 +12,6 @@ public class ChatData
     {
         playerMessage,
         group,
-        fail,
         all
 
     }

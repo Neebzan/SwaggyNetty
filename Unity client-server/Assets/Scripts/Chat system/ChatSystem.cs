@@ -13,10 +13,6 @@ public class ChatSystem : MonoBehaviour
     public InputField chatBox;
     public Color playerMessage, group, fail, all;
     public ChatClient cClient;
-    
-
-
-
 
     [SerializeField]
     public List<Messages> chatHistory = new List<Messages>();
