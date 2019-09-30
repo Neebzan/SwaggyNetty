@@ -8,8 +8,7 @@ namespace GlobalVariablesLib
 {
     public enum TokenResponse { Valid, Invalid, Created }
     public enum TokenRequestType { VerifyToken, CreateToken }
-    public enum RequestTypes { Get_User, Create_User, Update_User, Delete_User, Response, Error, Token }
-
+    public enum RequestTypes { Get_User, Create_User, Update_User, Delete_User, Response, Error, Token_Get, Token_Check }
     public enum RequestStatus { Success, AlreadyExists, DoesNotExist, ConnectionError }
 
     public static class GlobalVariables

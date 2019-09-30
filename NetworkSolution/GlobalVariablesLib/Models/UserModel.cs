@@ -21,5 +21,7 @@ namespace GlobalVariablesLib
 
         public RequestStatus Status { get; set; }
         public RequestTypes RequestType { get; set; }
+
+        public TokenResponse TokenResponse { get; set; }
     }
 }

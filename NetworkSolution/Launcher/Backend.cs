@@ -102,6 +102,7 @@ namespace Launcher
 
             return password;
         }
+
         private static string ConvertToUnsecureString (SecureString securePassword) {
             if (securePassword == null) {
                 return string.Empty;
