@@ -102,6 +102,7 @@ public class ChatServer : MonoBehaviour
 
             //sende til en ip perosn. skal hente ip på person ud fra et navn clienten sender
             byte[] mes = TCPHelper.MessageBytes(tickMessages);
+            //skal finde playeren man whisper
             for (int i = 0; i < Clients.Count; i++)
             {
                 if (Clients[i].ToString() == playerName)
@@ -121,6 +122,7 @@ public class ChatServer : MonoBehaviour
         {
             // skal tjekke igennem en liste at gruppen kan der  problem. hvordan får man fat i en gruppe genneralt når vi ikke ved hvad det er for en liste som skal bruges
             byte[] mes = TCPHelper.MessageBytes(tickMessages);
+            //skal finde gruppen
             for (int i = 0; i < Clients.Count; i++)
             {
                 Clients[i].SendToClient(mes);
