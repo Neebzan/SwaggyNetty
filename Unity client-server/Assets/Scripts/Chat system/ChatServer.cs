@@ -74,7 +74,7 @@ public class ChatServer : MonoBehaviour
             if (chatGUI != null)
                 foreach (var item in tickMessages.ChatDataPackages)
                 {
-                    chatGUI.chatHistorie.Add(item.SenderName + " " + item.Message);
+                    chatGUI.chatHistorie.Add(item.SenderName + " : " + item.port + " : " + item.Message);
                 }
 
 
@@ -85,6 +85,16 @@ public class ChatServer : MonoBehaviour
             }
             tickMessages.ChatDataPackages.Clear();
         }
+    }
+
+    public void SendWhisper()
+    {
+
+    }
+
+    public void SendToGoupe()
+    {
+
     }
 
 

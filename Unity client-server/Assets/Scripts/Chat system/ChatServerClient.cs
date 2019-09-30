@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
 
@@ -42,7 +43,7 @@ public class ChatServerClient : MonoBehaviour
                 if (networkStream.DataAvailable)
                 {
                     string msg = TCPHelper.ReadMessage(networkStream);
-                    ChatServer.tickMessages.ChatDataPackages.Add(new ChatData() { SenderName = ChatServer.tcpClients.ToString(), Message = msg });
+                    ChatServer.tickMessages.ChatDataPackages.Add(new ChatData() { SenderName = ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Address.ToString(), Message = msg, port = ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Port.ToString() });
                     Debug.Log(msg);
                 }
                 yield return null;

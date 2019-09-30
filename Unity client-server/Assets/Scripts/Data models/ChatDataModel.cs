@@ -6,6 +6,7 @@ using UnityEngine;
 public class ChatData
 {
     public string SenderName;
+    public string port;
     public string Message;  
     public enum messageTypeColor
     {

@@ -48,34 +48,22 @@ public class ChatSystem : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Return))
             {
-                if (chatBox.text.Contains("/" + cClient.name))
+                // send to all
+                try
                 {
+                    cClient.Message(chatBox.text); //sent to server
 
                 }
-                if (chatBox.text.StartsWith("/all"))
+                catch (Exception e)
                 {
-                    
-                    try
-                    {
-
-                        //cClient.SendMessage(chatBox.text, Messages.messageTypeColor.info); 
-                        cClient.Message(chatBox.text); //sent to server
-
-                    }
-                    catch (Exception e)
-                    {
-
-
-
-                        SendMessageToChat(e.ToString(), Messages.messageTypeColor.fail);
-                    }
-                    chatBox.text = "";
+                    SendMessageToChat(e.ToString(), Messages.messageTypeColor.fail);
                 }
-                if (chatBox.text.Contains("/group"))
-                {
+                chatBox.text = "";
 
-                }
+                //send to a person
                 
+
+                // send to groupe
 
             }
         }
@@ -104,7 +92,7 @@ public class ChatSystem : MonoBehaviour
                 Debug.Log(e);
             }
         }
-     
+
     }
 
     public Color MessageTypeColor(Messages.messageTypeColor messageType)

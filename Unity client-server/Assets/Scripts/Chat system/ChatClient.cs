@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -10,11 +11,10 @@ public class ChatClient : MonoBehaviour
 
     NetworkStream stream;
     TcpClient client;
-    Task task;
+    // Task task;
     ChatSystem chatSystem;
-    string groups = "/groups";
-    string all = "/all";
-    string newString = string.Empty;
+    public string userName = string.Empty; 
+  
 
 
 
@@ -26,6 +26,7 @@ public class ChatClient : MonoBehaviour
         int port = 13001;
         string IpAdress = "127.0.0.1";
         client = new TcpClient(IpAdress, port);
+        userName = ((IPEndPoint)client.Client.LocalEndPoint).Address.ToString();
 
         //client.NoDelay = true;
         Debug.Log("Connected?");
@@ -95,18 +96,9 @@ public class ChatClient : MonoBehaviour
                 foreach (var item in packet.ChatDataPackages)
                 {
 
-                    if (item.Message.Contains("/group"))
-                    {
-                       // newString = item.Message.TrimStart(groups);
-                      //  item.Message = newString;
+                  
 
-                    }
-                    if (item.Message.Contains("/all"))
-                    {
-
-                    }
-
-                    chatSystem.SendMessageToChat(item.Message, Messages.messageTypeColor.playerMessage);
+                    chatSystem.SendMessageToChat(item.Message, Messages.messageTypeColor.all);
                     //Debug.Log("Read: " + packet);
                 }
             }
