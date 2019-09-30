@@ -41,7 +41,6 @@ namespace Launcher {
             //patchpercentage_label.Content = Backend.PatchProgress.ToString() + "%";
 
             mainFrame.NavigationService.Navigate(new LoginPage());
-            patch_status_label.Content = "Connecting to patch server";
 
 
             PatchmanagerClient.MissingFilesUpdated += (object sender, EventArgs e) => {

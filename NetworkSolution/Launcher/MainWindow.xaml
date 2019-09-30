@@ -38,7 +38,7 @@
             </Image.Effect>
         </Image>
         <StackPanel Grid.ColumnSpan="2" Grid.Row="2">
-            <Label x:Name="patch_status_label" Content="Status" FontWeight="Bold" Margin="20,0" FontSize="10"/>
+            <Label x:Name="patch_status_label" Content="" FontWeight="Bold" Margin="20,0" FontSize="10"/>
             <Label x:Name="files_remaining_label" Content="Files remaining: " Margin="20,0" FontSize="10"/>
             <Label x:Name="file_label" Content="File: " Margin="20,0" FontSize="10"/>
         </StackPanel>

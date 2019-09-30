@@ -31,6 +31,8 @@ namespace PatchManagerClient {
 
 
         public static void StartPatchCheck (string dir) {
+            Status = PatchStatus.Connecting;
+            StatusChanged.Invoke(null, new EventArgs());
             downloadDirectory = dir;
             FileChecker.GetFilesDictionaryProgress += ProgressUpdateReceived;
             Task.Run(() => FileChecker.GetFilesDictionary(out allFilesDictionary, downloadDirectory));
@@ -48,14 +50,16 @@ namespace PatchManagerClient {
                 }
             }
 
-            Status = PatchStatus.Downloading;
-            StatusChanged.Invoke(null, new EventArgs());
+
 
             SendFileDictionaryToServer();
             MissingFiles = null;
             bool completed = false;
 
             bool waitingForFile = false;
+
+            Status = PatchStatus.Downloading;
+            StatusChanged.Invoke(null, new EventArgs());
 
             while (!completed) {
                 if (MessageFormatter.Connected(client)) {
