@@ -23,9 +23,6 @@ namespace PatchmanagerClient
 
         public PatchmanagerClient()
         {
-            if (downloadDirectory != "")
-                downloadDirectory += "\\";
-
             FileChecker.GetFilesDictionaryProgress += ProgressUpdateReceived;
             Task.Run(() => FileChecker.GetFilesDictionary(out allFilesDictionary, downloadDirectory));
 
@@ -86,12 +83,14 @@ namespace PatchmanagerClient
                             byte[] fileRequestData = MessageFormatter.MessageBytes(missingFiles.Files[0].FilePath);
                             client.GetStream().Write(fileRequestData, 0, fileRequestData.Length);
                             waitingForFile = true;
+                            Console.WriteLine("Requested file {0}", missingFiles.Files[0].FilePath);
                         }
                         else
                         {
                             while (client.GetStream().DataAvailable)
                             {
                                 MessageFormatter.ReadFile(client, missingFiles.Files[0].FilePath, downloadDirectory);
+                                Console.WriteLine("Received file {0}", missingFiles.Files[0].FilePath);
                                 missingFiles.Files.RemoveAt(0);
                                 waitingForFile = false;
                             }

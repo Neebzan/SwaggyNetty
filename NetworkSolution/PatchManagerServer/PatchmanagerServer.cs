@@ -133,7 +133,7 @@ namespace PatchManagerServer
 
             foreach (var item in filesToAdd)
             {
-                FileInfo t = new FileInfo(directory+'/'+item);
+                FileInfo t = new FileInfo(directory+"\\"+item);
                 model.Files.Add(new FileModel() { FilePath = item, Size = t.Length });
                 model.TotalSize += t.Length;
             }
