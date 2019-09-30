@@ -88,12 +88,9 @@ namespace Launcher
                         }
                         await AnimateOut();
                         (Application.Current.MainWindow as MainWindow).mainFrame.NavigationService.Navigate(new LoggedInPage());
-                        //Application.Current.MainWindow.Content = new LoggedInPage();
                     }
-
                 }
                 catch (Exception) {
-
                     throw;
                 }
                 spinner.Visibility = Visibility.Hidden;

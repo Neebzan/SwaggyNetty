@@ -31,14 +31,14 @@ namespace Launcher {
                 PatchProgress = 100;
             }
             else
-            PatchProgress = ((1.0f - ((float)PatchmanagerClient.MissingFiles.RemainingSize / (float)PatchmanagerClient.MissingFiles.TotalSize)) * 100.0f);
+                PatchProgress = ((1.0f - ((float)PatchmanagerClient.MissingFiles.RemainingSize / (float)PatchmanagerClient.MissingFiles.TotalSize)) * 100.0f);
         }
 
         public static void InitiatePatchClient () {
             Task t = new Task(() => PatchmanagerClient.StartPatchCheck(@"Downloads"));
             t.Start();
             PatchData = PatchmanagerClient.MissingFiles;
-            
+
         }
 
         public static async Task<bool> SendLoginCredentials (string username, SecureString password) {
@@ -50,11 +50,11 @@ namespace Launcher {
             try {
                 await client.ConnectAsync(middlewareIP, middlewarePort);
             }
-            
+
             catch (Exception) {
                 return false;
             }
-            
+
 
 
             GlobalVariablesLib.UserModel user = new GlobalVariablesLib.UserModel() { UserID = username, PswdHash = hashedPassword, RequestType = GlobalVariablesLib.RequestTypes.Get_User };
@@ -68,7 +68,22 @@ namespace Launcher {
                 return false;
             }
 
-            return true;
+            while (true) {
+                string result = TcpHelper.MessageFormatter.ReadStreamOnce(client.GetStream());
+                if (!string.IsNullOrEmpty(result)) {
+                    UserModel resultUser = Newtonsoft.Json.JsonConvert.DeserializeObject<UserModel>(result);
+                    if (resultUser.Status == RequestStatus.Success) {
+                        if (resultUser.RequestType == RequestTypes.Token_Get) {
+                            loggedUser = resultUser;
+                            return true;
+                        }
+                    }
+                    else {
+                        loggedUser = null;
+                        return false;
+                    }
+                }
+            }
         }
 
         public static void Logout () {

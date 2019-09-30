@@ -21,7 +21,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="70"/>
             <RowDefinition Height="300"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="45"/>
             <RowDefinition Height="60"/>
         </Grid.RowDefinitions>
 
@@ -40,6 +40,7 @@
         <StackPanel Grid.ColumnSpan="2" Grid.Row="2">
             <Label x:Name="patch_status_label" Content="Status" FontWeight="Bold" Margin="20,0" FontSize="10"/>
             <Label x:Name="files_remaining_label" Content="Files remaining: " Margin="20,0" FontSize="10"/>
+            <Label x:Name="file_label" Content="File: " Margin="20,0" FontSize="10"/>
         </StackPanel>
 
 

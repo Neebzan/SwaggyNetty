@@ -49,6 +49,7 @@ namespace Launcher {
                     patchpercentage_label.Content = String.Format("{0:0.##}", Backend.PatchProgress) + "%";
                     progressBar.Value = Backend.PatchProgress;
                     files_remaining_label.Content = "Files remaining: " + PatchmanagerClient.MissingFiles.Files.Count.ToString();
+                    file_label.Content = "File: " + PatchmanagerClient.MissingFiles.Files [ 0 ].FilePath;
                 });
             };
 
