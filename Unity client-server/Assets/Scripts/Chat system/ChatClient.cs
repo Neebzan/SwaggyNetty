@@ -13,7 +13,8 @@ public class ChatClient : MonoBehaviour
     TcpClient client;
     // Task task;
     ChatSystem chatSystem;
-    public string userName = string.Empty; 
+    public string userName = string.Empty;
+    public List<ChatGroup> mygroups = new List<ChatGroup>();
   
 
 
@@ -35,6 +36,11 @@ public class ChatClient : MonoBehaviour
         StartCoroutine(ListenToServer());
         //task = Task.Factory.StartNew(ListenToServer, TaskCreationOptions.LongRunning);
 
+    }
+
+    public void AddToMyGroups()
+    {
+        
     }
 
     public bool Connected

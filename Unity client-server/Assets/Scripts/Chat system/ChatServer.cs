@@ -9,13 +9,19 @@ using System.Collections.Concurrent;
 public class ChatServer : MonoBehaviour
 {
 
-    public const char MESSAGE_TYPE_INDICATOR = '?';
+    // public const char MESSAGE_TYPE_INDICATOR = '?';
     public const int SERVER_PORT = 13001;
     public static ConcurrentQueue<TcpClient> tcpClients = new ConcurrentQueue<TcpClient>();
     public static List<ChatServerClient> Clients = new List<ChatServerClient>();
     static TcpListener listener = new TcpListener(IPAddress.Any, SERVER_PORT);
-    public string playerName;
+    public static int idNumber = 0;
 
+
+    //chat gruops
+    public static List<ChatGroup> groups = new List<ChatGroup>();
+
+    //skal den ikke gemme den her så når den starter igen har den alle list
+    //clients skal have at vide hvad for en gruppe de er med i. 
 
 
 
@@ -70,6 +76,20 @@ public class ChatServer : MonoBehaviour
         Clients.Remove(disconnectedClient);
     }
 
+    public void SendToMembers()
+    {
+        if (tickMessages.ChatDataPackages.Count > 0)
+        {
+            byte[] mes = TCPHelper.MessageBytes(tickMessages);
+            for (int i = 0; i < Clients.Count; i++)
+            {
+                Clients[i].SendToClient(mes);               
+            }
+            tickMessages.ChatDataPackages.Clear();
+        }
+
+    }
+
     public void SendToAll()
     {
         if (tickMessages.ChatDataPackages.Count > 0)
@@ -79,16 +99,16 @@ public class ChatServer : MonoBehaviour
                 foreach (var item in tickMessages.ChatDataPackages)
                 {
                     chatGUI.chatHistorie.Add(item.SenderName + " : " + item.port + " : " + item.Message);
-                    
+
                 }
             // DEBUG end
 
             byte[] mes = TCPHelper.MessageBytes(tickMessages);
             for (int i = 0; i < Clients.Count; i++)
             {
-                
+
                 Clients[i].SendToClient(mes);
-               // chatGUI.chatHistorie.Add(Clients[i].ToString());
+                // chatGUI.chatHistorie.Add(Clients[i].ToString());
             }
             tickMessages.ChatDataPackages.Clear();
         }
@@ -105,7 +125,7 @@ public class ChatServer : MonoBehaviour
             //skal finde playeren man whisper
             for (int i = 0; i < Clients.Count; i++)
             {
-                if (Clients[i].ToString() == playerName)
+                if (true) // skal ændremgoernofew )
                 {
                     Clients[i].SendToClient(mes);
 

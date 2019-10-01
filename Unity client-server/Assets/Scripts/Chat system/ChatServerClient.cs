@@ -13,6 +13,7 @@ public class ChatServerClient : MonoBehaviour
     NetworkStream networkStream;
     bool isDisconnecting = false;
 
+    public string groupNameFromClient;
 
 
     public ChatServerClient(TcpClient _tcpClient)
@@ -24,9 +25,48 @@ public class ChatServerClient : MonoBehaviour
 
         ChatServer.Clients.Add(this);
 
+
     }
 
-    // skal modtage besked. og sende den videre.
+    public void CreateGroup()
+    {
+        ChatGroup mygroup = new ChatGroup() { GoupName = groupNameFromClient, ID = ChatServer.idNumber };
+        ChatServer.idNumber += 1;
+        mygroup.members.Add(this);
+
+        ChatServer.groups.Add(mygroup);
+
+    }
+    public void JoinGroup()
+    {
+        for (int i = 0; i < ChatServer.groups.Count; i++)
+        {
+            if(ChatServer.groups[i].GoupName == groupNameFromClient)
+            {
+                var dasGroup = ChatServer.groups[i];
+                ChatServer.groups[i].members.Add(this);
+
+                var mes = TCPHelper.MessageBytes(ChatServer.groups[i]);
+                for (int y = 0; y < dasGroup.members.Count; y++)
+                {
+
+                    SendToClient(mes);
+                }
+            }
+            //sende til clients
+        }
+    }
+    public void LeaveGroup()
+    {
+        for (int i = 0; i < ChatServer.groups.Count; i++)
+        {
+            if (ChatServer.groups[i].GoupName == groupNameFromClient)
+            {
+                ChatServer.groups[i].members.Remove(this);
+            }
+        }
+       
+    }
 
 
     /// <summary>
@@ -42,8 +82,12 @@ public class ChatServerClient : MonoBehaviour
                 if (networkStream.DataAvailable)
                 {
                     string msg = TCPHelper.ReadMessage(networkStream);
-                    ChatServer.tickMessages.ChatDataPackages.Add(new ChatData() { SenderName = ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Address.ToString(),
-                        Message = msg, port = ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Port.ToString() });
+                    ChatServer.tickMessages.ChatDataPackages.Add(new ChatData()
+                    {
+                        SenderName = ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Address.ToString(),
+                        Message = msg,
+                        port = ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Port.ToString()
+                    });
                     Debug.Log(msg);
                 }
                 yield return null;
