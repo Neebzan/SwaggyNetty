@@ -26,8 +26,9 @@ namespace Login_Middleware
         static public TcpListener serverListener = new TcpListener(IP, port);
         public static MessageQueue databaseRequestQueue, databaseResponseQueue, tokenRequestQueue, tokenResponseQueue;
 
+        private static bool isAlive = true;
 
-        static void Main(string[] args)
+        static void Main()
         {
             databaseRequestQueue = MSMQHelper.CreateMessageQueue(GlobalVariables.CONSUMER_QUEUE_NAME);
             databaseResponseQueue = MSMQHelper.CreateMessageQueue(GlobalVariables.PRODUCER_QUEUE_NAME);
@@ -44,12 +45,17 @@ namespace Login_Middleware
             // Work With Clients
             Task.Factory.StartNew(WaitForClients, TaskCreationOptions.LongRunning);
 
+            KeepAlive();
+        }
 
-            while (true)
-            {
-                
+        private static void KeepAlive() {
+            if (Console.ReadLine() != "TERMINATE") {
+                Console.WriteLine("Program is Kept Alive, Type TERMINATE to close window and set to terminate when workload is done");
+                KeepAlive();
+            } else {
+                Console.WriteLine("Program set to Terminate");
+                isAlive = false;
             }
-
         }
          /// <summary>
          /// 
@@ -58,9 +64,10 @@ namespace Login_Middleware
         {
             Console.WriteLine("Waiting For Clients...");
 
-            while (true)
+            while (isAlive)
             {
-                while (users.Count > 0)
+                
+                if(users.Count > 0)
                 {
                     if (users.TryDequeue(out TcpClient tcpClient))
                     {
@@ -69,6 +76,8 @@ namespace Login_Middleware
                         
                         Task.Factory.StartNew(client.ListenForMessages,TaskCreationOptions.PreferFairness);
                     }
+                } else {
+                    Thread.Sleep(16);
                 }
             }
         }
@@ -82,14 +91,13 @@ namespace Login_Middleware
             Console.WriteLine("Starting Server Listen");
             serverListener.Start();
 
-            while (true)
+            while (isAlive)
             {
-                if (serverListener.Pending())
-                {
+                if (serverListener.Pending()) {
                     TcpClient c = serverListener.AcceptTcpClient();
                     users.Enqueue(c);
-                    Console.WriteLine("SERVER: "+c.Client.RemoteEndPoint.ToString() + " connected");
-                }
+                    Console.WriteLine("SERVER: " + c.Client.RemoteEndPoint.ToString() + " connected");
+                } else { Thread.Sleep(16); }
             }
         }
     }

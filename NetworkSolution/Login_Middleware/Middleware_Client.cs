@@ -194,7 +194,7 @@ namespace Login_Middleware {
         /// <param name="errorObject"></param>
         /// <returns></returns>
         private string HandleError(UserModel errorObject) {
-            string errorMessage = "";
+            string errorMessage;
             switch (errorObject.Status) {
                 case RequestStatus.Success:
                     errorMessage = "Wrong Username or Password";
