@@ -15,12 +15,25 @@ using System.Threading.Tasks;
 using System.Windows;
 
 namespace Launcher {
-    public static class Backend {
+    internal class BackendErrorEventArgs : EventArgs {
+        public string ErrorTitle { get; set; }
+        public string ErrorMessage { get; set; }
+
+        public BackendErrorEventArgs (string _errorTitle, string _errorMessage) {
+            ErrorTitle = _errorTitle;
+            ErrorMessage = _errorMessage;
+        }
+    }
+
+    internal static class Backend {
         private static string middlewareIP = "10.131.68.126";
         private static int middlewarePort = 13010;
         public static UserModel loggedUser { get; private set; } = null;
         public static float PatchProgress = 0f;
+        public static float ConnectionTimeoutMS = 5000.0f;
         public static FileTransferModel PatchData = null;
+
+        public static EventHandler<BackendErrorEventArgs> BackendErrorEncountered;
 
         static Backend () {
             PatchmanagerClient.MissingFilesUpdated += PatchDataUpdated;
@@ -41,32 +54,57 @@ namespace Launcher {
 
         }
 
-        public static async Task<bool> SendLoginCredentials (string username, SecureString password) {
+        private static TcpClient ConnectoToMiddleware (float timeout) {
             TcpClient client = new TcpClient();
 
+            try {
+                var result = client.BeginConnect(middlewareIP, middlewarePort,null, null);
+                var success = result.AsyncWaitHandle.WaitOne(TimeSpan.FromMilliseconds(timeout));
+                if (success) {
+                    client.EndConnect(result);
+                    return client;
+                }
+                else {
+                    client.Dispose();
+                    BackendErrorEncountered?.Invoke(null, new BackendErrorEventArgs("Client connection failed", "The client connection timed-out after " + timeout.ToString() + " ms"));
+                    return null;
+                }
+            }
+            catch (Exception e) {
+                client.Dispose();
+                BackendErrorEncountered?.Invoke(null, new BackendErrorEventArgs("Client connection failed", e.Message));
+                return null;
+            }
+        }
+
+        private static async Task<bool> WriteToMiddleware(TcpClient client, byte[] msg) {
+            try {
+                await client.GetStream().WriteAsync(msg, 0, msg.Length);
+                return true;
+            }
+            catch (Exception e) {
+                client.Dispose();
+                BackendErrorEncountered?.Invoke(null, new BackendErrorEventArgs("Client failed to send request", e.Message));
+                return false;
+            }
+        }
+
+        public static async Task<bool> SendLoginCredentials (string username, SecureString password) {
             string unsecurePassword = ConvertToUnsecureString(password);
             string hashedPassword = GetPasswordHash(unsecurePassword);
 
-            try {
-                await client.ConnectAsync(middlewareIP, middlewarePort);
-            }
+            TcpClient client = ConnectoToMiddleware(ConnectionTimeoutMS);
 
-            catch (Exception) {
-                client.Dispose();
+            if (client == null)
                 return false;
-            }
+            
 
             GlobalVariablesLib.UserModel user = new GlobalVariablesLib.UserModel() { UserID = username, PswdHash = hashedPassword, RequestType = GlobalVariablesLib.RequestTypes.Get_User };
 
             byte [ ] msg = TcpHelper.MessageFormatter.MessageBytes<GlobalVariablesLib.UserModel>(user);
 
-            try {
-                client.GetStream().Write(msg, 0, msg.Length);
-            }
-            catch (Exception) {
-                client.Dispose();
+            if (!await WriteToMiddleware(client, msg))
                 return false;
-            }
 
             while (true) {
                 string result = TcpHelper.MessageFormatter.ReadStreamOnce(client.GetStream());
@@ -89,29 +127,17 @@ namespace Launcher {
         }
 
         public static async Task<bool> SendTokenLogin (string token, string userID) {
-            TcpClient client = new TcpClient();
+            TcpClient client = ConnectoToMiddleware(ConnectionTimeoutMS);
 
-
-            try {
-                await client.ConnectAsync(middlewareIP, middlewarePort);
-            }
-
-            catch (Exception) {
-                client.Dispose();
+            if (client == null)
                 return false;
-            }
 
             GlobalVariablesLib.UserModel user = new GlobalVariablesLib.UserModel() { UserID = userID, Token = token, RequestType = GlobalVariablesLib.RequestTypes.Token_Check };
 
             byte [ ] msg = TcpHelper.MessageFormatter.MessageBytes<GlobalVariablesLib.UserModel>(user);
 
-            try {
-                client.GetStream().Write(msg, 0, msg.Length);
-            }
-            catch (Exception) {
-                client.Dispose();
+            if (!await WriteToMiddleware(client, msg))
                 return false;
-            }
 
             while (true) {
                 string result = TcpHelper.MessageFormatter.ReadStreamOnce(client.GetStream());
@@ -141,31 +167,20 @@ namespace Launcher {
         }
 
         public static async Task<bool> SendRegisterRequest (string username, SecureString password) {
-            TcpClient client = new TcpClient();
-
             string unsecurePassword = ConvertToUnsecureString(password);
             string hashedPassword = GetPasswordHash(unsecurePassword);
 
-            try {
+            TcpClient client = ConnectoToMiddleware(ConnectionTimeoutMS);
 
-                await client.ConnectAsync(middlewareIP, middlewarePort);
-            }
-            catch (Exception) {
-                client.Dispose();
+            if (client == null)
                 return false;
-            }
 
-            GlobalVariablesLib.UserModel user = new GlobalVariablesLib.UserModel() { UserID = username, PswdHash = hashedPassword, RequestType = GlobalVariablesLib.RequestTypes.Create_User };
+            UserModel user = new UserModel() { UserID = username, PswdHash = hashedPassword, RequestType = RequestTypes.Create_User };
 
-            byte [ ] msg = TcpHelper.MessageFormatter.MessageBytes<GlobalVariablesLib.UserModel>(user);
+            byte [ ] msg = TcpHelper.MessageFormatter.MessageBytes<UserModel>(user);
 
-            try {
-                client.GetStream().Write(msg, 0, msg.Length);
-            }
-            catch (Exception) {
-                client.Dispose();
+            if (!await WriteToMiddleware(client, msg))
                 return false;
-            }
 
 
             while (true) {

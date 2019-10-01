@@ -11,8 +11,8 @@
 
     <Frame x:Name="frame"  Background="Transparent">
         <Frame.Content>
-            <StackPanel Margin="20,20" Orientation="Vertical" Height="100" HorizontalAlignment="Center">
-                <Label Content="Logging you in..." Margin="20,20,20,40" FontSize="14" VerticalContentAlignment="Top" VerticalAlignment="Top" HorizontalAlignment="Center" UseLayoutRounding="False" Padding="0"/>
+            <StackPanel Margin="20,20" Orientation="Vertical" Height="150" HorizontalAlignment="Center">
+                <Label Content="Logging you in..." Margin="20,20,20,30" FontSize="14" VerticalContentAlignment="Top" VerticalAlignment="Top" HorizontalAlignment="Center" UseLayoutRounding="False" Padding="0"/>
                 <fa:ImageAwesome x:Name="spinner_imageawesome" Opacity=".8" VerticalAlignment="Bottom"/>
             </StackPanel>
         </Frame.Content>

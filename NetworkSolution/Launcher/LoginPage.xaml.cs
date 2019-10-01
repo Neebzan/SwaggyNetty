@@ -30,8 +30,6 @@ namespace Launcher
     {
         TextBox usernameBox;
         PasswordBox passwordBox;
-        Popup errorPopup;
-        TextBlock errorPopupMessage;
         CheckBox rememberUsername, automaticLogin;
         ImageAwesome spinner;
 
@@ -43,25 +41,12 @@ namespace Launcher
 
             usernameBox = username_textbox;
             passwordBox = password_textbox;
-            errorPopup = Error_Popup;
-            errorPopupMessage = Error_Popup_Label;
             rememberUsername = remember_username_tick;
             automaticLogin = automatic_login_tick;
             spinner = spinner_imageawesome;
             spinner.Visibility = Visibility.Hidden;
             this.Loaded += CheckAutoLogin;
-            Application.Current.MainWindow.Deactivated += (object sender, EventArgs e) => {
-                errorPopup.IsOpen = false;
-            };
 
-            Application.Current.MainWindow.LocationChanged += (object sender, EventArgs e) => {
-                errorPopup.IsOpen = false;
-            };
-            this.usernameBox.KeyDown += (object sender, KeyEventArgs e) => {
-                errorPopup.IsOpen = false;
-            };
-
-            errorPopup.IsOpen = false;
 
             savedUsername = Settings.Default.username;
             rememberUsername.IsChecked = Settings.Default.RememberUsername;
@@ -97,13 +82,10 @@ namespace Launcher
                     new Action(async () => {
                         await AnimateOut();
                         (Application.Current.MainWindow as MainWindow).mainFrame.NavigationService.Navigate(new LoggingYouInPage(password, username, rememberUsername, false));
-                    }));
-
-   
+                    }));   
             }
             else {
-                errorPopup.IsOpen = true;
-                errorPopupMessage.Text = "Could not login.\n\nYou must fill out both username and password entries.";
+                (Application.Current.MainWindow as MainWindow).DisplayError("Login request failed", "You must enter both a password and a username in order to login");
                 spinner.Visibility = Visibility.Hidden;
             }
         }       

@@ -18,6 +18,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace Launcher
 {
@@ -40,8 +41,22 @@ namespace Launcher
             progressBar = progress_bar;
 
             Loaded += StartBackend;
+            Backend.BackendErrorEncountered += HandleBackendError;
             mainFrame.NavigationService.Navigate(new LoginPage());
 
+
+            Application.Current.MainWindow.Deactivated += (object sender, EventArgs e) => {
+                Error_Popup.IsOpen = false;
+            };
+
+            Application.Current.MainWindow.LocationChanged += (object sender, EventArgs e) => {
+                Error_Popup.IsOpen = false;
+            };
+            this.KeyDown += (object sender, KeyEventArgs e) => {
+                Error_Popup.IsOpen = false;
+            };
+
+            Error_Popup.IsOpen = false;
 
             PatchmanagerClient.MissingFilesUpdated += (object sender, EventArgs e) => {
                 patchpercentage_label.Dispatcher.Invoke(() => {
@@ -81,6 +96,18 @@ namespace Launcher
                     }
                 });
             };
+        }
+
+        private void HandleBackendError (object sender, BackendErrorEventArgs e) {
+            DisplayError(e.ErrorTitle, e.ErrorMessage);
+        }
+
+        public void DisplayError (string _errTitle, string _errMsg) {
+            Dispatcher.Invoke(DispatcherPriority.Background, new Action(() => {
+                Error_Popup_Label.Text = _errTitle;
+                Error_Popup_Label.Text += "\n\n" + _errMsg;
+                Error_Popup.IsOpen = true;
+            }));
         }
 
         private void StartBackend (object sender, RoutedEventArgs e) {

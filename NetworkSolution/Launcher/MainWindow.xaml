@@ -25,6 +25,10 @@
             <RowDefinition Height="60"/>
         </Grid.RowDefinitions>
 
+        <Popup x:Name="Error_Popup" IsOpen="True" PlacementTarget="{Binding ElementName=username, Mode=OneWay}" PopupAnimation="Fade" VerticalOffset="0" HorizontalOffset="400" AllowsTransparency="True" StaysOpen="False" Grid.Column="1" Grid.Row="1" ClipToBounds="True" UseLayoutRounding="True" HorizontalAlignment="Stretch" VerticalAlignment="Top" Placement="Relative">
+            <TextBlock x:Name="Error_Popup_Label" Background="#FF404040" Text="Username already exists" TextAlignment="Left" Padding="5"  TextWrapping="Wrap" Foreground="White" Width="400" LineHeight="6" FontStyle="Italic"/>
+        </Popup>
+
         <Label Content="Swaggy Netty" Margin="20,5" Grid.Row="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" UseLayoutRounding="True" Grid.ColumnSpan="1" FontSize="30" FontFamily="Segoe UI Historic" d:IsLocked="True">
             <Label.Effect>
                 <DropShadowEffect Opacity="0.25"/>

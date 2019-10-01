@@ -60,13 +60,15 @@ namespace Launcher {
                         (Application.Current.MainWindow as MainWindow).mainFrame.NavigationService.Navigate(new LoggedInPage());
                     }));
                 }
+                else {
+                    Dispatcher.Invoke(DispatcherPriority.Background, new Action(async () => {
+                        await AnimateOut();
+                        (Application.Current.MainWindow as MainWindow).mainFrame.NavigationService.Navigate(new LoginPage());
+                    }));
+                }
             }
             catch (Exception e) {
-                //Dispatcher.Invoke(DispatcherPriority.Background,
-                //    new Action(() => {
-                //        errorPopup.IsOpen = true;
-                //        Error_Popup_Label.Text = "Could not login.\n\n" + e.Message;
-                //    }));
+                (Application.Current.MainWindow as MainWindow).DisplayError("Login request failed", e.Message);
             }
         }
 
