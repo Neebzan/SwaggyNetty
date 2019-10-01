@@ -106,24 +106,30 @@ namespace Launcher {
             if (!await WriteToMiddleware(client, msg))
                 return false;
 
-            while (true) {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            while (stopwatch.Elapsed.TotalMilliseconds <= ConnectionTimeoutMS) {
                 string result = TcpHelper.MessageFormatter.ReadStreamOnce(client.GetStream());
                 if (!string.IsNullOrEmpty(result)) {
                     UserModel resultUser = Newtonsoft.Json.JsonConvert.DeserializeObject<UserModel>(result);
-                    if (resultUser.Status == RequestStatus.Success) {
-                        if (resultUser.RequestType == RequestTypes.Token_Get) {
+                    if (resultUser.RequestType != RequestTypes.Error) {
+                        if (resultUser.RequestType == RequestTypes.Get_User) {
                             loggedUser = resultUser;
                             client.Dispose();
                             return true;
                         }
                     }
                     else {
-                        loggedUser = null;
                         client.Dispose();
+                        BackendErrorEncountered?.Invoke(null, new BackendErrorEventArgs("Login request failed", resultUser.Message));
                         return false;
                     }
                 }
             }
+
+            client.Dispose();
+            BackendErrorEncountered?.Invoke(null, new BackendErrorEventArgs("Client connection failed", "The client connection timed-out after " + ConnectionTimeoutMS.ToString() + " ms"));
+            return false;
         }
 
         public static async Task<bool> SendTokenLogin (string token, string userID) {
@@ -139,27 +145,35 @@ namespace Launcher {
             if (!await WriteToMiddleware(client, msg))
                 return false;
 
-            while (true) {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            while (stopwatch.ElapsedMilliseconds < ConnectionTimeoutMS) {
                 string result = TcpHelper.MessageFormatter.ReadStreamOnce(client.GetStream());
                 if (!string.IsNullOrEmpty(result)) {
                     UserModel resultUser = Newtonsoft.Json.JsonConvert.DeserializeObject<UserModel>(result);
-                    if (resultUser.Status == RequestStatus.Success) {
+                    if (resultUser.RequestType != RequestTypes.Error) {
                         if (resultUser.TokenResponse == TokenResponse.Valid) {
                             loggedUser = resultUser;
                             client.Dispose();
                             return true;
                         }
-                        else {
+                        else if (resultUser.TokenResponse == TokenResponse.Invalid) {
+                            client.Dispose();
+                            BackendErrorEncountered?.Invoke(null, new BackendErrorEventArgs("Token login failed", "Your session has either expired or token was invalid"));
                             return false;
                         }
                     }
                     else {
-                        loggedUser = null;
                         client.Dispose();
+                        BackendErrorEncountered?.Invoke(null, new BackendErrorEventArgs("Token login failed", resultUser.Message));
                         return false;
                     }
                 }
             }
+
+            client.Dispose();
+            BackendErrorEncountered?.Invoke(null, new BackendErrorEventArgs("Client connection failed", "The client connection timed-out after " + ConnectionTimeoutMS.ToString() + " ms"));
+            return false;
         }
 
         public static void Logout () {
@@ -182,12 +196,13 @@ namespace Launcher {
             if (!await WriteToMiddleware(client, msg))
                 return false;
 
-
-            while (true) {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            while (stopwatch.ElapsedMilliseconds < ConnectionTimeoutMS) {
                 string result = TcpHelper.MessageFormatter.ReadStreamOnce(client.GetStream());
                 if (!string.IsNullOrEmpty(result)) {
                     UserModel resultUser = Newtonsoft.Json.JsonConvert.DeserializeObject<UserModel>(result);
-                    if (resultUser.Status == RequestStatus.Success) {
+                    if (resultUser.RequestType != RequestTypes.Error) {
                         if (resultUser.RequestType == RequestTypes.Create_User) {
                             loggedUser = resultUser;
                             client.Dispose();
@@ -195,12 +210,16 @@ namespace Launcher {
                         }
                     }
                     else {
-                        loggedUser = null;
                         client.Dispose();
+                        BackendErrorEncountered?.Invoke(null, new BackendErrorEventArgs("Create user failed", resultUser.Message));
                         return false;
                     }
                 }
             }
+
+            client.Dispose();
+            BackendErrorEncountered?.Invoke(null, new BackendErrorEventArgs("Client connection failed", "The client connection timed-out after " + ConnectionTimeoutMS.ToString() + " ms"));
+            return false;
         }
 
         public static void LaunchGame () {
