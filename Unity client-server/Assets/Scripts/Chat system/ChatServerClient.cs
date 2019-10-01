@@ -13,7 +13,8 @@ public class ChatServerClient : MonoBehaviour
     NetworkStream networkStream;
     bool isDisconnecting = false;
 
-    public string groupNameFromClient;
+    //public string groupNameFromClient;
+    public string GroupNameFromClient { get; set; }
 
 
     public ChatServerClient(TcpClient _tcpClient)
@@ -30,39 +31,45 @@ public class ChatServerClient : MonoBehaviour
 
     public void CreateGroup()
     {
-        ChatGroup mygroup = new ChatGroup() { GoupName = groupNameFromClient, ID = ChatServer.idNumber };
+        ChatGroup mygroup = new ChatGroup() { GroupName = GroupNameFromClient, ID = ChatServer.idNumber };
         ChatServer.idNumber += 1;
-        mygroup.members.Add(this);
 
         ChatServer.groups.Add(mygroup);
+        GroupNameFromClient = mygroup.GroupName;
+        JoinGroup();
+        
 
     }
     public void JoinGroup()
     {
         for (int i = 0; i < ChatServer.groups.Count; i++)
         {
-            if(ChatServer.groups[i].GoupName == groupNameFromClient)
+            if(ChatServer.groups[i].GroupName == GroupNameFromClient)
             {
+                ChatServer.groups[i].Members.Add(this);
                 var dasGroup = ChatServer.groups[i];
-                ChatServer.groups[i].members.Add(this);
 
                 var mes = TCPHelper.MessageBytes(ChatServer.groups[i]);
-                for (int y = 0; y < dasGroup.members.Count; y++)
+                for (int y = 0; y < dasGroup.Members.Count; y++)
                 {
-
-                    SendToClient(mes);
+                    dasGroup.Members[i].SendToClient(mes);
                 }
             }
-            //sende til clients
         }
     }
     public void LeaveGroup()
     {
         for (int i = 0; i < ChatServer.groups.Count; i++)
         {
-            if (ChatServer.groups[i].GoupName == groupNameFromClient)
+            if (ChatServer.groups[i].GroupName == GroupNameFromClient)
             {
-                ChatServer.groups[i].members.Remove(this);
+                ChatServer.groups[i].Members.Remove(this);
+                var dasGroup = ChatServer.groups[i];
+                var mes = TCPHelper.MessageBytes(ChatServer.groups[i]);
+                for (int y = 0; y < dasGroup.Members.Count; y++)
+                {
+                    dasGroup.Members[i].SendToClient(mes);
+                }
             }
         }
        

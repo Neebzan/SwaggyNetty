@@ -83,7 +83,7 @@ public class ChatServer : MonoBehaviour
             byte[] mes = TCPHelper.MessageBytes(tickMessages);
             for (int i = 0; i < Clients.Count; i++)
             {
-                Clients[i].SendToClient(mes);               
+                Clients[i].SendToClient(mes);
             }
             tickMessages.ChatDataPackages.Clear();
         }
@@ -140,12 +140,23 @@ public class ChatServer : MonoBehaviour
 
         if (tickMessages.ChatDataPackages.Count > 0)
         {
+            
             // skal tjekke igennem en liste at gruppen kan der  problem. hvordan får man fat i en gruppe genneralt når vi ikke ved hvad det er for en liste som skal bruges
             byte[] mes = TCPHelper.MessageBytes(tickMessages);
             //skal finde gruppen
-            for (int i = 0; i < Clients.Count; i++)
+
+            for (int i = 0; i < groups.Count; i++)
             {
-                Clients[i].SendToClient(mes);
+                if(groups[i].GroupName == "ja")
+                {
+                    for (int y = 0; y < groups[i].Members.Count; y++)
+                    {
+
+                        groups[i].Members[y].SendToClient(mes);
+
+                    }
+                }
+               
             }
             tickMessages.ChatDataPackages.Clear();
         }

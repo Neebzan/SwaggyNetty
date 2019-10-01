@@ -9,8 +9,8 @@ using System.Threading.Tasks;
     {
 
         public int ID { get; set; }
-        public string GoupName { get; set; }
-    public List<ChatServerClient> members { get; set; } = new List<ChatServerClient>();
+        public string GroupName { get; set; }
+    public List<ChatServerClient> Members { get; set; } = new List<ChatServerClient>();
 
     }
 
