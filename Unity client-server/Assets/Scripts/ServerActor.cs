@@ -2,23 +2,34 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
+using System.Timers;
 using UnityEngine;
 
 public class ServerActor : MonoBehaviour
 {
     public Vector2 currentMoveDirection;
-    private List<KeyCode> activeInputs = new List<KeyCode>();
+    public List<KeyCode> activeInputs = new List<KeyCode>();
     public ServerClient Client;
     public EndPoint Endpoint { get; internal set; }
     public uint PlayerID;
     public Vector2 CurrentPos;
-    public Vector2 CurrentGridIndex;
-    private GridGenerater map = Server.MapGrid;
+
+    public int startingX;
+    public int startingY;
+
+    public int newX;
+    public int newY;
+
+    public bool newMove = true;
+
+
+    public int Attack = 1;
 
     void Start()
     {
         CurrentPos = transform.position;
     }
+
 
     void Update()
     {
@@ -37,17 +48,21 @@ public class ServerActor : MonoBehaviour
             switch (input)
             {
                 case KeyCode.A:
-                    currentMoveDirection += new Vector2(-1, 0);
+                    currentMoveDirection = new Vector2(-1, 0);
                     break;
                 case KeyCode.D:
-                    currentMoveDirection += new Vector2(1, 0);
+                    currentMoveDirection = new Vector2(1, 0);
                     break;
                 case KeyCode.W:
-                    currentMoveDirection += new Vector2(0, 1);
+                    currentMoveDirection = new Vector2(0, 1);
                     break;
                 case KeyCode.S:
-                    currentMoveDirection += new Vector2(0, -1);
+                    currentMoveDirection = new Vector2(0, -1);
                     break;
+                case KeyCode.Space:
+                    currentMoveDirection = Vector2.zero;
+                    break;
+
                 default:
                     break;
             }
@@ -59,10 +74,32 @@ public class ServerActor : MonoBehaviour
     /// </summary>
     public void Move()
     {
+        if (newMove)
+        {
+            Server.MapGrid.grid[newX, newY].GetComponent<Cell>().OccupyCell(gameObject);
+            startingX = newX;
+            startingY = newY;
+            newMove = false;
+        }
 
-        if (currentMoveDirection.x != 0)
-            if (currentMoveDirection.x + CurrentGridIndex.x < map.gridWidth && currentMoveDirection.x + CurrentGridIndex.x > 0)
-                //map.grid[CurrentGridIndex+currentMoveDirection.x]
+        //Debug.Log("Moving");
+        if (currentMoveDirection != Vector2.zero)
+        {
+            if (currentMoveDirection.x + startingX < Server.MapGrid.gridWidth && currentMoveDirection.x + startingX >= 0)
+            {
+                newX = startingX + (int)currentMoveDirection.x;
+            }
+
+            if (currentMoveDirection.y + startingY < Server.MapGrid.gridHeigth && currentMoveDirection.y + startingY >= 0)
+            {
+                newY = startingY + (int)currentMoveDirection.y;
+            }
+            currentMoveDirection = Vector2.zero;
+        }
+
+
+
+        //}
 
         //currentMoveDirection.Normalize();
         //if (currentMoveDirection != Vector2.zero)

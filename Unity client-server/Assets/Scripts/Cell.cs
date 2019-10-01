@@ -36,7 +36,7 @@ public class Cell : MonoBehaviour
         var cubeRenderer = gameObject.GetComponent<Renderer>();
 
         //Call SetColor using the shader property name "_Color" and setting the color to red
-        cubeRenderer.material.SetColor("_Color", Color.white);
+        cubeRenderer.material.SetColor("_Color", Color.red);
     }
 
 }

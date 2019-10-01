@@ -27,12 +27,15 @@ public class ServerClient {
     /// <summary>
     /// Instantiates a player actor in the scene
     /// </summary>
-    public ServerActor SpawnActor (Vector2 pos, Vector2 index) {
+    public ServerActor SpawnActor (Vector2 index) {
         UnityEngine.Object playerPrefab = Resources.Load("Prefabs/ServerActor");
+        ServerGameManager gameManager = GameObject.Find("GameManager").GetComponent<ServerGameManager>();
 
-        GameObject actorObject = (GameObject)GameObject.Instantiate(playerPrefab, pos, Quaternion.identity);
+        GameObject actorObject = (GameObject)GameObject.Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
         ServerActor actorComponent = actorObject.GetComponent<ServerActor>();
-        actorComponent.CurrentGridIndex = index;
+        actorComponent.newX = (int)index.x;
+        actorComponent.newY = (int)index.y;
+
         actorComponent.Endpoint = tcpClient.Client.RemoteEndPoint;
         this.OnNewInputsRecieved += actorComponent.NewInputsRecieved;
         actorComponent.Client = this;
@@ -42,6 +45,8 @@ public class ServerClient {
         ClientConnected(actorComponent.PlayerID, actorComponent.CurrentPos);
         Server.Clients.Add(this);
         Server.Players.Add(actorComponent);
+        gameManager.Players.Add(actorComponent);
+        gameManager.MapGrid.grid[actorComponent.startingX, actorComponent.startingY].GetComponent<Cell>().OccupyCell(actorObject);
         return actorComponent;
     }
 
@@ -134,7 +139,7 @@ public class ServerClient {
     }
 
     void HandleInputMessage (string msg) {
-        Vector2 moveDir = Vector2.zero;
+        //Vector2 moveDir = Vector2.zero;
         string [ ] msgSplit = msg.Split(':');
 
         for (int i = 0; i < msgSplit.Length; i++) {

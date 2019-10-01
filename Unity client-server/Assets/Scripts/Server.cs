@@ -19,7 +19,7 @@ public static class Server {
     //static TcpListener listener = new TcpListener(iPAd, SERVER_PORT);
     static TcpListener listener = new TcpListener(IPAddress.Any, SERVER_PORT);
 
-    static System.Timers.Timer timer = new System.Timers.Timer(1000);
+    public static System.Timers.Timer timer = new System.Timers.Timer(1000);
     public static uint PlayersConnected;
 
     public static GridGenerater MapGrid;
@@ -61,8 +61,14 @@ public static class Server {
 
     private static void Tick (object sender, ElapsedEventArgs e) {
         byte [ ] package = PositionData();
+
         for (int i = 0; i < Players.Count; i++) {
             Players [ i ].Client.SendToClient(package);
+        }
+        for (int i = 0; i < Players.Count; i++)
+        {
+            //Players[i].activeInputs.Clear();
+            Players[i].newMove = true;
         }
     }
 
