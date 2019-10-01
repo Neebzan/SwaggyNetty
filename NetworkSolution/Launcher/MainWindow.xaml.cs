@@ -45,6 +45,7 @@ namespace Launcher
             mainFrame.NavigationService.Navigate(new LoginPage());
 
 
+
             Application.Current.MainWindow.Deactivated += (object sender, EventArgs e) => {
                 Error_Popup.IsOpen = false;
             };

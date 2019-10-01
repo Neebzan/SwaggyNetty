@@ -26,9 +26,6 @@ namespace Launcher {
 
         TextBox usernameBox;
         PasswordBox passwordBox, confirmPassBox;
-        Popup errorPopup;
-        TextBlock errorPopupMessage;
-
 
         public RegisterPage () {
             InitializeComponent();
@@ -36,30 +33,7 @@ namespace Launcher {
             usernameBox = username_textbox;
             passwordBox = password_textbox;
             confirmPassBox = password_confirm_textbox;
-            errorPopup = this.Error_Popup;
-            errorPopupMessage = Error_Popup_Label;
             spinner_imageawesome.Visibility = Visibility.Hidden;
-
-
-            Application.Current.MainWindow.Deactivated += (object sender, EventArgs e) => {
-                errorPopup.IsOpen = false;
-            };
-
-            Application.Current.MainWindow.LocationChanged += (object sender, EventArgs e) => {
-                errorPopup.IsOpen = false;
-            };
-            this.usernameBox.KeyDown += (object sender, KeyEventArgs e) => {
-                errorPopup.IsOpen = false;
-            };
-            this.passwordBox.KeyDown += (object sender, KeyEventArgs e) => {
-                errorPopup.IsOpen = false;
-            };
-            this.confirmPassBox.KeyDown += (object sender, KeyEventArgs e) => {
-                errorPopup.IsOpen = false;
-            };
-
-            errorPopup.IsOpen = false;
-
         }
 
         private async void BackToLogin_Button_Clicked (object sender, RoutedEventArgs e) {
@@ -77,9 +51,7 @@ namespace Launcher {
                 Task.Factory.StartNew(() => CreateUserRequest(password, confirmPass, username));
             }
             else {
-                errorPopup.IsOpen = true;
-                errorPopupMessage.Background = Brushes.Red;
-                errorPopupMessage.Text = "Could not create an account.\n\nYou must fill-out all fields in order to create an account.";
+                (Application.Current.MainWindow as MainWindow).DisplayError("Create user request failed", "You must fill out all fields");
                 spinner_imageawesome.Visibility = Visibility.Hidden;
             }
         }
@@ -99,22 +71,14 @@ namespace Launcher {
 
 
                 }
-                else {
-                    Dispatcher.Invoke(DispatcherPriority.Background,
-                  new Action(() => {
-                      this.errorPopup.IsOpen = true;
-                      errorPopupMessage.Background = Brushes.Red;
-                      errorPopupMessage.Text = "Could not create an account.\n\nSomething went wrong.";
-                  }));
-                }
             }
             else {
                 Dispatcher.Invoke(DispatcherPriority.Background,
                 new Action(() => {
-                    errorPopup.IsOpen = true;
-                    errorPopupMessage.Background = Brushes.Red;
-                    errorPopupMessage.Text = "Could not create an account.\n\nYour password does not match the confirmed password.";
+                    spinner_imageawesome.Visibility = Visibility.Hidden;
+                    (Application.Current.MainWindow as MainWindow).DisplayError("Create user request failed", "Your password entry does not match the confirm password entry");
                 }));
+
             }
             Dispatcher.Invoke(DispatcherPriority.Background,
             new Action(() => {

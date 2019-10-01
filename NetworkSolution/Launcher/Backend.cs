@@ -176,10 +176,6 @@ namespace Launcher {
             return false;
         }
 
-        public static void Logout () {
-            loggedUser = null;
-        }
-
         public static async Task<bool> SendRegisterRequest (string username, SecureString password) {
             string unsecurePassword = ConvertToUnsecureString(password);
             string hashedPassword = GetPasswordHash(unsecurePassword);
@@ -222,6 +218,10 @@ namespace Launcher {
             return false;
         }
 
+        public static void Logout () {
+            loggedUser = null;
+        }
+
         public static void LaunchGame () {
             Process.Start("F:/Steam/steamapps/common/Cube World/cubeworld.exe");
         }
@@ -237,10 +237,6 @@ namespace Launcher {
             return password;
         }
 
-        private static void ReadForAnswer () {
-            //TcpHelper.MessageFormatter.ReadForMessages(new NetworkStre));
-        }
-
         public static bool CheckPassUniformity (SecureString _password, SecureString _confirmPass) {
             string pass = ConvertToUnsecureString(_password);
             string confirmPass = ConvertToUnsecureString(_confirmPass);
@@ -252,7 +248,6 @@ namespace Launcher {
                 return false;
             }
         }
-
 
         public static string ConvertToUnsecureString (SecureString securePassword) {
             if (securePassword == null) {

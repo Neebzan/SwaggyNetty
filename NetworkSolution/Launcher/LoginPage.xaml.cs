@@ -21,13 +21,11 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
-namespace Launcher
-{
+namespace Launcher {
     /// <summary>
     /// Interaction logic for LoginPage.xaml
     /// </summary>
-    public partial class LoginPage : BasePage
-    {
+    public partial class LoginPage : BasePage {
         TextBox usernameBox;
         PasswordBox passwordBox;
         CheckBox rememberUsername, automaticLogin;
@@ -44,6 +42,7 @@ namespace Launcher
             rememberUsername = remember_username_tick;
             automaticLogin = automatic_login_tick;
             spinner = spinner_imageawesome;
+
             spinner.Visibility = Visibility.Hidden;
             this.Loaded += CheckAutoLogin;
 
@@ -54,7 +53,6 @@ namespace Launcher
             if (rememberUsername.IsChecked == true && !string.IsNullOrEmpty(savedUsername)) {
                 usernameBox.Text = savedUsername;
             }
-
         }
 
         private async void CheckAutoLogin (object sender, RoutedEventArgs e) {
@@ -69,8 +67,6 @@ namespace Launcher
             }
         }
 
-
-
         private void Login_Button_Clicked (object sender, RoutedEventArgs e) {
             spinner.Visibility = Visibility.Visible;
             if (!string.IsNullOrEmpty(passwordBox.Password) && !string.IsNullOrEmpty(usernameBox.Text)) {
@@ -82,22 +78,22 @@ namespace Launcher
                     new Action(async () => {
                         await AnimateOut();
                         (Application.Current.MainWindow as MainWindow).mainFrame.NavigationService.Navigate(new LoggingYouInPage(password, username, rememberUsername, false));
-                    }));   
+                    }));
             }
             else {
                 (Application.Current.MainWindow as MainWindow).DisplayError("Login request failed", "You must enter both a password and a username in order to login");
                 spinner.Visibility = Visibility.Hidden;
             }
-        }       
+        }
 
         private void Remember_username_tick_Unchecked (object sender, RoutedEventArgs e) {
             if (!string.IsNullOrEmpty(savedUsername)) {
                 savedUsername = string.Empty;
             }
-                Settings.Default.username = string.Empty;
-                Settings.Default.RememberUsername = false;
-                Settings.Default.Save();
-                automaticLogin.IsChecked = false;            
+            Settings.Default.username = string.Empty;
+            Settings.Default.RememberUsername = false;
+            Settings.Default.Save();
+            automaticLogin.IsChecked = false;
         }
 
         private void Remember_username_tick_Checked (object sender, RoutedEventArgs e) {
