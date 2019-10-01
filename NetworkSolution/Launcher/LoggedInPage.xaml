@@ -12,7 +12,7 @@
         <Frame.Content>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left">
                 <Label Content="Welcome to the world of Swaggy Netty!" Margin="20,20,20,0" FontSize="14" VerticalContentAlignment="Bottom" UseLayoutRounding="False" Grid.Row="1" Padding="0"/>
-                <Label x:Name="logged_in_as_label" Content="Logged in as " Foreground="#FFBD2222" Margin="20,20,20,0" FontSize="14" VerticalContentAlignment="Bottom" UseLayoutRounding="False" Grid.Row="1" Padding="0"/>
+                <Label x:Name="logged_in_as_label" Content="Logged in as" Foreground="#FFBD2222" Margin="20,20,20,0" FontSize="14" VerticalContentAlignment="Bottom" UseLayoutRounding="False" Grid.Row="1" Padding="0"/>
 
                 <TextBlock Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque imperdiet dui dui, et consectetur metus ullamcorper ac. Quisque faucibus lectus ut massa elementum, eget consectetur nulla tempus. Aliquam in lectus gravida arcu gravida placerat. Phasellus ut odio vitae odio auctor maximus. Proin mauris orci, iaculis ut euismod vulputate, sodales sed leo."
                            Margin="20,10,20,0" Height="116" Width="284" TextWrapping="Wrap"/>

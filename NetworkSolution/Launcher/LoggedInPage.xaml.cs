@@ -1,7 +1,9 @@
-﻿using PatchManagerClient;
+﻿using Launcher.Properties;
+using PatchManagerClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -46,6 +48,9 @@ namespace Launcher {
             Backend.Logout();
             (Application.Current.MainWindow as MainWindow).playButton.IsEnabled = false;
             (Application.Current.MainWindow as MainWindow).playButton.Opacity = .5;
+            Settings.Default.SessionToken = "";
+            Settings.Default.username = "";
+            Settings.Default.Save();
 
             await AnimateOut();
             (Application.Current.MainWindow as MainWindow).mainFrame.NavigationService.Navigate(new LoginPage());

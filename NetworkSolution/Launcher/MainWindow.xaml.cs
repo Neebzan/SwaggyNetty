@@ -40,9 +40,6 @@ namespace Launcher
             progressBar = progress_bar;
 
             Loaded += StartBackend;
-            //progressBar.Value = Backend.PatchProgress;
-            //patchpercentage_label.Content = Backend.PatchProgress.ToString() + "%";
-
             mainFrame.NavigationService.Navigate(new LoginPage());
 
 
@@ -61,7 +58,6 @@ namespace Launcher
             PatchmanagerClient.DownloadComplete += (object sender, EventArgs e) => {
                 patchpercentage_label.Dispatcher.Invoke(() => {
                     patchpercentage_label.Content = String.Format("{0:0.##}", Backend.PatchProgress) + "%";
-                    //progressBar.Value = Backend.PatchProgress;
                     progressBar.NewValueGiven?.Invoke(this, new ProgressBarValueChangedEventArgs((float)progressBar.Value, Backend.PatchProgress));
                     files_remaining_label.Content = "";
                     file_label.Content = "";

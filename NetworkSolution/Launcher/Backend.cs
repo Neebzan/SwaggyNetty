@@ -16,7 +16,7 @@ using System.Windows;
 
 namespace Launcher {
     public static class Backend {
-        private static string middlewareIP = "10.131.68.42";
+        private static string middlewareIP = "10.131.68.126";
         private static int middlewarePort = 13010;
         public static UserModel loggedUser { get; private set; } = null;
         public static float PatchProgress = 0f;
@@ -30,7 +30,7 @@ namespace Launcher {
             if (PatchmanagerClient.MissingFiles.RemainingSize == 0) {
                 PatchProgress = 100;
             }
-            else 
+            else
                 PatchProgress = ((1.0f - ((float)PatchmanagerClient.MissingFiles.RemainingSize / (float)PatchmanagerClient.MissingFiles.TotalSize)) * 100.0f);
         }
 
@@ -52,10 +52,9 @@ namespace Launcher {
             }
 
             catch (Exception) {
+                client.Dispose();
                 return false;
             }
-
-
 
             GlobalVariablesLib.UserModel user = new GlobalVariablesLib.UserModel() { UserID = username, PswdHash = hashedPassword, RequestType = GlobalVariablesLib.RequestTypes.Get_User };
 
@@ -65,6 +64,7 @@ namespace Launcher {
                 client.GetStream().Write(msg, 0, msg.Length);
             }
             catch (Exception) {
+                client.Dispose();
                 return false;
             }
 
@@ -75,16 +75,73 @@ namespace Launcher {
                     if (resultUser.Status == RequestStatus.Success) {
                         if (resultUser.RequestType == RequestTypes.Token_Get) {
                             loggedUser = resultUser;
+                            client.Dispose();
                             return true;
                         }
                     }
                     else {
                         loggedUser = null;
+                        client.Dispose();
                         return false;
                     }
                 }
             }
         }
+
+
+
+
+
+
+        public static async Task<bool> SendTokenLogin (string token) {
+            TcpClient client = new TcpClient();
+
+
+            try {
+                await client.ConnectAsync(middlewareIP, middlewarePort);
+            }
+
+            catch (Exception) {
+                client.Dispose();
+                return false;
+            }
+
+            GlobalVariablesLib.UserModel user = new GlobalVariablesLib.UserModel() { Token = token, RequestType = GlobalVariablesLib.RequestTypes.Token_Check };
+
+            byte [ ] msg = TcpHelper.MessageFormatter.MessageBytes<GlobalVariablesLib.UserModel>(user);
+
+            try {
+                client.GetStream().Write(msg, 0, msg.Length);
+            }
+            catch (Exception) {
+                client.Dispose();
+                return false;
+            }
+
+            while (true) {
+                string result = TcpHelper.MessageFormatter.ReadStreamOnce(client.GetStream());
+                if (!string.IsNullOrEmpty(result)) {
+                    UserModel resultUser = Newtonsoft.Json.JsonConvert.DeserializeObject<UserModel>(result);
+                    if (resultUser.Status == RequestStatus.Success) {
+                        if (resultUser.TokenResponse == TokenResponse.Valid) {
+                            loggedUser = resultUser;
+                            client.Dispose();
+                            return true;
+                        }
+                    }
+                    else {
+                        loggedUser = null;
+                        client.Dispose();
+                        return false;
+                    }
+                }
+            }
+        }
+
+
+
+
+
 
         public static void Logout () {
             loggedUser = null;
@@ -101,6 +158,7 @@ namespace Launcher {
                 await client.ConnectAsync(middlewareIP, middlewarePort);
             }
             catch (Exception) {
+                client.Dispose();
                 return false;
             }
 
@@ -112,10 +170,29 @@ namespace Launcher {
                 client.GetStream().Write(msg, 0, msg.Length);
             }
             catch (Exception) {
+                client.Dispose();
                 return false;
             }
 
-            return true;
+
+            while (true) {
+                string result = TcpHelper.MessageFormatter.ReadStreamOnce(client.GetStream());
+                if (!string.IsNullOrEmpty(result)) {
+                    UserModel resultUser = Newtonsoft.Json.JsonConvert.DeserializeObject<UserModel>(result);
+                    if (resultUser.Status == RequestStatus.Success) {
+                        if (resultUser.RequestType == RequestTypes.Create_User) {
+                            loggedUser = resultUser;
+                            client.Dispose();
+                            return true;
+                        }
+                    }
+                    else {
+                        loggedUser = null;
+                        client.Dispose();
+                        return false;
+                    }
+                }
+            }
         }
 
         public static void LaunchGame () {
@@ -131,20 +208,6 @@ namespace Launcher {
             }
 
             return password;
-        }
-        private static string ConvertToUnsecureString (SecureString securePassword) {
-            if (securePassword == null) {
-                return string.Empty;
-            }
-
-            IntPtr unmanagedString = IntPtr.Zero;
-            try {
-                unmanagedString = Marshal.SecureStringToGlobalAllocUnicode(securePassword);
-                return Marshal.PtrToStringUni(unmanagedString);
-            }
-            finally {
-                Marshal.ZeroFreeGlobalAllocUnicode(unmanagedString);
-            }
         }
 
         private static void ReadForAnswer () {
@@ -163,6 +226,38 @@ namespace Launcher {
             }
         }
 
+
+        public static string ConvertToUnsecureString (SecureString securePassword) {
+            if (securePassword == null) {
+                return string.Empty;
+            }
+
+            IntPtr unmanagedString = IntPtr.Zero;
+            try {
+                unmanagedString = Marshal.SecureStringToGlobalAllocUnicode(securePassword);
+                return Marshal.PtrToStringUni(unmanagedString);
+            }
+            finally {
+                Marshal.ZeroFreeGlobalAllocUnicode(unmanagedString);
+            }
+        }
+        /// <summary>
+        /// https://stackoverflow.com/questions/1570422/convert-string-to-securestring/43084626
+        /// </summary>
+        /// <param name="originalString"></param>
+        /// <returns></returns>
+        public static SecureString ConvertToSecureString (string originalString) {
+            if (originalString == null)
+                throw new ArgumentNullException("password");
+
+            var securePassword = new SecureString();
+
+            foreach (char c in originalString)
+                securePassword.AppendChar(c);
+
+            securePassword.MakeReadOnly();
+            return securePassword;
+        }
 
     }
 }
