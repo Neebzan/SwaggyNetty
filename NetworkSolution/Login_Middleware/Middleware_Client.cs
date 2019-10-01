@@ -13,14 +13,14 @@ using System.IO;
 using System.Threading;
 using GlobalVariablesLib;
 using System.Security.Cryptography;
+using JWTlib;
 
 namespace Login_Middleware {
     /// <summary>
-    /// Middleware_Client represents a connected client internally
+    /// Middleware_Client Represents a User with a TCP Connection internally
     /// </summary>
     class Middleware_Client {
         private TcpClient tcpClient;
-
         private UserModel user_obj;
         private NetworkStream stream;
         private bool isAlive = true;
@@ -68,14 +68,14 @@ namespace Login_Middleware {
         /// </summary>
         /// <param name="client"></param>
         public Middleware_Client(TcpClient client) {
-            Console.WriteLine($"Middleware_Client Created On Thread:\n////\n{Thread.CurrentThread.Name}\n////\n Middleware_Client ID: [ {ThreadID} ]");
+            Console.WriteLine($"Middleware_Client Created!");
             tcpClient = client;
             if (Connected) {
                 stream = tcpClient.GetStream();
             }
         }
         ~Middleware_Client() {
-            Console.WriteLine($"Middleware_Client[{ThreadID}] Aborted");
+
         }
 
         /// <summary>
@@ -101,22 +101,27 @@ namespace Login_Middleware {
 
                         // Console info when recieveing data.
                         {
-                            Console.WriteLine
-                                ("_______________________________\n" +
-                                "###Middleware_Client###\nReceived: {0}\nAttempting To Convert To Json Object" +
-                                "\n_______________________________", data);
+                            WriteLine(
+                                $"\nRequest Recieved\n_______________________________\n" +
+                                $"Received Data: {data}\nAttempting To Convert from Json String\n" +
+                                $"_______________________________\n");
                         }
 
                         // Tries to convert recieved data to an object.
                         try {
                             // Deserialises to local obj
                             user_obj = DeserializeRequest(data);
-
+                            WriteLine("Object Deserialisation Successful!");
                             // Queues request from client to db with object, containing recieved data from client
                             QueueRequest(user_obj);
                         } catch (Exception e) {
-                            Console.WriteLine($"EXCEPTION:-----------------------------------\n {e}\n-----------------------------------");
-                            Console.WriteLine("\n\n-----------------------------------\n" + data + "\n\n-----------------------------------");
+                            WriteLine($"EXCEPTION:\n" +
+                                $"-----------------------------------\n" +
+                                $"{e}\n" +
+                                $"-----------------------------------\n" +
+                                $"-----------------------------------\n" +
+                                $"{data}\n" +
+                                $"-----------------------------------\n");
 
                             // Json client response setup
                             UserModel response = new UserModel() {
@@ -124,26 +129,26 @@ namespace Login_Middleware {
                                 RequestType = RequestTypes.Error
                             };
 
+                            WriteToClient(JsonConvert.SerializeObject(response));
+
+
                             if (Connected) {
-                                // Get bytes from data (string)
-
-                                byte[] msg = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(response));
-
-                                //sends message to client
-
-                                stream.Write(msg, 0, msg.Length);
+                                WriteLine("Closing TCP Connection");
+                                tcpClient.Close();
                             }
-                            if (Connected) {
+                            isAlive = false;
+                        } finally {
+                            if (!Connected) {
+                                WriteLine("Connection Closed");
                                 tcpClient.Close();
                             }
                             isAlive = false;
                         }
                     }
-                } else {
-                    Console.WriteLine();
-                    isAlive = false;
                 }
             }
+            WriteLine("Task: ListenForMessages() Finished all Work\n");
+            isAlive = false;
         }
 
         /// <summary>
@@ -171,29 +176,34 @@ namespace Login_Middleware {
             // Tries to compare hashed passwords
             try {
                 if (received_obj.PswdHash == userData.PswdHash) {
-                    Console.WriteLine($"Middleware_Client[{ThreadID}]: User: {userData.UserID} Found. Requesting Token from Token Server...");
+                    WriteLine($"Hashing Successful!");
                     return true;
                 } else {
-                    Console.WriteLine($"Middleware_Client[{ThreadID}]: Hashing Failed...\n###################\n{received_obj.PswdHash} ==\n{userData.PswdHash}\n###################");
+                    WriteLine($"Hashing Failed\n \n{received_obj.PswdHash} =/=\n{userData.PswdHash}\n ");
                     return false;
                 }
             } catch (Exception e) {
-                Console.WriteLine($"Error in Middleware_Client[{ThreadID}]: {e.Message}!");
+                WriteLine($"Error: {e.Message}!");
 
                 return false;
             }
         }
-
-        private string HandleError(UserModel ErrorObject) {
+        /// <summary>
+        /// Handles Error responses from database queue.
+        /// </summary>
+        /// <param name="errorObject"></param>
+        /// <returns></returns>
+        private string HandleError(UserModel errorObject) {
             string errorMessage = "";
-            switch (ErrorObject.Status) {
+            switch (errorObject.Status) {
                 case RequestStatus.Success:
                     errorMessage = "Wrong Username or Password";
                     break;
                 case RequestStatus.AlreadyExists:
+                    errorMessage = $"An Account With Username: {errorObject.UserID}, Already Exists!";
                     break;
                 case RequestStatus.DoesNotExist:
-                    errorMessage = "Wrong Username or Password";
+                    errorMessage = "Username or Password did not Match";
                     break;
                 case RequestStatus.ConnectionError:
                     errorMessage = "Connection Error!";
@@ -213,16 +223,13 @@ namespace Login_Middleware {
         /// <param name="label"></param>
         /// <returns></returns>
         private UserModel RequestToken(UserModel databaseMessageObj, GlobalVariablesLib.TokenRequestType tokenRequestType) {
-
-            UserModel tempModel = databaseMessageObj;
-
             // Switch to determine the type of return expected
             switch (tokenRequestType) {
                 case TokenRequestType.VerifyToken:
-                    tempModel.RequestType = RequestTypes.Token_Check;
+                    databaseMessageObj.RequestType = RequestTypes.Token_Check;
                     break;
                 case TokenRequestType.CreateToken:
-                    tempModel.RequestType = RequestTypes.Token_Get;
+                    databaseMessageObj.RequestType = RequestTypes.Token_Get;
                     break;
             }
 
@@ -230,7 +237,7 @@ namespace Login_Middleware {
                 Formatter = new JsonMessageFormatter(),
                 Label = tokenRequestType.ToString(),
                 ResponseQueue = Middleware_Main.tokenResponseQueue,
-                Body = JsonConvert.SerializeObject(tempModel)
+                Body = JsonConvert.SerializeObject(databaseMessageObj)
             };
             Middleware_Main.tokenRequestQueue.Send(tokenRequestMessage);
 
@@ -238,26 +245,37 @@ namespace Login_Middleware {
             while (!success) {
                 Message peekedMessage = Middleware_Main.tokenResponseQueue.Peek();
                 peekedMessage.Formatter = new JsonMessageFormatter();
+                UserModel peekedModel = DeserializeRequest(peekedMessage.Body.ToString());
+                //string expectedID = "";
+                //if (!String.IsNullOrEmpty(databaseMessageObj.Token)){
+                //    expectedID = JWTManager.GetModelFromToken<JWTPayload>(databaseMessageObj.Token).UserID;
+                //} else {
+                //    expectedID = databaseMessageObj.UserID;
+                //}
 
-                if (peekedMessage.Label == databaseMessageObj.UserID && DeserializeRequest(peekedMessage.Body.ToString()).RequestType == tempModel.RequestType) {
+                if (peekedMessage.Label == databaseMessageObj.UserID && peekedModel.RequestType == databaseMessageObj.RequestType) {
                     Message recievedMessage = Middleware_Main.tokenResponseQueue.Receive();
                     recievedMessage.Formatter = new JsonMessageFormatter();
 
                     UserModel tokenUserModel = DeserializeRequest(recievedMessage.Body.ToString());
-
+                    tokenUserModel.UserID = databaseMessageObj.UserID;
                     return tokenUserModel;
                 }
             }
-            return null;
+            return databaseMessageObj;
         }
 
         private void WriteToClient(string message) {
             if (Connected) {
-                // Get bytes from data (string)
+                // Get bytes, Using The TcpHelper.MessageFormatter.MessageBytes Function
                 byte[] msg = MessageFormatter.MessageBytes(message);
-                //sends message to client
+                // Sends message to client
                 stream.Write(msg, 0, msg.Length);
             }
+        }
+
+        private void WriteLine(string message) {
+            Console.WriteLine($"Middleware_Client at ThreadID: {ThreadID}. " + message);
         }
 
         private void QueueRequest(UserModel userImputData) {
@@ -265,22 +283,25 @@ namespace Login_Middleware {
                 userImputData.PswdHash = GetPasswordHash(userImputData.PswdHash);
             }
 
+            // Bool used to determine when the correct message has been recieved, to end message peek loop
             bool success = false;
             string userImputRequestString = JsonConvert.SerializeObject(userImputData);
 
             switch (userImputData.RequestType) {
                 /// Case: Requests User information from the Database, based on recieved user data
                 case RequestTypes.Get_User:
-
                     // Setup DB request message
                     Message getRequest = new Message() {
                         Body = userImputRequestString,
                         Label = userImputData.UserID,
                         Formatter = new JsonMessageFormatter()
                     };
+
                     // Send DB request
-                    Console.WriteLine("Queing Request...");
+                    WriteLine("Queing Login Request...");
                     Middleware_Main.databaseRequestQueue.Send(getRequest);
+
+                    WriteLine("Login Request Sent To Database");
 
                     // Json client response setup
                     UserModel login_partial_response = new UserModel() {
@@ -292,49 +313,48 @@ namespace Login_Middleware {
                     // Wait for response
                     // While it has no success try, to recieve message from database producer queue with peeking
                     // to make sure it only takes the correct message...
+                    WriteLine("Waiting on Response from Database");
                     while (!success) {
                         // Peeks top of queue, and sets the right formatter
                         Message peekedMessage = Middleware_Main.databaseResponseQueue.Peek();
                         peekedMessage.Formatter = new JsonMessageFormatter();
+                        UserModel peekedModel = DeserializeRequest(peekedMessage.Body.ToString());
 
                         // if the label is as expected, and the request type is the same, consume message
                         // specifically made to be sure a user making two requests at once, can't get the wrong message back.
-                        if (peekedMessage.Label == userImputData.UserID && DeserializeRequest(peekedMessage.Body.ToString()).RequestType == RequestTypes.Get_User) {
+                        if (peekedMessage.Label == userImputData.UserID && peekedModel.RequestType == RequestTypes.Get_User) {
                             Message msg = Middleware_Main.databaseResponseQueue.Receive();
                             msg.Formatter = new JsonMessageFormatter();
 
                             UserModel dataBaseResponseObj = DeserializeRequest(msg.Body.ToString());
-                            Console.WriteLine(dataBaseResponseObj.ToString());
+                            WriteLine("Response Message Recieved from Database, Requesting Token From Token Server");
 
                             if (dataBaseResponseObj.Status == RequestStatus.Success && CheckHash(dataBaseResponseObj, userImputData)) {
                                 UserModel tokenReponse = RequestToken(userImputData, TokenRequestType.CreateToken);
                                 tokenReponse.Status = RequestStatus.Success;
+                                WriteLine("Token Successfully Created And Retrieved!");
                                 WriteToClient(JsonConvert.SerializeObject(tokenReponse));
                             } else {
-                                Console.WriteLine($"Middleware_Client[{ThreadID}]:\nERROR: {HandleError(dataBaseResponseObj)}.\n||||| USER REQUEST DENIED FROM HOST |||||");
+                                #region Access Denied Handling
+                                WriteLine($"ERROR: {HandleError(dataBaseResponseObj)}.\n---ACCESS DENIED---");
                                 // Json client response setup
                                 UserModel response = new UserModel() {
-                                    Message = $"ERROR: {HandleError(dataBaseResponseObj)}.\n Please Try again",
+                                    Message = $"Access Denied: {HandleError(dataBaseResponseObj)}.\n Please Try again",
                                     RequestType = RequestTypes.Error,
                                     Status = dataBaseResponseObj.Status
                                 };
-
-                                if (Connected) {
-                                    WriteToClient(JsonConvert.SerializeObject(response));
-                                    isAlive = false;
-                                }
+                                WriteToClient(JsonConvert.SerializeObject(response));
+                                WriteLine("Login Details and Toke Sent to User.");
+                                #endregion
                             }
                             success = true;
-                            if (Connected) {
-                                isAlive = false;
-                                tcpClient.Close();
-                            }
                         }
                     }
                     break;
 
                 /// Case: Requests Create call on data base, based on recieved user data
                 case RequestTypes.Create_User:
+                    WriteLine("User Issued a Signup Request");
                     // Setup of DB request message
                     Message createRequest = new Message() {
                         Body = userImputRequestString,
@@ -344,9 +364,9 @@ namespace Login_Middleware {
 
                     // Sending DB request message to message queue
                     // Debug Message
-                    Console.WriteLine("Queing Create Request...");
+                    WriteLine("Queing Signup Request");
                     Middleware_Main.databaseRequestQueue.Send(createRequest);
-
+                    WriteLine("Request Successfully Sent to Database");
                     // Client Response Message
                     // Json client response setup
                     UserModel createResponse = new UserModel() {
@@ -354,7 +374,9 @@ namespace Login_Middleware {
                         RequestType = RequestTypes.Response,
                         Status = RequestStatus.Success
                     };
+                    WriteToClient(JsonConvert.SerializeObject(createResponse));
 
+                    WriteLine("Waiting on response from Database");
                     while (!success) {
                         Message tempMessage = Middleware_Main.databaseResponseQueue.Peek();
                         tempMessage.Formatter = new JsonMessageFormatter();
@@ -364,21 +386,20 @@ namespace Login_Middleware {
                             Message m = Middleware_Main.databaseResponseQueue.Receive();
                             m.Formatter = new JsonMessageFormatter();
                             UserModel userModel = DeserializeRequest(m.Body.ToString());
-
+                            WriteLine("Response from Database Recieved");
                             switch (userModel.Status) {
                                 case RequestStatus.Success:
                                     userModel = RequestToken(DeserializeRequest(m.Body.ToString()), TokenRequestType.CreateToken);
+                                    userModel.RequestType = RequestTypes.Create_User;
+                                    userModel.Status = RequestStatus.Success;
+                                    WriteLine("User Created Sucessfully!");
                                     break;
                                 default:
+                                    WriteLine($"Error: {HandleError(userModel)}");
                                     break;
                             }
                             WriteToClient(JsonConvert.SerializeObject(userModel));
-                            Console.WriteLine($"Middleware_Client[{ThreadID}]\nCREATE RESPONSE: " + m.Body.ToString() + "\n");
-
-                        }
-                        if (Connected) {
-                            isAlive = false;
-                            tcpClient.Close();
+                            success = true;
                         }
                     }
                     break;
@@ -388,12 +409,18 @@ namespace Login_Middleware {
                 //case RequestTypes.Delete_User:
                 //    break;
                 case RequestTypes.Token_Check:
+                    WriteLine("Token Login Request Recieved");
+                    WriteLine("Sending Verification Request to Token server");
                     WriteToClient(JsonConvert.SerializeObject(RequestToken(userImputData, TokenRequestType.VerifyToken)));
+                    WriteLine("Response From Token Server Sent to User");
                     break;
                 default:
                     break;
             }
-
+            if (Connected) {
+                isAlive = false;
+                tcpClient.Close();
+            }
         }
 
     }

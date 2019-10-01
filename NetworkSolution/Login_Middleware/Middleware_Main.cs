@@ -40,7 +40,7 @@ namespace Login_Middleware
 
             // Start Listen for Clients
             Task.Factory.StartNew(ListenForClients, TaskCreationOptions.LongRunning);
-
+            
             // Work With Clients
             Task.Factory.StartNew(WaitForClients, TaskCreationOptions.LongRunning);
 
@@ -67,7 +67,7 @@ namespace Login_Middleware
                         Middleware_Client client = new Middleware_Client(tcpClient);
                         Console.WriteLine($"User at IP: {tcpClient.Client.RemoteEndPoint} Recieved Queue Time, Processing requests...");
                         
-                        Task.Factory.StartNew(client.ListenForMessages);
+                        Task.Factory.StartNew(client.ListenForMessages,TaskCreationOptions.PreferFairness);
                     }
                 }
             }
@@ -88,7 +88,7 @@ namespace Login_Middleware
                 {
                     TcpClient c = serverListener.AcceptTcpClient();
                     users.Enqueue(c);
-                    Console.WriteLine(c.Client.RemoteEndPoint.ToString() + " connected");
+                    Console.WriteLine("SERVER: "+c.Client.RemoteEndPoint.ToString() + " connected");
                 }
             }
         }

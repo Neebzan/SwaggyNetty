@@ -10,6 +10,6 @@ namespace GlobalVariablesLib
     public class JWTPayload
     {
         public ServersData ServersInfo { get; set; }
-        public UserModel User { get; set; }
+        public string UserID { get; set; }
     }
 }
