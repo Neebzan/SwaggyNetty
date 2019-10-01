@@ -88,12 +88,7 @@ namespace Launcher {
             }
         }
 
-
-
-
-
-
-        public static async Task<bool> SendTokenLogin (string token) {
+        public static async Task<bool> SendTokenLogin (string token, string userID) {
             TcpClient client = new TcpClient();
 
 
@@ -106,7 +101,7 @@ namespace Launcher {
                 return false;
             }
 
-            GlobalVariablesLib.UserModel user = new GlobalVariablesLib.UserModel() { Token = token, RequestType = GlobalVariablesLib.RequestTypes.Token_Check };
+            GlobalVariablesLib.UserModel user = new GlobalVariablesLib.UserModel() { UserID = userID, Token = token, RequestType = GlobalVariablesLib.RequestTypes.Token_Check };
 
             byte [ ] msg = TcpHelper.MessageFormatter.MessageBytes<GlobalVariablesLib.UserModel>(user);
 
@@ -128,6 +123,9 @@ namespace Launcher {
                             client.Dispose();
                             return true;
                         }
+                        else {
+                            return false;
+                        }
                     }
                     else {
                         loggedUser = null;
@@ -137,11 +135,6 @@ namespace Launcher {
                 }
             }
         }
-
-
-
-
-
 
         public static void Logout () {
             loggedUser = null;

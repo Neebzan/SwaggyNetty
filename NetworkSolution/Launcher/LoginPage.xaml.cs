@@ -49,6 +49,7 @@ namespace Launcher
             automaticLogin = automatic_login_tick;
             spinner = spinner_imageawesome;
             spinner.Visibility = Visibility.Hidden;
+            this.Loaded += CheckAutoLogin;
             Application.Current.MainWindow.Deactivated += (object sender, EventArgs e) => {
                 errorPopup.IsOpen = false;
             };
@@ -65,12 +66,9 @@ namespace Launcher
             savedUsername = Settings.Default.username;
             rememberUsername.IsChecked = Settings.Default.RememberUsername;
             automaticLogin.IsChecked = Settings.Default.AutoLogin;
-            if (!string.IsNullOrEmpty(savedUsername)) {
-                rememberUsername.IsChecked = true;
+            if (rememberUsername.IsChecked == true && !string.IsNullOrEmpty(savedUsername)) {
                 usernameBox.Text = savedUsername;
             }
-
-            this.Loaded += CheckAutoLogin;
 
         }
 
@@ -78,35 +76,15 @@ namespace Launcher
             if (automaticLogin.IsChecked == true) {
                 if (!string.IsNullOrEmpty(Settings.Default.SessionToken)) {
                     await AnimateOut();
-                    (Application.Current.MainWindow as MainWindow).mainFrame.NavigationService.Navigate(new LoggingYouInPage());
+                    SecureString password = passwordBox.SecurePassword;
+                    string username = usernameBox.Text;
+                    bool? rememberUsername = remember_username_tick.IsChecked;
+                    (Application.Current.MainWindow as MainWindow).mainFrame.NavigationService.Navigate(new LoggingYouInPage(password, username, rememberUsername, true));
                 }
             }
         }
 
-        private async void LoginRequest (SecureString password, string username, bool? rememberUsername) {
-            try {
-                if (await Backend.SendLoginCredentials(username, password)) {
-                    if (rememberUsername == true) {
-                        Settings.Default.username = Backend.loggedUser.UserID;
-                        Settings.Default.SessionToken = Backend.loggedUser.Token;
-                        Settings.Default.Save();
-                    }
 
-                    Dispatcher.Invoke(DispatcherPriority.Background,
-                    new Action(async () => {
-                        await AnimateOut();
-                        (Application.Current.MainWindow as MainWindow).mainFrame.NavigationService.Navigate(new LoggedInPage());
-                    }));
-                }
-            }
-            catch (Exception e) {
-                Dispatcher.Invoke(DispatcherPriority.Background,
-                    new Action(() => {
-                    errorPopup.IsOpen = true;
-                    Error_Popup_Label.Text = "Could not login.\n\n" + e.Message;
-                }));
-            }
-        }
 
         private void Login_Button_Clicked (object sender, RoutedEventArgs e) {
             spinner.Visibility = Visibility.Visible;
@@ -115,24 +93,29 @@ namespace Launcher
                 string username = usernameBox.Text;
                 bool? rememberUsername = remember_username_tick.IsChecked;
 
-                Task.Factory.StartNew(() => LoginRequest(password, username, rememberUsername));
+                Dispatcher.Invoke(DispatcherPriority.Background,
+                    new Action(async () => {
+                        await AnimateOut();
+                        (Application.Current.MainWindow as MainWindow).mainFrame.NavigationService.Navigate(new LoggingYouInPage(password, username, rememberUsername, false));
+                    }));
+
+   
             }
             else {
                 errorPopup.IsOpen = true;
                 errorPopupMessage.Text = "Could not login.\n\nYou must fill out both username and password entries.";
                 spinner.Visibility = Visibility.Hidden;
             }
-        }
-
-       
+        }       
 
         private void Remember_username_tick_Unchecked (object sender, RoutedEventArgs e) {
             if (!string.IsNullOrEmpty(savedUsername)) {
                 savedUsername = string.Empty;
+            }
                 Settings.Default.username = string.Empty;
                 Settings.Default.RememberUsername = false;
                 Settings.Default.Save();
-            }
+                automaticLogin.IsChecked = false;            
         }
 
         private void Remember_username_tick_Checked (object sender, RoutedEventArgs e) {
@@ -142,11 +125,14 @@ namespace Launcher
 
         private void Automatic_login_tick_Unchecked (object sender, RoutedEventArgs e) {
             Settings.Default.AutoLogin = false;
+            rememberUsername.IsEnabled = true;
             Settings.Default.Save();
         }
 
         private void Automatic_login_tick_Checked (object sender, RoutedEventArgs e) {
             Settings.Default.AutoLogin = true;
+            rememberUsername.IsChecked = true;
+            rememberUsername.IsEnabled = false;
             Settings.Default.Save();
         }
 

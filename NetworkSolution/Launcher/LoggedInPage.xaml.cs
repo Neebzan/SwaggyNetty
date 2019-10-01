@@ -50,6 +50,8 @@ namespace Launcher {
             (Application.Current.MainWindow as MainWindow).playButton.Opacity = .5;
             Settings.Default.SessionToken = "";
             Settings.Default.username = "";
+            Settings.Default.RememberUsername = false;
+            Settings.Default.AutoLogin = false;
             Settings.Default.Save();
 
             await AnimateOut();

@@ -68,7 +68,7 @@ namespace Launcher
                 patchpercentage_label.Dispatcher.Invoke(() => {
                     switch (PatchmanagerClient.Status) {
                         case PatchStatus.Connecting:
-                            patch_status_label.Content = "Connecting..";
+                            patch_status_label.Content = "Connecting to patching server..";
                             break;
                         case PatchStatus.Downloading:
                             patch_status_label.Content = "Downloading..";
