@@ -16,13 +16,18 @@ public static class Server {
     public static List<ServerActor> Players = new List<ServerActor>();
     public static List<ServerClient> Clients = new List<ServerClient>();
 
-    static TcpListener listener = new TcpListener(iPAd, SERVER_PORT);
-    static System.Timers.Timer timer = new System.Timers.Timer(16.667);
+    //static TcpListener listener = new TcpListener(iPAd, SERVER_PORT);
+    static TcpListener listener = new TcpListener(IPAddress.Any, SERVER_PORT);
+
+    static System.Timers.Timer timer = new System.Timers.Timer(1000);
     public static uint PlayersConnected;
+
+    public static GridGenerater MapGrid;
 
     static Server () {
         StartTick();
         UnityEngine.Application.quitting += StopServer;
+
     }
 
 

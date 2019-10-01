@@ -10,7 +10,7 @@ public class GridGenerater : MonoBehaviour
     public int gridWidth = 80;
     public int gridHeigth = 200;
 
-    public int[,] grid;
+    public GameObject[,] grid;
 
     // Start is called before the first frame update
     void Start()
@@ -22,20 +22,25 @@ public class GridGenerater : MonoBehaviour
 
     public void Generate()
     {
-        UnityEngine.Object gridPrefab = Resources.Load("Prefabs/Cell");
+        GameObject gridPrefab = (GameObject)Resources.Load("Prefabs/Cell");
 
         int xOffset = (gridWidth / cellWidth) / 2;
         int yOffset = (gridHeigth / cellHeigth) / 2;
 
-        grid = new int[gridWidth, gridHeigth];
+        grid = new GameObject[gridWidth, gridHeigth];
         for (int x = 0; x < gridWidth; x++)
         {
             for (int y = 0; y < gridHeigth; y++)
             {
-                Instantiate(gridPrefab, new Vector3(x-xOffset, y-yOffset), Quaternion.identity);
+                grid[x, y] = Instantiate<GameObject>(gridPrefab, new Vector3(x - xOffset, y - yOffset), Quaternion.identity);
             }
         }
 
+    }
+
+    public Vector2 GetCellPosition(Vector2 index)
+    {
+        return grid[(int)index.x, (int)index.y].gameObject.transform.position;
     }
 
     // Update is called once per frame

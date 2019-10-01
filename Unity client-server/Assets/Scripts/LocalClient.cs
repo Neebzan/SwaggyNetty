@@ -18,7 +18,9 @@ public class LocalClient : MonoBehaviour
     {
         playerPrefab = Resources.Load("Prefabs/LocalActor");
         int port = 13000;
-        client = new TcpClient("178.155.161.248", port);
+        //client = new TcpClient("178.155.161.248", port);
+        client = new TcpClient("127.0.0.1", port);
+
         client.NoDelay = true;
         Debug.Log("Connected?");
 

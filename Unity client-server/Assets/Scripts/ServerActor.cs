@@ -4,19 +4,24 @@ using System.Collections.Generic;
 using System.Net;
 using UnityEngine;
 
-public class ServerActor : MonoBehaviour {
-    Vector2 currentMoveDirection;
+public class ServerActor : MonoBehaviour
+{
+    public Vector2 currentMoveDirection;
     private List<KeyCode> activeInputs = new List<KeyCode>();
     public ServerClient Client;
     public EndPoint Endpoint { get; internal set; }
     public uint PlayerID;
     public Vector2 CurrentPos;
+    public Vector2 CurrentGridIndex;
+    private GridGenerater map = Server.MapGrid;
 
-    void Start () {
+    void Start()
+    {
         CurrentPos = transform.position;
     }
 
-    void Update () {
+    void Update()
+    {
         SetMoveInput();
         Move();
     }
@@ -24,10 +29,13 @@ public class ServerActor : MonoBehaviour {
     /// <summary>
     /// Determines how the given inputs should be interpreted
     /// </summary>
-    public void SetMoveInput () {
+    public void SetMoveInput()
+    {
         currentMoveDirection = Vector2.zero;
-        foreach (KeyCode input in activeInputs) {
-            switch (input) {
+        foreach (KeyCode input in activeInputs)
+        {
+            switch (input)
+            {
                 case KeyCode.A:
                     currentMoveDirection += new Vector2(-1, 0);
                     break;
@@ -49,18 +57,25 @@ public class ServerActor : MonoBehaviour {
     /// <summary>
     /// Moves the player actor in the direction of the last known inputs
     /// </summary>
-    private void Move () {
-        currentMoveDirection.Normalize();
-        if (currentMoveDirection != Vector2.zero)
-            transform.Translate(currentMoveDirection * Time.deltaTime * 4.0f);
-        CurrentPos = transform.position;
+    public void Move()
+    {
+
+        if (currentMoveDirection.x != 0)
+            if (currentMoveDirection.x + CurrentGridIndex.x < map.gridWidth && currentMoveDirection.x + CurrentGridIndex.x > 0)
+                //map.grid[CurrentGridIndex+currentMoveDirection.x]
+
+        //currentMoveDirection.Normalize();
+        //if (currentMoveDirection != Vector2.zero)
+        //    transform.Translate(currentMoveDirection * Time.deltaTime * 4.0f);
+        //CurrentPos = transform.position;
     }
 
     /// <summary>
     /// Raised by the client when new inputs are recieved
     /// </summary>
     /// <param name="newInputs"></param>
-    public void NewInputsRecieved (List<KeyCode> newInputs) {
+    public void NewInputsRecieved(List<KeyCode> newInputs)
+    {
         this.activeInputs = newInputs;
     }
 }

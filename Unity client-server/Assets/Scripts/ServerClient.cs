@@ -18,27 +18,30 @@ public class ServerClient {
 
     public ServerClient (TcpClient _tcpClient) {
         tcpClient = _tcpClient;
-        ServerActor actor = SpawnActor();
+        //ServerActor actor = SpawnActor();
         networkStream = tcpClient.GetStream();
         tcpClient.NoDelay = true;
-        ClientConnected(actor.PlayerID, actor.CurrentPos);
-        Server.Clients.Add(this);
-        Server.Players.Add(actor);
+        
     }
 
     /// <summary>
     /// Instantiates a player actor in the scene
     /// </summary>
-    ServerActor SpawnActor () {
+    public ServerActor SpawnActor (Vector2 pos, Vector2 index) {
         UnityEngine.Object playerPrefab = Resources.Load("Prefabs/ServerActor");
 
-        GameObject actorObject = (GameObject)GameObject.Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+        GameObject actorObject = (GameObject)GameObject.Instantiate(playerPrefab, pos, Quaternion.identity);
         ServerActor actorComponent = actorObject.GetComponent<ServerActor>();
+        actorComponent.CurrentGridIndex = index;
         actorComponent.Endpoint = tcpClient.Client.RemoteEndPoint;
         this.OnNewInputsRecieved += actorComponent.NewInputsRecieved;
         actorComponent.Client = this;
         Server.PlayersConnected++;
         actorComponent.PlayerID = Server.PlayersConnected;
+
+        ClientConnected(actorComponent.PlayerID, actorComponent.CurrentPos);
+        Server.Clients.Add(this);
+        Server.Players.Add(actorComponent);
         return actorComponent;
     }
 
