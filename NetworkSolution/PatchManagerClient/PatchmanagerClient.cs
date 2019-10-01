@@ -43,7 +43,7 @@ namespace PatchManagerClient {
             while (client == null) {
                 try {
                     //client = new TcpClient("178.155.161.248", 14000);
-                    client = new TcpClient("127.0.0.1", 14000);
+                    client = new TcpClient(GlobalVariables.PATCHMANAGER_IP, GlobalVariables.PATCHMANAGER_PORT);
                 }
                 catch {
 

@@ -140,7 +140,7 @@ namespace Launcher {
                 if (!string.IsNullOrEmpty(result)) {
                     UserModel resultUser = Newtonsoft.Json.JsonConvert.DeserializeObject<UserModel>(result);
                     if (resultUser.RequestType != RequestTypes.Error) {
-                        if (resultUser.RequestType == RequestTypes.Get_User) {
+                        if (resultUser.RequestType == RequestTypes.Token_Get) {
                             loggedUser = resultUser;
                             client.Dispose();
                             return true;

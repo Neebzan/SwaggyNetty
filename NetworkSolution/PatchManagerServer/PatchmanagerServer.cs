@@ -40,7 +40,7 @@ namespace PatchManagerServer {
         }
 
         private void HandleConnections () {
-            TcpListener listener = new TcpListener(IPAddress.Any, 14000);
+            TcpListener listener = new TcpListener(IPAddress.Any, GlobalVariables.PATCHMANAGER_PORT);
             listener.Start();
             while (true) {
                 TcpClient client = listener.AcceptTcpClient();
