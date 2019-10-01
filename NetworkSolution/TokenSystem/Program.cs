@@ -80,9 +80,9 @@ namespace TokenSystem
                             {
                                 userModel.TokenResponse = TokenResponse.Valid;
                                 userModel.Message = "Token Valid, Connecting to Server!";
-                            Console.WriteLine("\n=======TOKEN======");
+                                Console.WriteLine("\n=======TOKEN======");
                                 Console.WriteLine(userModel.Token);
-                            Console.WriteLine("=======TOKEN======\n");
+                                Console.WriteLine("=======TOKEN======\n");
 
                             Message userResponse = new Message() {
                                 Formatter = new JsonMessageFormatter(),
@@ -117,6 +117,22 @@ namespace TokenSystem
                 Console.WriteLine("Couldn't read message!");
                 Console.WriteLine(error);
                 Console.WriteLine(error.Message);
+
+                UserModel userModel = new UserModel() {
+                    UserID = JsonConvert.DeserializeObject<UserModel>(m.Body.ToString()).UserID,
+                    RequestType = RequestTypes.Error,
+                    TokenResponse = TokenResponse.Invalid,
+                    Message = "Token Request Failed: "+error.Message
+                };
+
+                Message userResponse = new Message() {
+                    Formatter = new JsonMessageFormatter(),
+                    Body = JsonConvert.SerializeObject(userModel),
+                    Label = userModel.UserID
+                };
+
+                MSMQHelper.SendMessage(m.ResponseQueue, userResponse);
+
             }
 
             mQ.BeginReceive();

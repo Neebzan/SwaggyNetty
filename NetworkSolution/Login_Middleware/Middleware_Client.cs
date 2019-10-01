@@ -246,12 +246,6 @@ namespace Login_Middleware {
                 Message peekedMessage = Middleware_Main.tokenResponseQueue.Peek();
                 peekedMessage.Formatter = new JsonMessageFormatter();
                 UserModel peekedModel = DeserializeRequest(peekedMessage.Body.ToString());
-                //string expectedID = "";
-                //if (!String.IsNullOrEmpty(databaseMessageObj.Token)){
-                //    expectedID = JWTManager.GetModelFromToken<JWTPayload>(databaseMessageObj.Token).UserID;
-                //} else {
-                //    expectedID = databaseMessageObj.UserID;
-                //}
 
                 if (peekedMessage.Label == databaseMessageObj.UserID && peekedModel.RequestType == databaseMessageObj.RequestType) {
                     Message recievedMessage = Middleware_Main.tokenResponseQueue.Receive();
