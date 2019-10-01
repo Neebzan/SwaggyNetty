@@ -19,8 +19,8 @@ namespace GlobalVariablesLib
         public const string BEACON_RESPONSE_QUEUE_NAME = "Beacon_Response_Queue";
         public const string TEST_QUEUE_NAME = "Test_Queue";
 
-
-
+        public const string MIDDLEWARE_IP = "10.131.68.126";
+        public const int MIDDLEWAR_PORT = 13010;
 
         public const string CONSUMER_QUEUE_NAME = "userdb_request_consumer";
         public const string PRODUCER_QUEUE_NAME = "userdb_request_producer";
