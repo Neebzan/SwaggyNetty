@@ -55,7 +55,7 @@ namespace TestProject
 
             Console.WriteLine("Response received");
             Console.WriteLine("Printing payload:");
-            Console.WriteLine("UserID = " + payload.User.UserID);
+            Console.WriteLine("UserID = " + payload.UserID);
             Console.WriteLine("Servers:");
             foreach (var item in payload.ServersInfo.Servers)
             {

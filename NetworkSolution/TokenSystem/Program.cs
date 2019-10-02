@@ -52,7 +52,7 @@ namespace TokenSystem
 
                             ServersData data = MSMQHelper.GetMessageBody<ServersData>(MSMQHelper.ReceiveMessage(beaconResponseMQ, new TimeSpan(0, 0, 5)));
 
-                            JWTPayload payload = new JWTPayload() { User = userModel, ServersInfo = data };
+                            JWTPayload payload = new JWTPayload() { UserID = userModel.UserID, ServersInfo = data };
 
                             MSMQHelper.SendMessage(m.ResponseQueue, JWTManager.CreateJWT(JWTManager.CreateClaims<JWTPayload>(payload), 5).RawData);
                             Console.WriteLine("Token send to {0}", m.ResponseQueue.Path);

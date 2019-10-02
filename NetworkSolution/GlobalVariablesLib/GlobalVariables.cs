@@ -20,7 +20,7 @@ namespace GlobalVariablesLib
         public const string TEST_QUEUE_NAME = "Test_Queue";
 
         public const string MIDDLEWARE_IP = "178.155.161.248";
-        public const int MIDDLEWAR_PORT = 13010;
+        public const int MIDDLEWARE_PORT = 13010;
 
         public const string PATCHMANAGER_IP = "178.155.161.248";
         public const int PATCHMANAGER_PORT = 13011;
