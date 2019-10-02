@@ -60,50 +60,41 @@ namespace PatchManagerServer {
 
         private void HandleTcpRequest (PatchClient patchClient) {
             while (MessageFormatter.Connected(patchClient.client)) {
-                List<string> filesToDownload;
-                if (patchClient.client.GetStream().DataAvailable) {
-                    if (patchClient.fileList == null) {
-                        patchClient.fileList = JsonConvert.DeserializeObject<Dictionary<string, string>>(MessageFormatter.ReadStreamOnce(patchClient.client.GetStream()));
-                        Console.WriteLine("Filelist received!");
+                try {
+                    List<string> filesToDownload;
+                    if (patchClient.client.GetStream().DataAvailable) {
+                        if (patchClient.fileList == null) {
+                            patchClient.fileList = JsonConvert.DeserializeObject<Dictionary<string, string>>(MessageFormatter.ReadStreamOnce(patchClient.client.GetStream()));
+                            Console.WriteLine("Filelist received!");
 
-                        Console.WriteLine("Comparing files to master list");
-                        filesToDownload = FileChecker.CompareFileDictionaries(masterFiles, patchClient.fileList);
+                            Console.WriteLine("Comparing files to master list");
+                            filesToDownload = FileChecker.CompareFileDictionaries(masterFiles, patchClient.fileList);
 
+                            Console.WriteLine("Missing files on client:");
+                            foreach (var item in filesToDownload) {
+                                Console.WriteLine(item);
+                            }
 
-                        Console.WriteLine("Missing files on client:");
-                        foreach (var item in filesToDownload) {
-                            Console.WriteLine(item);
+                            FileTransferModel fileTransferModel = GenerateFileTransferModel(filesToDownload, masterFilesPath);
+
+                            Console.WriteLine("Sending missing files list to client");
+                            byte [ ] modelData = MessageFormatter.MessageBytes(fileTransferModel);
+                            patchClient.client.GetStream().Write(modelData, 0, modelData.Length);
+                            Console.WriteLine("Files list sent");
+
                         }
-
-                        FileTransferModel fileTransferModel = GenerateFileTransferModel(filesToDownload, masterFilesPath);
-
-                        Console.WriteLine("Sending missing files list to client");
-                        byte [ ] modelData = MessageFormatter.MessageBytes(fileTransferModel);
-                        patchClient.client.GetStream().Write(modelData, 0, modelData.Length);
-                        Console.WriteLine("Files list sent");
-
-
-
-                        //Console.WriteLine("Sending a test file");
-                        //string filePath = "Vedlaeg.zip";
-                        //FileInfo fi = new FileInfo(filePath);
-                        //Console.WriteLine("Test file size: {0}", fi.Length);
-                        //byte[] preBuffer = BitConverter.GetBytes((int)fi.Length);
-                        //patchClient.client.Client.SendFile(filePath, preBuffer, null, TransmitFileOptions.UseDefaultWorkerThread);
-                        //Console.WriteLine("Test file sent");
-
+                        else {
+                            string fileToSend = MessageFormatter.ReadStreamOnce(patchClient.client.GetStream());
+                            FileInfo fi = new FileInfo(masterFilesPath + '/' + fileToSend);
+                            Console.WriteLine("{0} size: {1}", fi.Name, fi.Length);
+                            byte [ ] preBuffer = BitConverter.GetBytes((int)fi.Length);
+                            patchClient.client.Client.SendFile(fi.FullName, preBuffer, null, TransmitFileOptions.UseDefaultWorkerThread);
+                            Console.WriteLine("{0} sent", fi.Name);
+                        }
                     }
-                    //Start handling file requests
-                    else {
-                        string fileToSend = MessageFormatter.ReadStreamOnce(patchClient.client.GetStream());
-                        FileInfo fi = new FileInfo(masterFilesPath + '/' + fileToSend);
-                        Console.WriteLine("{0} size: {1}", fi.Name, fi.Length);
-                        byte [ ] preBuffer = BitConverter.GetBytes((int)fi.Length);
-                        patchClient.client.Client.SendFile(fi.FullName, preBuffer, null, TransmitFileOptions.UseDefaultWorkerThread);
-                        Console.WriteLine("{0} sent", fi.Name);
-                    }
-
-
+                }
+                catch (Exception e) {
+                    Console.WriteLine("Error: " + e.Message);
                 }
             }
 
