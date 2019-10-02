@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GlobalVariablesLib
 {
-    [Serializable]
+    //[Serializable]
     public class UserModel
     {
         public string UserID { get; set; }
@@ -21,5 +21,7 @@ namespace GlobalVariablesLib
 
         public RequestStatus Status { get; set; }
         public RequestTypes RequestType { get; set; }
+
+        public TokenResponse TokenResponse { get; set; }
     }
 }

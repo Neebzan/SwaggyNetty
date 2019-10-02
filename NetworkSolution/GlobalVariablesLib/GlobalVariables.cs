@@ -8,8 +8,7 @@ namespace GlobalVariablesLib
 {
     public enum TokenResponse { Valid, Invalid, Created }
     public enum TokenRequestType { VerifyToken, CreateToken }
-    public enum RequestTypes { Get_User, Create_User, Update_User, Delete_User, Response, Error, Token }
-
+    public enum RequestTypes { Get_User, Create_User, Update_User, Delete_User, Response, Error, Token_Get, Token_Check }
     public enum RequestStatus { Success, AlreadyExists, DoesNotExist, ConnectionError }
 
     public static class GlobalVariables
@@ -20,8 +19,11 @@ namespace GlobalVariablesLib
         public const string BEACON_RESPONSE_QUEUE_NAME = "Beacon_Response_Queue";
         public const string TEST_QUEUE_NAME = "Test_Queue";
 
+        public const string MIDDLEWARE_IP = "178.155.161.248";
+        public const int MIDDLEWAR_PORT = 13010;
 
-
+        public const string PATCHMANAGER_IP = "178.155.161.248";
+        public const int PATCHMANAGER_PORT = 13011;
 
         public const string CONSUMER_QUEUE_NAME = "userdb_request_consumer";
         public const string PRODUCER_QUEUE_NAME = "userdb_request_producer";

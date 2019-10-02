@@ -29,7 +29,7 @@ namespace MySQL_translator
         public MessageQueueHandler () {
             SetupQueues();
             consumerQueue.BeginReceive();
-            consumerQueue.Formatter = new XmlMessageFormatter(new Type [ ] { typeof(string) });
+            //consumerQueue.Formatter = new XmlMessageFormatter(new Type [ ] { typeof(string) });
             consumerQueue.ReceiveCompleted += OnConsumerInputRecieved;
         }
 
@@ -49,6 +49,7 @@ namespace MySQL_translator
         private void OnConsumerInputRecieved (object sender, ReceiveCompletedEventArgs e) {
             MessageQueue mQ = (MessageQueue)sender;
             Message m = mQ.EndReceive(e.AsyncResult);
+            m.Formatter = new JsonMessageFormatter();
             Console.WriteLine("Message recieved: " + m.Body);
 
             try {
@@ -82,6 +83,7 @@ namespace MySQL_translator
         public void PushProducerQueue (UserModel _user) {
             Message msg = new Message(Newtonsoft.Json.JsonConvert.SerializeObject(_user));
             msg.Label = _user.UserID;
+            msg.Formatter = new JsonMessageFormatter();
             MSMQHelperUtilities.MSMQHelper.SendMessage(producerQueue, msg);
         }
     }

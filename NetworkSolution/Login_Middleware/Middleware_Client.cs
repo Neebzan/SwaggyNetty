@@ -21,11 +21,42 @@ namespace Login_Middleware
     class Middleware_Client
     {
         private TcpClient tcpClient;
-        private MessageQueue databaseRequestQueue, databaseResponseQueue, tokenRequestQueue, tokenResponseQueue;
-        private Json_Obj user_obj;
+
+        private UserModel user_obj;
         private NetworkStream stream;
         private bool isAlive;
 
+        public bool Connected
+        {
+            get
+            {
+                try
+                {
+                    if (tcpClient.Client != null && tcpClient.Client.Connected)
+                    {
+                        if (tcpClient.Client.Poll(0, SelectMode.SelectRead))
+                        {
+                            byte[] buff = new byte[1];
+
+                            if (tcpClient.Client.Receive(buff, SocketFlags.Peek) == 0)
+                            {
+                                return false;
+                            }
+
+                            return true;
+                        }
+
+                        return true;
+                    }
+
+                    return false;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
 
         public Middleware_Client(TcpClient client)
         {
@@ -33,15 +64,18 @@ namespace Login_Middleware
 
             isAlive = true;
             // Sets the correct queue for the client to send and recieve from
-            databaseRequestQueue = MSMQHelper.CreateMessageQueue(GlobalVariables.CONSUMER_QUEUE_NAME);
-            databaseResponseQueue = MSMQHelper.CreateMessageQueue(GlobalVariables.PRODUCER_QUEUE_NAME);
-            tokenRequestQueue = MSMQHelper.CreateMessageQueue(GlobalVariables.TOKEN_INPUT_QUEUE_NAME);
-            tokenResponseQueue = MSMQHelper.CreateMessageQueue(GlobalVariables.TOKEN_RESPONSE_QUEUE_NAME);
-
 
 
             tcpClient = client;
-            stream = tcpClient.GetStream();
+            if (Connected)
+            {
+                stream = tcpClient.GetStream();
+            }
+        }
+
+        ~Middleware_Client()
+        {
+            Console.WriteLine("Middleware_Client Aborted");
         }
 
         /// <summary>
@@ -50,9 +84,9 @@ namespace Login_Middleware
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        private Json_Obj DeserializeRequest(string data)
+        private UserModel DeserializeRequest(string data)
         {
-            return JsonConvert.DeserializeObject<Json_Obj>(data);
+            return JsonConvert.DeserializeObject<UserModel>(data);
         }
 
 
@@ -60,55 +94,64 @@ namespace Login_Middleware
         {
             while (isAlive)
             {
-
-                string data = MessageFormatter.ReadMessage(stream);
-
-                // Console info when recieveing data.
+                if (Connected)
                 {
-                    Console.WriteLine
-                        ("_______________________________\n" +
-                        "Received: {0}\nAttempting To Convert To Json Object" +
-                        "\n_______________________________", data);
-                }
-
-                // Tries to convert recieved data to an object.
-                try
-                {
-                    // Deserialises to local obj
-                    user_obj = DeserializeRequest(data);
-
-                    // Queues request from client to db with object, containing recieved data from client
-                    QueueRequest(user_obj);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"EXCEPTION:-----------------------------------\n {e}\n-----------------------------------");
-                    Console.WriteLine("\n\n-----------------------------------\n" + data + "\n\n-----------------------------------");
-
-                    // Json client response setup
-                    Json_Obj response = new Json_Obj()
+                    string data = MessageFormatter.ReadStreamOnce(stream);
+                    if (!String.IsNullOrEmpty(data))
                     {
-                        Message = $"ERROR: [ {e.Message} ] \nHost Closed the Connection!",
-                        RequestType = Json_Obj.RequestTypes.Error
-                    };
 
-                    // Get bytes from data (string)
+                        // Console info when recieveing data.
+                        {
+                            Console.WriteLine
+                                ("_______________________________\n" +
+                                "Received: {0}\nAttempting To Convert To Json Object" +
+                                "\n_______________________________", data);
+                        }
 
-                    byte[] msg = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(response));
+                        // Tries to convert recieved data to an object.
+                        try
+                        {
+                            // Deserialises to local obj
+                            user_obj = DeserializeRequest(data);
 
-                    //sends message to client
+                            // Queues request from client to db with object, containing recieved data from client
+                            QueueRequest(user_obj);
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine($"EXCEPTION:-----------------------------------\n {e}\n-----------------------------------");
+                            Console.WriteLine("\n\n-----------------------------------\n" + data + "\n\n-----------------------------------");
 
-                    stream.Write(msg, 0, msg.Length);
+                            // Json client response setup
+                            UserModel response = new UserModel()
+                            {
+                                Message = $"ERROR: [ {e.Message} ] \nHost Closed the Connection!",
+                                RequestType = RequestTypes.Error
+                            };
 
-                    isAlive = false;
-                    tcpClient.Close();
-                    Thread.CurrentThread.Abort();
+                            if (Connected)
+                            {
+                                // Get bytes from data (string)
+
+                                byte[] msg = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(response));
+
+                                //sends message to client
+
+                                stream.Write(msg, 0, msg.Length);
+                            }
+                            if (Connected)
+                            {
+                                tcpClient.Close();
+                            }
+                            isAlive = false;
+                        }
+                    }
                 }
             }
         }
 
 
-        private bool CheckHash(Json_Obj received_obj, Json_Obj userData)
+        private bool CheckHash(UserModel received_obj, UserModel userData)
         {
             try
             {
@@ -131,20 +174,20 @@ namespace Login_Middleware
             }
         }
 
-        private string HandleError(Json_Obj ErrorObject)
+        private string HandleError(UserModel ErrorObject)
         {
             string errorMessage = "";
             switch (ErrorObject.Status)
             {
-                case Json_Obj.RequestStatus.Success:
+                case RequestStatus.Success:
                     errorMessage = "Wrong Username or Password";
                     break;
-                case Json_Obj.RequestStatus.AlreadyExists:
+                case RequestStatus.AlreadyExists:
                     break;
-                case Json_Obj.RequestStatus.DoesNotExist:
+                case RequestStatus.DoesNotExist:
                     errorMessage = "Wrong Username or Password";
                     break;
-                case Json_Obj.RequestStatus.ConnectionError:
+                case RequestStatus.ConnectionError:
                     errorMessage = "Connection Error!";
                     break;
                 default:
@@ -155,7 +198,7 @@ namespace Login_Middleware
         }
 
 
-        private Message RequestToken(Json_Obj databaseMessageObj)
+        private Message RequestToken(UserModel databaseMessageObj)
         {
             //tokenRequestQueue.Send("");
             //tokenResponseQueue.Receive();
@@ -163,7 +206,18 @@ namespace Login_Middleware
             return new Message();
         }
 
-        private void QueueRequest(Json_Obj userImputData)
+        private void WriteToClient(string message)
+        {
+            if (Connected)
+            {
+                // Get bytes from data (string)
+                byte[] msg = Encoding.ASCII.GetBytes(message);
+                //sends message to client
+                stream.Write(msg, 0, msg.Length);
+            }
+        }
+
+        private void QueueRequest(UserModel userImputData)
         {
             bool success = false;
             string userImputRequestString = JsonConvert.SerializeObject(userImputData);
@@ -171,7 +225,7 @@ namespace Login_Middleware
             switch (userImputData.RequestType)
             {
                 /// Case: Requests User information from the Database, based on recieved user data
-                case Json_Obj.RequestTypes.Get_User:
+                case RequestTypes.Get_User:
 
                     // Setup DB request message
                     Message getRequest = new Message()
@@ -182,70 +236,72 @@ namespace Login_Middleware
                     };
                     // Send DB request
                     Console.WriteLine("Queing Request...");
-                    databaseRequestQueue.Send(getRequest);
+                    Middleware_Main.databaseRequestQueue.Send(getRequest);
+
                     {
                         // Json client response setup
-                        Json_Obj response = new Json_Obj()
+                        UserModel response = new UserModel()
                         {
                             Message = $"Login Request For: [ {userImputData.UserID} ], Sent to Database",
-                            RequestType = Json_Obj.RequestTypes.Response
+                            RequestType = RequestTypes.Response
                         };
-
-                        // Get bytes from data (string)
-                        byte[] msg = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(response));
-                        //sends message to client
-                        stream.Write(msg, 0, msg.Length);
+                        WriteToClient(JsonConvert.SerializeObject(response));
                     }
 
                     // Wait for response
                     while (!success)
                     {
+                        Message peekedMessage = Middleware_Main.databaseResponseQueue.Peek();
+                        peekedMessage.Formatter = new JsonMessageFormatter();
                         // Peeks top of queue, and only when it's the right pulls it from the queue;
-                        if (databaseResponseQueue.Peek().Label == userImputData.UserID)
+                        if (peekedMessage.Label == userImputData.UserID && DeserializeRequest(peekedMessage.Body.ToString()).RequestType == RequestTypes.Get_User)
                         {
 
-                            Message msg = databaseRequestQueue.Receive();
+                            Message msg = Middleware_Main.databaseResponseQueue.Receive();
                             msg.Formatter = new JsonMessageFormatter();
 
-                            Json_Obj dataBaseResponseObj = DeserializeRequest(msg.Body.ToString());
+                            UserModel dataBaseResponseObj = DeserializeRequest(msg.Body.ToString());
                             Console.WriteLine(dataBaseResponseObj.ToString());
 
-                            if (dataBaseResponseObj.Status == Json_Obj.RequestStatus.Success && CheckHash(dataBaseResponseObj, userImputData))
+                            if (dataBaseResponseObj.Status == RequestStatus.Success && CheckHash(dataBaseResponseObj, userImputData))
                             {
                                 RequestToken(dataBaseResponseObj);
                             }
                             else
                             {
-                                
+                                Console.WriteLine($"ERROR: {HandleError(dataBaseResponseObj)}.\n||||| USER REQUEST DENIED FROM HOST |||||");
                                 // Json client response setup
-                                Json_Obj response = new Json_Obj()
+                                UserModel response = new UserModel()
                                 {
                                     Message = $"ERROR: {HandleError(dataBaseResponseObj)}.\n Please Try again",
-                                    RequestType = Json_Obj.RequestTypes.Error,
+                                    RequestType = RequestTypes.Error,
                                     Status = dataBaseResponseObj.Status
                                 };
 
-                                // Get bytes from data (string)
-                                byte[] msgError = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(response));
+                                if (Connected)
+                                {
+                                    // Get bytes from data (string)
+                                    byte[] msgError = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(response));
 
-                                //sends message to client
-                                stream.Write(msgError, 0, msgError.Length);
+                                    //sends message to client
+                                    stream.Write(msgError, 0, msgError.Length);
 
-                                // Terminate Connection and User Instance!
-                                isAlive = false;
-                                tcpClient.Close();
-                                Thread.CurrentThread.Abort();
+                                    // Terminate Connection and User Instance!
+                                    isAlive = false;
+                                }
                             }
                             success = true;
-                            isAlive = false;
-                            tcpClient.Close();
-                            Thread.CurrentThread.Abort();
+                            if (Connected)
+                            {
+                                isAlive = false;
+                                tcpClient.Close();
+                            }
                         }
                     }
                     break;
 
                 /// Case: Requests Create call on data base, based on recieved user data
-                case Json_Obj.RequestTypes.Create_User:
+                case RequestTypes.Create_User:
 
                     // Setup of DB request message
                     Message createRequest = new Message()
@@ -258,33 +314,36 @@ namespace Login_Middleware
                     // Sending DB request message to message queue
                     // Debug Message
                     Console.WriteLine("Queing Create Request...");
-                    databaseRequestQueue.Send(createRequest);
+                    Middleware_Main.databaseRequestQueue.Send(createRequest);
 
                     /// Client Response Message
                     {
                         // Json client response setup
-                        Json_Obj response = new Json_Obj()
+                        UserModel response = new UserModel()
                         {
                             Message = $"Signup Request For: [ {userImputData.UserID} ], Sent to Database",
-                            RequestType = Json_Obj.RequestTypes.Response,
-                            Status = Json_Obj.RequestStatus.Success
+                            RequestType = RequestTypes.Response,
+                            Status = RequestStatus.Success
                         };
-
-                        // Get bytes from data (string)
-                        byte[] msg = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(response));
-                        //sends message to client
-                        stream.Write(msg, 0, msg.Length);
                     }
 
-
-
+                    Message tempMessage = Middleware_Main.databaseResponseQueue.Peek();
+                    tempMessage.Formatter = new JsonMessageFormatter();
+                    // Peeks top of queue, and only when it's the right pulls it from the queue;
+                    if (tempMessage.Label == userImputData.UserID && DeserializeRequest(tempMessage.Body.ToString()).RequestType == RequestTypes.Create_User)
+                    {
+                        Message m = Middleware_Main.databaseResponseQueue.Receive();
+                        m.Formatter = new JsonMessageFormatter();
+                        Console.WriteLine("\nCREATE RESPONSE: " + m.Body.ToString() + "\n");
+                    }
+                    isAlive = false;
 
                     break;
-                case Json_Obj.RequestTypes.Update_User:
+                case RequestTypes.Update_User:
                     break;
-                case Json_Obj.RequestTypes.Delete_User:
+                case RequestTypes.Delete_User:
                     break;
-                case Json_Obj.RequestTypes.Response:
+                case RequestTypes.Response:
                     break;
                 default:
                     break;

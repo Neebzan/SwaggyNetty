@@ -1,4 +1,6 @@
-﻿using System;
+﻿using GlobalVariablesLib;
+using MSMQHelperUtilities;
+using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -17,18 +19,31 @@ namespace Login_Middleware
 {
     class Middleware_Main
     {
-        static int port = 13005;
+        static int port = 13010;
         static ConcurrentQueue<TcpClient> users = new ConcurrentQueue<TcpClient>();
         
         static private IPAddress IP = IPAddress.Any;
         static public TcpListener serverListener = new TcpListener(IP, port);
+        public static MessageQueue databaseRequestQueue, databaseResponseQueue, tokenRequestQueue, tokenResponseQueue;
+
+
         static void Main(string[] args)
         {
+            databaseRequestQueue = MSMQHelper.CreateMessageQueue(GlobalVariables.CONSUMER_QUEUE_NAME);
+            databaseResponseQueue = MSMQHelper.CreateMessageQueue(GlobalVariables.PRODUCER_QUEUE_NAME);
+            tokenRequestQueue = MSMQHelper.CreateMessageQueue(GlobalVariables.TOKEN_INPUT_QUEUE_NAME);
+            tokenResponseQueue = MSMQHelper.CreateMessageQueue(GlobalVariables.TOKEN_RESPONSE_QUEUE_NAME);
+            databaseRequestQueue.Purge();
+            databaseResponseQueue.Purge();
+            tokenRequestQueue.Purge();
+            tokenResponseQueue.Purge();
+
             // Start Listen for Clients
             Task.Factory.StartNew(ListenForClients, TaskCreationOptions.LongRunning);
 
             // Work With Clients
             Task.Factory.StartNew(WaitForClients, TaskCreationOptions.LongRunning);
+
 
             while (true)
             {

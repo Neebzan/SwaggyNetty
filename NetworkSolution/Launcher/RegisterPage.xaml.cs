@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Launcher.Properties;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security;
@@ -11,21 +12,20 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace Launcher {
     /// <summary>
     /// Interaction logic for RegisterPage.xaml
     /// </summary>
-    public partial class RegisterPage : Page {
+    public partial class RegisterPage : BasePage {
 
         TextBox usernameBox;
         PasswordBox passwordBox, confirmPassBox;
-        Popup errorPopup;
-        TextBlock errorPopupMessage;
-
 
         public RegisterPage () {
             InitializeComponent();
@@ -33,50 +33,58 @@ namespace Launcher {
             usernameBox = username_textbox;
             passwordBox = password_textbox;
             confirmPassBox = password_confirm_textbox;
-            errorPopup = this.Error_Popup;
-            errorPopupMessage = Error_Popup_Label;
-
-
-            Application.Current.MainWindow.Deactivated += (object sender, EventArgs e) => {
-                errorPopup.IsOpen = false;
-            };
-
-            Application.Current.MainWindow.LocationChanged += (object sender, EventArgs e) => {
-                errorPopup.IsOpen = false;
-            };
-            this.usernameBox.KeyDown += (object sender, KeyEventArgs e) => {
-                errorPopup.IsOpen = false;
-            };
-            this.passwordBox.KeyDown += (object sender, KeyEventArgs e) => {
-                errorPopup.IsOpen = false;
-            };
-            this.confirmPassBox.KeyDown += (object sender, KeyEventArgs e) => {
-                errorPopup.IsOpen = false;
-            };
-
-            errorPopup.IsOpen = false;
-
+            spinner_imageawesome.Visibility = Visibility.Hidden;
         }
 
+        private async void BackToLogin_Button_Clicked (object sender, RoutedEventArgs e) {
+            await AnimateOut();
+            (Application.Current.MainWindow as MainWindow).mainFrame.NavigationService.Navigate(new LoginPage());
+        }
+
+
         private void Create_Account_Button_Clicked (object sender, RoutedEventArgs e) {
+            spinner_imageawesome.Visibility = Visibility.Visible;
             if (!string.IsNullOrEmpty(passwordBox.Password) && !string.IsNullOrEmpty(usernameBox.Text) && !string.IsNullOrEmpty(confirmPassBox.Password)) {
                 SecureString password = passwordBox.SecurePassword;
                 SecureString confirmPass = confirmPassBox.SecurePassword;
                 string username = usernameBox.Text;
-
-                if (Backend.CheckPassUniformity(password, confirmPass)) {
-
-                }
-                else {
-                    errorPopup.IsOpen = true;
-                    errorPopupMessage.Text = "Could not create an account.\n\nYour password does not match the confirmed password.";
-                }
-
+                Task.Factory.StartNew(() => CreateUserRequest(password, confirmPass, username));
             }
             else {
-                errorPopup.IsOpen = true;
-                errorPopupMessage.Text = "Could not create an account.\n\nYou must fill-out all fields in order to create an account.";
+                (Application.Current.MainWindow as MainWindow).DisplayError("Create user request failed", "You must fill out all fields");
+                spinner_imageawesome.Visibility = Visibility.Hidden;
             }
+        }
+
+
+        private async void CreateUserRequest (SecureString password, SecureString confirmPass, string username) {
+            if (Backend.CheckPassUniformity(password, confirmPass)) {
+                if (await Backend.SendRegisterRequest(username, password)) {
+                    Settings.Default.username = username;
+                    Settings.Default.Save();
+
+                    Dispatcher.Invoke(DispatcherPriority.Background,
+                    new Action(async () => {
+                        await AnimateOut();
+                        (Application.Current.MainWindow as MainWindow).mainFrame.NavigationService.Navigate(new LoginPage());
+                    }));
+
+
+                }
+            }
+            else {
+                Dispatcher.Invoke(DispatcherPriority.Background,
+                new Action(() => {
+                    spinner_imageawesome.Visibility = Visibility.Hidden;
+                    (Application.Current.MainWindow as MainWindow).DisplayError("Create user request failed", "Your password entry does not match the confirm password entry");
+                }));
+
+            }
+            Dispatcher.Invoke(DispatcherPriority.Background,
+            new Action(() => {
+                spinner_imageawesome.Visibility = Visibility.Hidden;
+            }));
+
         }
     }
 }
