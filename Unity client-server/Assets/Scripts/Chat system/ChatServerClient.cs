@@ -13,10 +13,7 @@ public class ChatServerClient : MonoBehaviour
     NetworkStream networkStream;
     bool isDisconnecting = false;
 
-    //public string groupNameFromClient;
-    public string GroupNameFromClient { get; set; }
-
-
+   
     public ChatServerClient(TcpClient _tcpClient)
     {
         tcpClient = _tcpClient;
@@ -29,22 +26,21 @@ public class ChatServerClient : MonoBehaviour
 
     }
 
-    public void CreateGroup()
+    public void CreateGroup(string groupName)
     {
-        ChatGroup mygroup = new ChatGroup() { GroupName = GroupNameFromClient, ID = ChatServer.idNumber };
+        ChatGroup mygroup = new ChatGroup() { GroupName = groupName, ID = ChatServer.idNumber };
         ChatServer.idNumber += 1;
 
         ChatServer.groups.Add(mygroup);
-        GroupNameFromClient = mygroup.GroupName;
-        JoinGroup();
+        JoinGroup(groupName);
         
 
     }
-    public void JoinGroup()
+    public void JoinGroup(string groupName)
     {
         for (int i = 0; i < ChatServer.groups.Count; i++)
         {
-            if(ChatServer.groups[i].GroupName == GroupNameFromClient)
+            if(ChatServer.groups[i].GroupName == groupName)
             {
                 ChatServer.groups[i].Members.Add(this);
                 var dasGroup = ChatServer.groups[i];
@@ -57,11 +53,11 @@ public class ChatServerClient : MonoBehaviour
             }
         }
     }
-    public void LeaveGroup()
+    public void LeaveGroup(string groupName)
     {
         for (int i = 0; i < ChatServer.groups.Count; i++)
         {
-            if (ChatServer.groups[i].GroupName == GroupNameFromClient)
+            if (ChatServer.groups[i].GroupName == groupName)
             {
                 ChatServer.groups[i].Members.Remove(this);
                 var dasGroup = ChatServer.groups[i];
