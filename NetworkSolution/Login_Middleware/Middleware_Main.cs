@@ -15,21 +15,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Helpers;
 
-namespace Login_Middleware
-{
-    class Middleware_Main
-    {
+namespace Login_Middleware {
+    class Middleware_Main {
         static int port = GlobalVariables.MIDDLEWARE_PORT;
         static ConcurrentQueue<TcpClient> users = new ConcurrentQueue<TcpClient>();
-        
+
         static private IPAddress IP = IPAddress.Any;
         static public TcpListener serverListener = new TcpListener(IP, port);
         public static MessageQueue databaseRequestQueue, databaseResponseQueue, tokenRequestQueue, tokenResponseQueue;
 
         private static bool isAlive = true;
 
-        static void Main()
-        {
+        static void Main() {
             databaseRequestQueue = MSMQHelper.CreateMessageQueue(GlobalVariables.CONSUMER_QUEUE_NAME);
             databaseResponseQueue = MSMQHelper.CreateMessageQueue(GlobalVariables.PRODUCER_QUEUE_NAME);
             tokenRequestQueue = MSMQHelper.CreateMessageQueue(GlobalVariables.TOKEN_INPUT_QUEUE_NAME);
@@ -41,7 +38,7 @@ namespace Login_Middleware
 
             // Start Listen for Clients
             Task.Factory.StartNew(ListenForClients, TaskCreationOptions.LongRunning);
-            
+
             // Work With Clients
             Task.Factory.StartNew(WaitForClients, TaskCreationOptions.LongRunning);
 
@@ -63,29 +60,24 @@ namespace Login_Middleware
                 isAlive = false;
             }
         }
-         /// <summary>
-         /// While Program is running, if any users are in queue, start listening proces
-         /// and let the user indirectly queue requests to database and/or token system.
-         /// </summary>
-        public static void WaitForClients()
-        {
+        /// <summary>
+        /// While Program is running, if any users are in queue, start listening proces
+        /// and let the user indirectly queue requests to database and/or token system.
+        /// </summary>
+        public static void WaitForClients() {
             Console.WriteLine("Waiting For Clients...");
 
-            while (isAlive)
-            {
-                
-                if(users.Count > 0)
-                {
-                    if (users.TryDequeue(out TcpClient tcpClient))
-                    {
+            while (isAlive) {
+
+                if (users.Count > 0) {
+                    if (users.TryDequeue(out TcpClient tcpClient)) {
                         Middleware_Client client = new Middleware_Client(tcpClient);
                         Console.WriteLine($"User at IP: {tcpClient.Client.RemoteEndPoint} Recieved Queue Time, Processing requests...");
-                        
-                        Task.Factory.StartNew(client.ListenForMessages,TaskCreationOptions.PreferFairness);
+
+                        Task.Factory.StartNew(client.ListenForMessages, TaskCreationOptions.PreferFairness);
                     }
-                } else {
-                    Thread.Sleep(TimeSpan.FromMilliseconds(16.666666666666667));
                 }
+                Thread.Sleep(5);
             }
         }
 
@@ -93,22 +85,19 @@ namespace Login_Middleware
         /// Endless Loop that listens for incoming connections,
         /// and puts them as new clients into a concurrent queue.
         /// </summary>
-        public static void ListenForClients()
-        {
+        public static void ListenForClients() {
             Console.WriteLine("Starting Server Listen");
             serverListener.Start();
 
-            while (isAlive)
-            {
+            while (isAlive) {
                 if (serverListener.Pending()) {
                     TcpClient c = serverListener.AcceptTcpClient();
                     users.Enqueue(c);
                     Console.WriteLine("SERVER: " + c.Client.RemoteEndPoint.ToString() + " connected");
-                } else 
-                {
-                    Thread.Sleep(TimeSpan.FromMilliseconds(16.666666666666667));
                 }
+                Thread.Sleep(5);
             }
+
         }
     }
 }

@@ -146,7 +146,7 @@ namespace Login_Middleware {
                     }
                 }
             }
-            WriteLine("Task: ListenForMessages() Finished all Work\n");
+            Console.WriteLine($"Middleware[{ThreadID}] Task: ListenForMessages() Finished all Work\n");
             isAlive = false;
         }
 
@@ -268,7 +268,7 @@ namespace Login_Middleware {
         }
 
         private void WriteLine(string message) {
-            Console.WriteLine($"Middleware_Client at ThreadID: {ThreadID}. " + message);
+            //Console.WriteLine($"Middleware_Client at ThreadID: {ThreadID}. " + message);
         }
 
         private void QueueRequest(UserModel userImputData) {
@@ -286,7 +286,7 @@ namespace Login_Middleware {
                     // Setup DB request message
                     Message getRequest = new Message() {
                         Body = userImputRequestString,
-                        Label = userImputData.UserID,
+                        Label = userImputData.UserID+tcpClient.Client.RemoteEndPoint.ToString(),
                         Formatter = new JsonMessageFormatter()
                     };
 
@@ -312,10 +312,10 @@ namespace Login_Middleware {
                         Message peekedMessage = Middleware_Main.databaseResponseQueue.Peek();
                         peekedMessage.Formatter = new JsonMessageFormatter();
                         UserModel peekedModel = DeserializeRequest(peekedMessage.Body.ToString());
-                        WriteLine($"\nExpected ID: {userImputData.UserID}\nActual ID: {peekedModel.UserID}\nLabel ID: {peekedMessage.Label}\n");
+                        // WriteLine($"\nExpected ID: {userImputData.UserID}\nActual ID: {peekedModel.UserID}\nLabel ID: {peekedMessage.Label}\n");
                         // if the label is as expected, and the request type is the same, consume message
                         // specifically made to be sure a user making two requests at once, can't get the wrong message back.
-                        if (peekedMessage.Label == userImputData.UserID && peekedModel.RequestType == RequestTypes.Get_User) {
+                        if (peekedMessage.Label == userImputData.UserID + tcpClient.Client.RemoteEndPoint.ToString() && peekedModel.RequestType == RequestTypes.Get_User) {
                             Message msg = Middleware_Main.databaseResponseQueue.Receive();
                             msg.Formatter = new JsonMessageFormatter();
 
@@ -351,7 +351,7 @@ namespace Login_Middleware {
                     // Setup of DB request message
                     Message createRequest = new Message() {
                         Body = userImputRequestString,
-                        Label = userImputData.UserID,
+                        Label = userImputData.UserID + tcpClient.Client.RemoteEndPoint.ToString(),
                         Formatter = new JsonMessageFormatter()
                     };
 
@@ -375,7 +375,7 @@ namespace Login_Middleware {
                         tempMessage.Formatter = new JsonMessageFormatter();
 
                         // Peeks top of queue, and only when it's the right pulls it from the queue;
-                        if (tempMessage.Label == userImputData.UserID && DeserializeRequest(tempMessage.Body.ToString()).RequestType == RequestTypes.Create_User) {
+                        if (tempMessage.Label == userImputData.UserID + tcpClient.Client.RemoteEndPoint.ToString() && DeserializeRequest(tempMessage.Body.ToString()).RequestType == RequestTypes.Create_User) {
                             Message m = Middleware_Main.databaseResponseQueue.Receive();
                             m.Formatter = new JsonMessageFormatter();
                             UserModel userModel = DeserializeRequest(m.Body.ToString());
