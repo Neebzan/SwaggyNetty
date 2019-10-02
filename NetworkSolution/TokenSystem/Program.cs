@@ -24,8 +24,9 @@ namespace TokenSystem
 
         static void Main(string[] args)
         {
-            Thread t = new Thread(HandleConnections);
-            t.IsBackground = true;
+            Thread t = new Thread(HandleConnections) {
+                IsBackground = true
+            };
             t.Start();
 
             userInputMQ.ReceiveCompleted += UserInputRecieved;
@@ -45,7 +46,11 @@ namespace TokenSystem
                 {
                     case TokenRequestType.CreateToken:
                         {
-                            UserModel userModel = MSMQHelper.GetMessageBody<UserModel>(m);
+                        UserModel originModel = MSMQHelper.GetMessageBody<UserModel>(m);
+                        UserModel userModel = new UserModel()
+                            {
+                                UserID = originModel.UserID, RequestType = originModel.RequestType
+                            };
                             Console.WriteLine("UserModel received!");
 
                             MSMQHelper.SendMessage(beaconInputMQ, "ServersData", "ServersData", beaconResponseMQ);
@@ -54,21 +59,52 @@ namespace TokenSystem
 
                             JWTPayload payload = new JWTPayload() { UserID = userModel.UserID, ServersInfo = data };
 
-                            MSMQHelper.SendMessage(m.ResponseQueue, JWTManager.CreateJWT(JWTManager.CreateClaims<JWTPayload>(payload), 5).RawData);
+                            userModel.Token = JWTManager.CreateJWT(JWTManager.CreateClaims<JWTPayload>(payload), 5).RawData;
+                            userModel.TokenResponse = TokenResponse.Created;
+
+                            Message userResponse = new Message() {
+                                Formatter = new JsonMessageFormatter(),
+                                Body = JsonConvert.SerializeObject(userModel),
+                                Label = userModel.UserID
+                            };
+
+                            MSMQHelper.SendMessage(m.ResponseQueue, userResponse);
                             Console.WriteLine("Token send to {0}", m.ResponseQueue.Path);
                             break;
                         }
                     case TokenRequestType.VerifyToken:
                         {
-                            if (JWTManager.VerifyToken(MSMQHelper.GetMessageBody<string>(m)))
+                            UserModel userModel = MSMQHelper.GetMessageBody<UserModel>(m);
+
+                            if (JWTManager.VerifyToken(userModel.Token))
                             {
-                                MSMQHelper.SendMessage<TokenResponse>(m.ResponseQueue, TokenResponse.Valid);
+                                userModel.TokenResponse = TokenResponse.Valid;
+                                userModel.Message = "Token Valid, Connecting to Server!";
+                                Console.WriteLine("\n=======TOKEN======");
+                                Console.WriteLine(userModel.Token);
+                                Console.WriteLine("=======TOKEN======\n");
+
+                            Message userResponse = new Message() {
+                                Formatter = new JsonMessageFormatter(),
+                                Body = JsonConvert.SerializeObject(userModel),
+                                Label = userModel.UserID
+                            };
+                                MSMQHelper.SendMessage(m.ResponseQueue, userResponse);
                                 Console.WriteLine("Token was valid!");
                                 Console.WriteLine("Response send to {0}", m.ResponseQueue.Path);
                             }
                             else
                             {
-                                MSMQHelper.SendMessage<TokenResponse>(m.ResponseQueue, TokenResponse.Invalid);
+                                userModel.TokenResponse = TokenResponse.Invalid;
+                                userModel.Message = "Session Token no longer valid!\n Please login, using credentials.";
+
+                                Message userResponse = new Message() {
+                                    Formatter = new JsonMessageFormatter(),
+                                    Body = JsonConvert.SerializeObject(userModel),
+                                    Label = userModel.UserID
+                                };
+
+                                MSMQHelper.SendMessage(m.ResponseQueue, userResponse);
                                 Console.WriteLine("Token was invalid!");
                                 Console.WriteLine("Response send to {0}", m.ResponseQueue.Path);
                             }
@@ -79,7 +115,24 @@ namespace TokenSystem
             catch(Exception error)
             {
                 Console.WriteLine("Couldn't read message!");
+                Console.WriteLine(error);
                 Console.WriteLine(error.Message);
+
+                UserModel userModel = new UserModel() {
+                    UserID = JsonConvert.DeserializeObject<UserModel>(m.Body.ToString()).UserID,
+                    RequestType = RequestTypes.Error,
+                    TokenResponse = TokenResponse.Invalid,
+                    Message = "Token Request Failed: "+error.Message
+                };
+
+                Message userResponse = new Message() {
+                    Formatter = new JsonMessageFormatter(),
+                    Body = JsonConvert.SerializeObject(userModel),
+                    Label = userModel.UserID
+                };
+
+                MSMQHelper.SendMessage(m.ResponseQueue, userResponse);
+
             }
 
             mQ.BeginReceive();
