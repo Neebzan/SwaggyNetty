@@ -1,4 +1,6 @@
 ﻿using GlobalVariablesLib;
+using GlobalVariablesLib.Models;
+using PatchManagerClient;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,98 +14,303 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Launcher
-{
-    public static class Backend {
-        private static string middlewareIP = "10.131.69.129";
-        private static int middlewarePort = 13010;
+namespace Launcher {
+    internal class BackendErrorEventArgs : EventArgs {
+        public string ErrorTitle { get; set; }
+        public string ErrorMessage { get; set; }
 
-        public static UserModel loggedUser { get; private set; }
+        public BackendErrorEventArgs (string _errorTitle, string _errorMessage) {
+            ErrorTitle = _errorTitle;
+            ErrorMessage = _errorMessage;
+        }
+    }
+
+    internal static class Backend {
+ 
+
+        public static UserModel loggedUser { get; private set; } = null;
+        public static float PatchProgress = 0f;
+        public static float ConnectionTimeoutMS = 5000.0f;
+        public static FileTransferModel PatchData = null;
+
+        /// <summary>
+        /// Raised whenever the backend encounters an error
+        /// </summary>
+        public static EventHandler<BackendErrorEventArgs> BackendErrorEncountered;
 
         static Backend () {
-            loggedUser = new UserModel() {
-                UserID = "Nebberen"
-            };
+            PatchmanagerClient.MissingFilesUpdated += PatchDataUpdated;
         }
 
+        /// <summary>
+        /// Raised whenever new data has been recieved from the patch manager
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private static void PatchDataUpdated (object sender, EventArgs e) {
+            if (PatchmanagerClient.MissingFiles.RemainingSize == 0) {
+                PatchProgress = 100;
+            }
+            else
+                PatchProgress = ((1.0f - ((float)PatchmanagerClient.MissingFiles.RemainingSize / (float)PatchmanagerClient.MissingFiles.TotalSize)) * 100.0f);
+        }
 
-        public static async Task<bool> SendLoginCredentials (string username, SecureString password) {
+        /// <summary>
+        /// Instantiates a task to run the patchmanager client functionality
+        /// </summary>
+        public static void InitiatePatchClient () {
+            Task t = new Task(() => PatchmanagerClient.StartPatchCheck(@"Downloads"));
+            t.Start();
+            PatchData = PatchmanagerClient.MissingFiles;
+        }
+
+        /// <summary>
+        /// Establishes a connection to the middleware service
+        /// </summary>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
+        private static TcpClient ConnectoToMiddleware (float timeout) {
             TcpClient client = new TcpClient();
 
-            string unsecurePassword = ConvertToUnsecureString(password);
-            string hashedPassword = GetPasswordHash(unsecurePassword);
-
             try {
-
-                await client.ConnectAsync(middlewareIP, middlewarePort);
+                var result = client.BeginConnect(GlobalVariables.MIDDLEWARE_IP, GlobalVariables.MIDDLEWARE_PORT, null, null);
+                var success = result.AsyncWaitHandle.WaitOne(TimeSpan.FromMilliseconds(timeout));
+                if (success) {
+                    client.EndConnect(result);
+                    return client;
+                }
+                else {
+                    client.Dispose();
+                    BackendErrorEncountered?.Invoke(null, new BackendErrorEventArgs("Client connection failed", "The client connection timed-out after " + timeout.ToString() + " ms"));
+                    return null;
+                }
             }
-            catch (Exception) {
+            catch (Exception e) {
+                client.Dispose();
+                BackendErrorEncountered?.Invoke(null, new BackendErrorEventArgs("Client connection failed", e.Message));
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Writes, via. an established client connection, to the middleware service
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="msg"></param>
+        /// <returns></returns>
+        private static async Task<bool> WriteToMiddleware(TcpClient client, byte[] msg) {
+            try {
+                await client.GetStream().WriteAsync(msg, 0, msg.Length);
+                return true;
+            }
+            catch (Exception e) {
+                client.Dispose();
+                BackendErrorEncountered?.Invoke(null, new BackendErrorEventArgs("Client failed to send request", e.Message));
                 return false;
             }
+        }
 
+        /// <summary>
+        /// Sends a login request to the middleware service
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        public static async Task<bool> SendLoginCredentials (string username, SecureString password) {
+            string unsecurePassword = ConvertToUnsecureString(password);
+            string hashedPassword = GetHashedString(unsecurePassword);
+
+            TcpClient client = ConnectoToMiddleware(ConnectionTimeoutMS);
+
+            if (client == null)
+                return false;
+            
 
             GlobalVariablesLib.UserModel user = new GlobalVariablesLib.UserModel() { UserID = username, PswdHash = hashedPassword, RequestType = GlobalVariablesLib.RequestTypes.Get_User };
 
             byte [ ] msg = TcpHelper.MessageFormatter.MessageBytes<GlobalVariablesLib.UserModel>(user);
 
-            try {
-                client.GetStream().Write(msg, 0, msg.Length);
-            }
-            catch (Exception) {
+            if (!await WriteToMiddleware(client, msg))
                 return false;
+
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            while (stopwatch.Elapsed.TotalMilliseconds <= ConnectionTimeoutMS) {
+                string result = TcpHelper.MessageFormatter.ReadStreamOnce(client.GetStream());
+                if (!string.IsNullOrEmpty(result)) {
+                    UserModel resultUser = Newtonsoft.Json.JsonConvert.DeserializeObject<UserModel>(result);
+                    if (resultUser.RequestType != RequestTypes.Error) {
+                        if (resultUser.RequestType == RequestTypes.Token_Get) {
+                            loggedUser = resultUser;
+                            client.Dispose();
+                            return true;
+                        }
+                    }
+                    else {
+                        client.Dispose();
+                        BackendErrorEncountered?.Invoke(null, new BackendErrorEventArgs("Login request failed", resultUser.Message));
+                        return false;
+                    }
+                }
             }
 
-            return true;
+            client.Dispose();
+            BackendErrorEncountered?.Invoke(null, new BackendErrorEventArgs("Client connection failed", "The client connection timed-out after " + ConnectionTimeoutMS.ToString() + " ms"));
+            return false;
         }
 
+        /// <summary>
+        /// Sends a login request to the middleware service, with a JWT
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="userID"></param>
+        /// <returns></returns>
+        public static async Task<bool> SendTokenLogin (string token, string userID) {
+            TcpClient client = ConnectoToMiddleware(ConnectionTimeoutMS);
+
+            if (client == null)
+                return false;
+
+            UserModel user = new GlobalVariablesLib.UserModel() { UserID = userID, Token = token, RequestType = GlobalVariablesLib.RequestTypes.Token_Check };
+
+            byte [ ] msg = TcpHelper.MessageFormatter.MessageBytes<GlobalVariablesLib.UserModel>(user);
+
+            if (!await WriteToMiddleware(client, msg))
+                return false;
+
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            while (stopwatch.ElapsedMilliseconds < ConnectionTimeoutMS) {
+                string result = TcpHelper.MessageFormatter.ReadStreamOnce(client.GetStream());
+                if (!string.IsNullOrEmpty(result)) {
+                    UserModel resultUser = Newtonsoft.Json.JsonConvert.DeserializeObject<UserModel>(result);
+                    if (resultUser.RequestType != RequestTypes.Error) {
+                        if (resultUser.TokenResponse == TokenResponse.Valid) {
+                            loggedUser = resultUser;
+                            client.Dispose();
+                            return true;
+                        }
+                        else if (resultUser.TokenResponse == TokenResponse.Invalid) {
+                            client.Dispose();
+                            BackendErrorEncountered?.Invoke(null, new BackendErrorEventArgs("Token login failed", "Your session has either expired or token was invalid"));
+                            return false;
+                        }
+                    }
+                    else {
+                        client.Dispose();
+                        BackendErrorEncountered?.Invoke(null, new BackendErrorEventArgs("Token login failed", resultUser.Message));
+                        return false;
+                    }
+                }
+            }
+
+            client.Dispose();
+            BackendErrorEncountered?.Invoke(null, new BackendErrorEventArgs("Client connection failed", "The client connection timed-out after " + ConnectionTimeoutMS.ToString() + " ms"));
+            return false;
+        }
+
+        /// <summary>
+        /// Sends a register request to the middleware service
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        public static async Task<bool> SendRegisterRequest (string username, SecureString password) {
+            string unsecurePassword = ConvertToUnsecureString(password);
+            string hashedPassword = GetHashedString(unsecurePassword);
+
+            TcpClient client = ConnectoToMiddleware(ConnectionTimeoutMS);
+
+            if (client == null)
+                return false;
+
+            UserModel user = new UserModel() { UserID = username, PswdHash = hashedPassword, RequestType = RequestTypes.Create_User };
+
+            byte [ ] msg = TcpHelper.MessageFormatter.MessageBytes<UserModel>(user);
+
+            if (!await WriteToMiddleware(client, msg))
+                return false;
+
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            while (stopwatch.ElapsedMilliseconds < ConnectionTimeoutMS) {
+                string result = TcpHelper.MessageFormatter.ReadStreamOnce(client.GetStream());
+                if (!string.IsNullOrEmpty(result)) {
+                    UserModel resultUser = Newtonsoft.Json.JsonConvert.DeserializeObject<UserModel>(result);
+                    if (resultUser.RequestType != RequestTypes.Error) {
+                        if (resultUser.RequestType == RequestTypes.Create_User) {
+                            loggedUser = resultUser;
+                            client.Dispose();
+                            return true;
+                        }
+                    }
+                    else {
+                        client.Dispose();
+                        BackendErrorEncountered?.Invoke(null, new BackendErrorEventArgs("Create user failed", resultUser.Message));
+                        return false;
+                    }
+                }
+            }
+
+            client.Dispose();
+            BackendErrorEncountered?.Invoke(null, new BackendErrorEventArgs("Client connection failed", "The client connection timed-out after " + ConnectionTimeoutMS.ToString() + " ms"));
+            return false;
+        }
+
+        /// <summary>
+        /// Logs the user out of the backend code by removing the run-time instance of the model
+        /// </summary>
         public static void Logout () {
             loggedUser = null;
         }
 
-        public static async Task<bool> SendRegisterRequest (string username, SecureString password) {
-            TcpClient client = new TcpClient();
-
-            string unsecurePassword = ConvertToUnsecureString(password);
-            string hashedPassword = GetPasswordHash(unsecurePassword);
-
-            try {
-
-                await client.ConnectAsync(middlewareIP, middlewarePort);
-            }
-            catch (Exception) {
-                return false;
-            }
-
-            GlobalVariablesLib.UserModel user = new GlobalVariablesLib.UserModel() { UserID = username, PswdHash = hashedPassword, RequestType = GlobalVariablesLib.RequestTypes.Create_User };
-
-            byte [ ] msg = TcpHelper.MessageFormatter.MessageBytes<GlobalVariablesLib.UserModel>(user);
-
-            try {
-                client.GetStream().Write(msg, 0, msg.Length);
-            }
-            catch (Exception) {
-                return false;
-            }
-
-            return true;
-        }
-
+        /// <summary>
+        /// !! NOTE IMPLEMENTED YET !! Launches the game client, with the token as paramter
+        /// </summary>
         public static void LaunchGame () {
             Process.Start("F:/Steam/steamapps/common/Cube World/cubeworld.exe");
         }
 
-        private static string GetPasswordHash (string password) {
+        /// <summary>
+        /// Returns a HMACSHA512 version of a string 
+        /// </summary>
+        /// <param name="_input"></param>
+        /// <returns></returns>
+        private static string GetHashedString (string _input) {
 
-            using (HMACSHA512 t = new HMACSHA512(Encoding.UTF8.GetBytes(password))) {
+            using (HMACSHA512 t = new HMACSHA512(Encoding.UTF8.GetBytes(_input))) {
                 byte [ ] hash;
-                hash = t.ComputeHash(Encoding.UTF8.GetBytes(password));
-                password = BitConverter.ToString(hash).Replace("-", "");
+                hash = t.ComputeHash(Encoding.UTF8.GetBytes(_input));
+                _input = BitConverter.ToString(hash).Replace("-", "");
             }
 
-            return password;
+            return _input;
         }
 
-        private static string ConvertToUnsecureString (SecureString securePassword) {
+        /// <summary>
+        /// Checks if two password SecureStrings are the same value
+        /// </summary>
+        /// <param name="_password"></param>
+        /// <param name="_confirmPass"></param>
+        /// <returns></returns>
+        public static bool CheckPassUniformity (SecureString _password, SecureString _confirmPass) {
+            string pass = ConvertToUnsecureString(_password);
+            string confirmPass = ConvertToUnsecureString(_confirmPass);
+
+            if (pass == confirmPass) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Converts a SecureString password to a normal readable string
+        /// </summary>
+        /// <param name="securePassword"></param>
+        /// <returns></returns>
+        public static string ConvertToUnsecureString (SecureString securePassword) {
             if (securePassword == null) {
                 return string.Empty;
             }
@@ -118,22 +325,23 @@ namespace Launcher
             }
         }
 
-        private static void ReadForAnswer () {
-            //TcpHelper.MessageFormatter.ReadForMessages(new NetworkStre));
+        /// <summary>
+        /// https://stackoverflow.com/questions/1570422/convert-string-to-securestring/43084626
+        /// </summary>
+        /// <param name="originalString"></param>
+        /// <returns></returns>
+        public static SecureString ConvertToSecureString (string originalString) {
+            if (originalString == null)
+                throw new ArgumentNullException("password");
+
+            var securePassword = new SecureString();
+
+            foreach (char c in originalString)
+                securePassword.AppendChar(c);
+
+            securePassword.MakeReadOnly();
+            return securePassword;
         }
-
-        public static bool CheckPassUniformity (SecureString _password, SecureString _confirmPass) {
-            string pass = ConvertToUnsecureString(_password);
-            string confirmPass = ConvertToUnsecureString(_confirmPass);
-
-            if (pass == confirmPass) {
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-
 
     }
 }

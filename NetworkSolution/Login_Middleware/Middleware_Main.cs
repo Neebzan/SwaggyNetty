@@ -19,7 +19,7 @@ namespace Login_Middleware
 {
     class Middleware_Main
     {
-        static int port = 13010;
+        static int port = GlobalVariables.MIDDLEWARE_PORT;
         static ConcurrentQueue<TcpClient> users = new ConcurrentQueue<TcpClient>();
         
         static private IPAddress IP = IPAddress.Any;
