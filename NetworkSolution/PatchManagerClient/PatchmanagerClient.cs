@@ -14,7 +14,7 @@ using TcpHelper;
 
 namespace PatchManagerClient {
 
-    public enum PatchStatus { Connecting, Downloading, Done, CheckingFiles};
+    public enum PatchStatus { Connecting, Downloading, Done, CheckingFiles };
 
     public static class PatchmanagerClient {
         public static Dictionary<string, string> allFilesDictionary = null;
@@ -30,6 +30,10 @@ namespace PatchManagerClient {
         public static EventHandler StatusChanged = delegate { };
 
 
+        //private static Task<bool> ConnectClient () {
+
+        //}
+
         public static void StartPatchCheck (string dir) {
             Status = PatchStatus.Connecting;
             StatusChanged.Invoke(null, new EventArgs());
@@ -41,8 +45,8 @@ namespace PatchManagerClient {
 
             }
             while (client == null) {
+                Thread.Sleep(TimeSpan.FromMilliseconds(16.66667));
                 try {
-                    //client = new TcpClient("178.155.161.248", 14000);
                     client = new TcpClient(GlobalVariables.PATCHMANAGER_IP, GlobalVariables.PATCHMANAGER_PORT);
                 }
                 catch {
@@ -64,7 +68,7 @@ namespace PatchManagerClient {
             while (!completed) {
                 if (MessageFormatter.Connected(client)) {
                     if (MissingFiles == null) {
-                        while (client.GetStream().DataAvailable) { 
+                        while (client.GetStream().DataAvailable) {
                             string jsonList = MessageFormatter.ReadStreamOnce(client.GetStream());
                             MissingFiles = JsonConvert.DeserializeObject<FileTransferModel>(jsonList);
                             MissingFilesUpdated.Invoke(null, new EventArgs());
@@ -86,7 +90,7 @@ namespace PatchManagerClient {
                         else {
                             while (client.GetStream().DataAvailable) {
                                 MessageFormatter.ReadFile(client, MissingFiles.Files [ 0 ].FilePath, downloadDirectory);
-                                MissingFiles.RemainingSize -= MissingFiles.Files[0].Size;
+                                MissingFiles.RemainingSize -= MissingFiles.Files [ 0 ].Size;
                                 MissingFilesUpdated.Invoke(null, new EventArgs());
                                 MissingFiles.Files.RemoveAt(0);
                                 waitingForFile = false;
