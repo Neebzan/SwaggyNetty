@@ -26,15 +26,13 @@ namespace Launcher {
     }
 
     internal static class Backend {
- 
-
         public static UserModel loggedUser { get; private set; } = null;
         public static float PatchProgress = 0f;
         public static float ConnectionTimeoutMS = 5000.0f;
         public static FileTransferModel PatchData = null;
 
         /// <summary>
-        /// Raised whenever the backend encounters an error
+        /// Invoke this when an error is encountered in the backend. Simply call the DisplayError method directly if encountered in the application instead.
         /// </summary>
         public static EventHandler<BackendErrorEventArgs> BackendErrorEncountered;
 
@@ -98,7 +96,9 @@ namespace Launcher {
         /// <param name="client"></param>
         /// <param name="msg"></param>
         /// <returns></returns>
-        private static async Task<bool> WriteToMiddleware(TcpClient client, byte[] msg) {
+        private static async Task<bool> WriteToMiddleware(TcpClient client, UserModel user) {
+            byte [ ] msg = TcpHelper.MessageFormatter.MessageBytes<UserModel>(user);
+
             try {
                 await client.GetStream().WriteAsync(msg, 0, msg.Length);
                 return true;
@@ -123,14 +123,13 @@ namespace Launcher {
             TcpClient client = ConnectoToMiddleware(ConnectionTimeoutMS);
 
             if (client == null)
-                return false;
+                return false;            
+
+            UserModel user = new UserModel() { UserID = username, PswdHash = hashedPassword, RequestType = GlobalVariablesLib.RequestTypes.Get_User };
+
             
 
-            GlobalVariablesLib.UserModel user = new GlobalVariablesLib.UserModel() { UserID = username, PswdHash = hashedPassword, RequestType = GlobalVariablesLib.RequestTypes.Get_User };
-
-            byte [ ] msg = TcpHelper.MessageFormatter.MessageBytes<GlobalVariablesLib.UserModel>(user);
-
-            if (!await WriteToMiddleware(client, msg))
+            if (!await WriteToMiddleware(client, user))
                 return false;
 
             Stopwatch stopwatch = new Stopwatch();
@@ -171,11 +170,9 @@ namespace Launcher {
             if (client == null)
                 return false;
 
-            UserModel user = new GlobalVariablesLib.UserModel() { UserID = userID, Token = token, RequestType = GlobalVariablesLib.RequestTypes.Token_Check };
+            UserModel user = new UserModel() { UserID = userID, Token = token, RequestType = RequestTypes.Token_Check };
 
-            byte [ ] msg = TcpHelper.MessageFormatter.MessageBytes<GlobalVariablesLib.UserModel>(user);
-
-            if (!await WriteToMiddleware(client, msg))
+            if (!await WriteToMiddleware(client, user))
                 return false;
 
             Stopwatch stopwatch = new Stopwatch();
@@ -226,9 +223,7 @@ namespace Launcher {
 
             UserModel user = new UserModel() { UserID = username, PswdHash = hashedPassword, RequestType = RequestTypes.Create_User };
 
-            byte [ ] msg = TcpHelper.MessageFormatter.MessageBytes<UserModel>(user);
-
-            if (!await WriteToMiddleware(client, msg))
+            if (!await WriteToMiddleware(client, user))
                 return false;
 
             Stopwatch stopwatch = new Stopwatch();
@@ -245,6 +240,7 @@ namespace Launcher {
                         }
                     }
                     else {
+                        loggedUser = null;
                         client.Dispose();
                         BackendErrorEncountered?.Invoke(null, new BackendErrorEventArgs("Create user failed", resultUser.Message));
                         return false;
