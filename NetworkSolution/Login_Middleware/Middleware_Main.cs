@@ -84,7 +84,7 @@ namespace Login_Middleware
                         Task.Factory.StartNew(client.ListenForMessages,TaskCreationOptions.PreferFairness);
                     }
                 } else {
-                    Thread.Sleep(16);
+                    Thread.Sleep(TimeSpan.FromMilliseconds(16.666666666666667));
                 }
             }
         }
@@ -104,7 +104,10 @@ namespace Login_Middleware
                     TcpClient c = serverListener.AcceptTcpClient();
                     users.Enqueue(c);
                     Console.WriteLine("SERVER: " + c.Client.RemoteEndPoint.ToString() + " connected");
-                } else { Thread.Sleep(16); }
+                } else 
+                {
+                    Thread.Sleep(TimeSpan.FromMilliseconds(16.666666666666667));
+                }
             }
         }
     }
