@@ -43,7 +43,107 @@ public class ChatServer : MonoBehaviour
 
     void Update()
     {
-        SendToAll();
+
+
+
+
+        lock (tickMessages)
+        {
+            foreach (var item in tickMessages.ChatDataPackages)
+            {
+                string[] chatTarget = item.Target.Split(' ');
+
+                if (chatTarget[0] == "create")
+                {
+
+                    CreateGroup(chatTarget[1], item.SenderClient);
+                }
+                if (chatTarget[0] == "all")
+                {
+                    SendToAll();
+                }
+                else if (chatTarget[0] == "tell")
+                {
+                    SendWhisper(chatTarget[1]);
+                }
+                else
+                {
+                    for (int i = 0; i < groups.Count; i++)
+                    {
+                        if (groups[i].GroupName == item.Target)
+                        {
+                            JoinGroup(groups[i].GroupName, item.SenderClient);
+                            SendToGoupe(item.Target);
+                        }
+                    }
+                }
+
+            }
+            tickMessages.ChatDataPackages.Clear();
+        }
+
+    }
+
+    public void CreateGroup(string groupName, ChatServerClient client)
+    {
+        ChatGroup mygroup = new ChatGroup() { GroupName = groupName, ID = ChatServer.idNumber };
+        ChatServer.idNumber += 1;
+        //for (int i = 0; i < groups.Count; i++)
+        //{
+        //    if (!(groups[i].GroupName == groupName))
+        //    {
+
+                ChatServer.groups.Add(mygroup);
+        //    }
+        //}
+
+        //client.SendMessage("Group create: " + groupName);
+        //DEBUG
+        if (chatGUI != null)
+            foreach (var item in tickMessages.ChatDataPackages)
+            {
+                chatGUI.chatHistorie.Add(groupName + " created");
+
+            }
+        JoinGroup(groupName, client);
+
+
+    }
+    public void JoinGroup(string groupName, ChatServerClient client)
+    {
+        for (int i = 0; i < ChatServer.groups.Count; i++)
+        {
+            if (ChatServer.groups[i].GroupName == groupName)
+            {
+
+                ChatServer.groups[i].Members.Add(client);
+
+                var dasGroup = ChatServer.groups[i];
+
+                var mes = TCPHelper.MessageBytes(ChatServer.groups[i]);
+                for (int y = 0; y < dasGroup.Members.Count; y++)
+                {
+                    dasGroup.Members[i].SendToClient(mes);
+                }
+            }
+        }
+    }
+    public void LeaveGroup(string groupName, ChatServerClient client)
+    {
+        for (int i = 0; i < ChatServer.groups.Count; i++)
+        {
+            if (ChatServer.groups[i].GroupName == groupName)
+            {
+                ChatServer.groups[i].Members.Remove(client);
+                var dasGroup = ChatServer.groups[i];
+                var mes = TCPHelper.MessageBytes(ChatServer.groups[i]);
+                for (int y = 0; y < dasGroup.Members.Count; y++)
+                {
+                    dasGroup.Members[i].SendToClient(mes);
+                }
+            }
+        }
+
     }
 
     public string GetLocalIPAddress()
@@ -85,7 +185,7 @@ public class ChatServer : MonoBehaviour
             {
                 Clients[i].SendToClient(mes);
             }
-            tickMessages.ChatDataPackages.Clear();
+            //   tickMessages.ChatDataPackages.Clear();
         }
 
     }
@@ -110,15 +210,23 @@ public class ChatServer : MonoBehaviour
                 Clients[i].SendToClient(mes);
                 // chatGUI.chatHistorie.Add(Clients[i].ToString());
             }
-            tickMessages.ChatDataPackages.Clear();
+            //   tickMessages.ChatDataPackages.Clear();
         }
     }
 
-    public void SendWhisper()
+    public void SendWhisper(string whisperName)
     {
 
         if (tickMessages.ChatDataPackages.Count > 0)
         {
+
+            //DEBUG
+            if (chatGUI != null)
+                foreach (var item in tickMessages.ChatDataPackages)
+                {
+                    chatGUI.chatHistorie.Add(item.SenderName + " : " + item.port + " : " + item.Message);
+
+                }
 
             //sende til en ip perosn. skal hente ip på person ud fra et navn clienten sender
             byte[] mes = TCPHelper.MessageBytes(tickMessages);
@@ -131,23 +239,31 @@ public class ChatServer : MonoBehaviour
 
                 }
             }
-            tickMessages.ChatDataPackages.Clear();
+            //  tickMessages.ChatDataPackages.Clear();
         }
     }
 
-    public void SendToGoupe()
+    public void SendToGoupe(string groupName)
     {
 
         if (tickMessages.ChatDataPackages.Count > 0)
         {
-            
+
+            //DEBUG
+            if (chatGUI != null)
+                foreach (var item in tickMessages.ChatDataPackages)
+                {
+                    chatGUI.chatHistorie.Add(item.SenderName + " : " + item.port + " : " + item.Message);
+
+                }
+
             // skal tjekke igennem en liste at gruppen kan der  problem. hvordan får man fat i en gruppe genneralt når vi ikke ved hvad det er for en liste som skal bruges
             byte[] mes = TCPHelper.MessageBytes(tickMessages);
             //skal finde gruppen
 
             for (int i = 0; i < groups.Count; i++)
             {
-                if(groups[i].GroupName == "ja")
+                if (groups[i].GroupName == groupName)
                 {
                     for (int y = 0; y < groups[i].Members.Count; y++)
                     {
@@ -156,9 +272,9 @@ public class ChatServer : MonoBehaviour
 
                     }
                 }
-               
+
             }
-            tickMessages.ChatDataPackages.Clear();
+            //   tickMessages.ChatDataPackages.Clear();
         }
     }
 

@@ -13,7 +13,7 @@ public class ChatServerClient : MonoBehaviour
     NetworkStream networkStream;
     bool isDisconnecting = false;
 
-   
+
     public ChatServerClient(TcpClient _tcpClient)
     {
         tcpClient = _tcpClient;
@@ -26,50 +26,52 @@ public class ChatServerClient : MonoBehaviour
 
     }
 
-    public void CreateGroup(string groupName)
-    {
-        ChatGroup mygroup = new ChatGroup() { GroupName = groupName, ID = ChatServer.idNumber };
-        ChatServer.idNumber += 1;
 
-        ChatServer.groups.Add(mygroup);
-        JoinGroup(groupName);
-        
+    //public void CreateGroup(string groupName)
+    //{
+    //    ChatGroup mygroup = new ChatGroup() { GroupName = groupName, ID = ChatServer.idNumber };
+    //    ChatServer.idNumber += 1;
 
-    }
-    public void JoinGroup(string groupName)
-    {
-        for (int i = 0; i < ChatServer.groups.Count; i++)
-        {
-            if(ChatServer.groups[i].GroupName == groupName)
-            {
-                ChatServer.groups[i].Members.Add(this);
-                var dasGroup = ChatServer.groups[i];
+    //    ChatServer.groups.Add(mygroup);
+    //    JoinGroup(groupName);
 
-                var mes = TCPHelper.MessageBytes(ChatServer.groups[i]);
-                for (int y = 0; y < dasGroup.Members.Count; y++)
-                {
-                    dasGroup.Members[i].SendToClient(mes);
-                }
-            }
-        }
-    }
-    public void LeaveGroup(string groupName)
-    {
-        for (int i = 0; i < ChatServer.groups.Count; i++)
-        {
-            if (ChatServer.groups[i].GroupName == groupName)
-            {
-                ChatServer.groups[i].Members.Remove(this);
-                var dasGroup = ChatServer.groups[i];
-                var mes = TCPHelper.MessageBytes(ChatServer.groups[i]);
-                for (int y = 0; y < dasGroup.Members.Count; y++)
-                {
-                    dasGroup.Members[i].SendToClient(mes);
-                }
-            }
-        }
-       
-    }
+
+    //}
+    //public void JoinGroup(string groupName)
+    //{
+    //    for (int i = 0; i < ChatServer.groups.Count; i++)
+    //    {
+    //        if (ChatServer.groups[i].GroupName == groupName)
+    //        {
+    //            ChatServer.groups[i].Members.Add(this);
+    //            var dasGroup = ChatServer.groups[i];
+
+    //            var mes = TCPHelper.MessageBytes(ChatServer.groups[i]);
+    //            for (int y = 0; y < dasGroup.Members.Count; y++)
+    //            {
+    //                dasGroup.Members[i].SendToClient(mes);
+    //            }
+    //        }
+    //    }
+    //}
+    //public void LeaveGroup(string groupName)
+    //{
+    //    for (int i = 0; i < ChatServer.groups.Count; i++)
+    //    {
+    //        if (ChatServer.groups[i].GroupName == groupName)
+    //        {
+    //            ChatServer.groups[i].Members.Remove(this);
+    //            var dasGroup = ChatServer.groups[i];
+    //            var mes = TCPHelper.MessageBytes(ChatServer.groups[i]);
+    //            for (int y = 0; y < dasGroup.Members.Count; y++)
+    //            {
+    //                dasGroup.Members[i].SendToClient(mes);
+    //            }
+    //        }
+    //    }
+
+    //}
+
 
 
     /// <summary>
@@ -84,13 +86,16 @@ public class ChatServerClient : MonoBehaviour
             {
                 if (networkStream.DataAvailable)
                 {
-                    string msg = TCPHelper.ReadMessage(networkStream);
-                    ChatServer.tickMessages.ChatDataPackages.Add(new ChatData()
+                    ChatDataPackage msg = JsonUtility.FromJson<ChatDataPackage>(TCPHelper.ReadMessage(networkStream));
+                    foreach (var item in msg.ChatDataPackages)
                     {
-                        SenderName = ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Address.ToString(),
-                        Message = msg,
-                        port = ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Port.ToString()
-                    });
+                        item.SenderClient = this;
+                        lock (ChatServer.tickMessages)
+                        {
+                            ChatServer.tickMessages.ChatDataPackages.Add(item);
+                        }
+
+                    }
                     Debug.Log(msg);
                 }
                 yield return null;

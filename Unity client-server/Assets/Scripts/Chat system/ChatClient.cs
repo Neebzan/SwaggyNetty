@@ -15,7 +15,7 @@ public class ChatClient : MonoBehaviour
     ChatSystem chatSystem;
     public string userName = string.Empty;
     public List<ChatGroup> mygroups = new List<ChatGroup>();
-  
+    public string chatTarget = "all";
 
 
 
@@ -40,7 +40,32 @@ public class ChatClient : MonoBehaviour
 
     public void AddToMyGroups()
     {
+
+    }
+    public string GetTargetString(string mesg)
+    {
+        if (mesg[0] == '/')
+        {
+               
+
+            //if (chatTarget.Split(' ')[0] == "create")
+            //{
+            //    chatTarget = chatTarget.Split(' ')[1];
+            //}
+           mesg = mesg.Remove(0, 1);
+            string[] target = mesg.Split(' ');
+            if(target[0] == "create")
+            {
+                chatTarget =  target[0] + " " + target[1];
+            }
+            if (target[0] == "tell")
+            {
+                chatTarget =  target[0] + " " + target[1];
+            }
+             chatTarget = target[0];
+        }
         
+        return chatTarget;
     }
 
     public bool Connected
@@ -77,7 +102,20 @@ public class ChatClient : MonoBehaviour
 
     public void Message(string msg)
     {
-        byte[] data = TCPHelper.MessageBytes(msg);
+        chatTarget = GetTargetString(msg);
+        ChatDataPackage cdp = new ChatDataPackage();
+        cdp.ChatDataPackages.Add(new ChatData
+        {
+            SenderName = ((IPEndPoint)client.Client.LocalEndPoint).Address.ToString(),
+            Message = msg,
+            port = ((IPEndPoint)client.Client.LocalEndPoint).Port.ToString(),
+            Target = chatTarget
+        });
+
+
+
+        byte[] data = TCPHelper.MessageBytes(cdp);
+
         client.GetStream().Write(data, 0, data.Length);
 
         Debug.Log("Sent: " + msg);
@@ -96,9 +134,10 @@ public class ChatClient : MonoBehaviour
                 foreach (var item in packet.ChatDataPackages)
                 {
                     // dele op i grupper her
-
-                    chatSystem.SendMessageToChat(item.Message, Messages.messageTypeColor.playerMessage);
-                    
+                    string senderClient = item.SenderName;
+                    string msg = senderClient + ": " + item.Message;
+                    chatSystem.SendMessageToChat(msg, Messages.messageTypeColor.playerMessage);
+                    msg = "";
                 }
             }
             yield return null;
