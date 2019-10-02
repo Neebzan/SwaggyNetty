@@ -41,7 +41,6 @@ namespace Launcher {
             (Application.Current.MainWindow as MainWindow).mainFrame.NavigationService.Navigate(new LoginPage());
         }
 
-
         private void Create_Account_Button_Clicked (object sender, RoutedEventArgs e) {
             spinner_imageawesome.Visibility = Visibility.Visible;
             if (!string.IsNullOrEmpty(passwordBox.Password) && !string.IsNullOrEmpty(usernameBox.Text) && !string.IsNullOrEmpty(confirmPassBox.Password)) {
@@ -68,8 +67,6 @@ namespace Launcher {
                         await AnimateOut();
                         (Application.Current.MainWindow as MainWindow).mainFrame.NavigationService.Navigate(new LoginPage());
                     }));
-
-
                 }
             }
             else {
@@ -84,7 +81,6 @@ namespace Launcher {
             new Action(() => {
                 spinner_imageawesome.Visibility = Visibility.Hidden;
             }));
-
         }
     }
 }

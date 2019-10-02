@@ -25,9 +25,7 @@ namespace Launcher
         public EventHandler<ProgressBarValueChangedEventArgs> NewValueGiven;
 
         public BaseProgressBar () => this.NewValueGiven += BaseProgressBarValueChanged;
-
-
-
+               
         private async void BaseProgressBarValueChanged (object sender, ProgressBarValueChangedEventArgs e) {
             await AnimateBar(e.OldValue, e.NewValue);                        
         }

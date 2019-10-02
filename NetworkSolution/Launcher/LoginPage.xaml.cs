@@ -32,7 +32,6 @@ namespace Launcher {
         ImageAwesome spinner;
 
         string savedUsername;
-        //SecureString savedPassword;
 
         public LoginPage () {
             InitializeComponent();
@@ -45,7 +44,6 @@ namespace Launcher {
 
             spinner.Visibility = Visibility.Hidden;
             this.Loaded += CheckAutoLogin;
-
 
             savedUsername = Settings.Default.username;
             rememberUsername.IsChecked = Settings.Default.RememberUsername;
