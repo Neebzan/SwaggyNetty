@@ -312,7 +312,7 @@ namespace Login_Middleware {
                         Message peekedMessage = Middleware_Main.databaseResponseQueue.Peek();
                         peekedMessage.Formatter = new JsonMessageFormatter();
                         UserModel peekedModel = DeserializeRequest(peekedMessage.Body.ToString());
-
+                        WriteLine($"\nExpected ID: {userImputData.UserID}\nActual ID: {peekedModel.UserID}\nLabel ID: {peekedMessage.Label}\n");
                         // if the label is as expected, and the request type is the same, consume message
                         // specifically made to be sure a user making two requests at once, can't get the wrong message back.
                         if (peekedMessage.Label == userImputData.UserID && peekedModel.RequestType == RequestTypes.Get_User) {
@@ -408,6 +408,7 @@ namespace Login_Middleware {
                     WriteLine("Response From Token Server Sent to User");
                     break;
                 default:
+                    success = true;
                     break;
             }
             if (Connected) {
