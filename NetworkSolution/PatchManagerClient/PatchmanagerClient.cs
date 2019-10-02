@@ -104,9 +104,9 @@ namespace PatchManagerClient {
                             completed = true;
                         }
                     }
-
                 }
             }
+            client.Dispose();
         }
 
         public static void SendFileDictionaryToServer () {

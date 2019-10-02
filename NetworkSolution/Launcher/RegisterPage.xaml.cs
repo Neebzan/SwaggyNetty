@@ -44,10 +44,17 @@ namespace Launcher {
         private void Create_Account_Button_Clicked (object sender, RoutedEventArgs e) {
             spinner_imageawesome.Visibility = Visibility.Visible;
             if (!string.IsNullOrEmpty(passwordBox.Password) && !string.IsNullOrEmpty(usernameBox.Text) && !string.IsNullOrEmpty(confirmPassBox.Password)) {
-                SecureString password = passwordBox.SecurePassword;
-                SecureString confirmPass = confirmPassBox.SecurePassword;
-                string username = usernameBox.Text;
-                Task.Factory.StartNew(() => CreateUserRequest(password, confirmPass, username));
+                if (Backend.ConvertToUnsecureString(passwordBox.SecurePassword).Contains(" ") ||
+                    usernameBox.Text.Contains(" ")) {
+                    (Application.Current.MainWindow as MainWindow).DisplayError("Create user request failed", "Entries must not contain spaces");
+                    spinner_imageawesome.Visibility = Visibility.Hidden;
+                }
+                else {
+                    SecureString password = passwordBox.SecurePassword;
+                    SecureString confirmPass = confirmPassBox.SecurePassword;
+                    string username = usernameBox.Text;
+                    Task.Factory.StartNew(() => CreateUserRequest(password, confirmPass, username));
+                }
             }
             else {
                 (Application.Current.MainWindow as MainWindow).DisplayError("Create user request failed", "You must fill out all fields");
