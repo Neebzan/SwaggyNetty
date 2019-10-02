@@ -37,7 +37,7 @@ public class GridGenerater : MonoBehaviour
                 grid[x, y] = Instantiate<GameObject>(gridPrefab, new Vector3(x - xOffset, y - yOffset), Quaternion.identity);
                 grid[x, y].gameObject.transform.parent = this.transform;
                 grid[x, y].GetComponent<Cell>().X = x;
-                grid[x, y].GetComponent<Cell>().X = y;
+                grid[x, y].GetComponent<Cell>().Y = y;
 
 
             }
@@ -59,6 +59,8 @@ public class GridGenerater : MonoBehaviour
             {
                 grid[x, y] = Instantiate<GameObject>(gridPrefab, new Vector3(x - xOffset, y - yOffset), Quaternion.identity);
                 grid[x, y].gameObject.transform.parent = this.transform;
+                grid[x, y].GetComponent<Cell>().X = x;
+                grid[x, y].GetComponent<Cell>().Y = y;
             }
         }
     }

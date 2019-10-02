@@ -78,8 +78,13 @@ public class ServerActor : MonoBehaviour
     {
         if (newMove)
         {
-            Server.ChangedCells.Add(Server.MapGrid.grid[startingX, startingY].GetComponent<Cell>());
-            Server.ChangedCells.Add(Server.MapGrid.grid[newX, newY].GetComponent<Cell>());
+            lock (Server.ChangedCells)
+            {
+                if (!Server.ChangedCells.ContainsKey(Server.MapGrid.grid[startingX, startingY].GetComponent<Cell>()))
+                    Server.ChangedCells.Add(Server.MapGrid.grid[startingX, startingY].GetComponent<Cell>(), 0);
+                if (!Server.ChangedCells.ContainsKey(Server.MapGrid.grid[newX, newY].GetComponent<Cell>()))
+                    Server.ChangedCells.Add(Server.MapGrid.grid[newX, newY].GetComponent<Cell>(), 0);
+            }
             Server.MapGrid.grid[newX, newY].GetComponent<Cell>().OccupyCell(gameObject);
             CurrentPos = new Vector2(newX, newY);
             WorldPos = transform.position;
@@ -91,19 +96,25 @@ public class ServerActor : MonoBehaviour
         //Debug.Log("Moving");
         if (currentMoveDirection != Vector2.zero)
         {
-            Server.MapGrid.grid[newX, newY].GetComponent<Cell>().UnmarkCell();
-            if (currentMoveDirection.x + startingX < Server.MapGrid.gridWidth && currentMoveDirection.x + startingX >= 0)
+            lock (Server.ChangedCells)
             {
-                newX = startingX + (int)currentMoveDirection.x;
-            }
+                Server.MapGrid.grid[newX, newY].GetComponent<Cell>().UnmarkCell();
+                if (!Server.ChangedCells.ContainsKey(Server.MapGrid.grid[newX, newY].GetComponent<Cell>()))
+                    Server.ChangedCells.Add(Server.MapGrid.grid[newX, newY].GetComponent<Cell>(), PlayerID);
+                if (currentMoveDirection.x + startingX < Server.MapGrid.gridWidth && currentMoveDirection.x + startingX >= 0)
+                {
+                    newX = startingX + (int)currentMoveDirection.x;
+                }
 
-            if (currentMoveDirection.y + startingY < Server.MapGrid.gridHeigth && currentMoveDirection.y + startingY >= 0)
-            {
-                newY = startingY + (int)currentMoveDirection.y;
+                if (currentMoveDirection.y + startingY < Server.MapGrid.gridHeigth && currentMoveDirection.y + startingY >= 0)
+                {
+                    newY = startingY + (int)currentMoveDirection.y;
+                }
+                Server.MapGrid.grid[newX, newY].GetComponent<Cell>().MarkCell();
+                if (!Server.ChangedCells.ContainsKey(Server.MapGrid.grid[newX, newY].GetComponent<Cell>()))
+                    Server.ChangedCells.Add(Server.MapGrid.grid[newX, newY].GetComponent<Cell>(), PlayerID);
+                currentMoveDirection = Vector2.zero;
             }
-            Server.MapGrid.grid[newX, newY].GetComponent<Cell>().MarkCell();
-            Server.ChangedCells.Add(Server.MapGrid.grid[newX, newY].GetComponent<Cell>());
-            currentMoveDirection = Vector2.zero;
         }
 
 

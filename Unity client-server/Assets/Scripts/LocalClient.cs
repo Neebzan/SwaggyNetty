@@ -124,6 +124,7 @@ public class LocalClient : MonoBehaviour
                                 foreach (var item in data.GridDataPackages)
                                 {
                                     map.grid[item.X, item.Y].GetComponent<Cell>().SetColor(item.Color);
+                                    Debug.Log($"Set Color of tile:{item.X},{item.Y} to {item.Color}");
                                 }
                                 if (!playerFound)
                                 {

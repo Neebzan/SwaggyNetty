@@ -25,9 +25,9 @@ public class Cell : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
-    
+
     public void OccupyCell(GameObject obj)
     {
         Occupant = obj;
@@ -40,10 +40,12 @@ public class Cell : MonoBehaviour
     public void MarkCell()
     {
         //Call SetColor using the shader property name "_Color" and setting the color to red
+
         color = Color.blue;
         renderer.material.SetColor("_Color", color);
+
     }
-    
+
     public void UnmarkCell()
     {
         //Call SetColor using the shader property name "_Color" and setting the color to red
