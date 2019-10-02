@@ -71,7 +71,7 @@ namespace Launcher {
             TcpClient client = new TcpClient();
 
             try {
-                var result = client.BeginConnect(GlobalVariables.MIDDLEWARE_IP, GlobalVariables.MIDDLEWAR_PORT, null, null);
+                var result = client.BeginConnect(GlobalVariables.MIDDLEWARE_IP, GlobalVariables.MIDDLEWARE_PORT, null, null);
                 var success = result.AsyncWaitHandle.WaitOne(TimeSpan.FromMilliseconds(timeout));
                 if (success) {
                     client.EndConnect(result);
