@@ -9,8 +9,17 @@ public class PositionDataPackage
     public Vector2 Position;
 }
 
+[Serializable]
+public class GridDataPackage
+{
+    public int X;
+    public int Y;
+    public Color Color;
+}
 
 [Serializable]
-public class PositionDataCollectionPackage {
-    public PositionDataPackage [ ] PositionDataPackages;
+public class DataCollectionPackage
+{
+    public List<PositionDataPackage> PositionDataPackages = new List<PositionDataPackage>();
+    public List<GridDataPackage> GridDataPackages = new List<GridDataPackage>();
 }

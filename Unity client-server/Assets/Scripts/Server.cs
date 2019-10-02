@@ -19,10 +19,13 @@ public static class Server {
     //static TcpListener listener = new TcpListener(iPAd, SERVER_PORT);
     static TcpListener listener = new TcpListener(IPAddress.Any, SERVER_PORT);
 
-    public static System.Timers.Timer timer = new System.Timers.Timer(1000);
+    public static System.Timers.Timer roundTimer = new System.Timers.Timer(1000);
+    public static System.Timers.Timer packageTimer = new System.Timers.Timer(16.667);
+
     public static uint PlayersConnected;
 
     public static GridGenerater MapGrid;
+    public static List<Cell> ChangedCells = new List<Cell>();
 
     static Server () {
         StartTick();
@@ -54,40 +57,64 @@ public static class Server {
     }
 
     private static void StartTick () {
-        timer.Elapsed += Tick;
-        timer.AutoReset = true;
-        timer.Enabled = true;
+        roundTimer.Elapsed += RoundTick;
+        roundTimer.AutoReset = true;
+        roundTimer.Enabled = true;
+        packageTimer.Elapsed += PackageTick;
+        packageTimer.AutoReset = true;
+        packageTimer.Enabled = true;
+
     }
 
-    private static void Tick (object sender, ElapsedEventArgs e) {
-        byte [ ] package = PositionData();
+    private static void PackageTick(object sender, ElapsedEventArgs e)
+    {
+        byte[] package = PositionData();
 
-        for (int i = 0; i < Players.Count; i++) {
-            Players [ i ].Client.SendToClient(package);
-        }
         for (int i = 0; i < Players.Count; i++)
         {
-            //Players[i].activeInputs.Clear();
+            Players[i].Client.SendToClient(package);
+        }
+    }
+
+    private static void RoundTick (object sender, ElapsedEventArgs e) {
+
+        for (int i = 0; i < Players.Count; i++)
+        {
             Players[i].newMove = true;
         }
     }
 
     private static void StopServer () {
-        timer.Enabled = false;
+        roundTimer.Enabled = false;
+        packageTimer.Enabled = false;
     }
 
     private static byte [ ] PositionData () {
         //Create package from player ID and position
-        PositionDataPackage [ ] packageCollection = new PositionDataPackage [ Players.Count ];
+        List<PositionDataPackage> packageCollection = new List<PositionDataPackage>();
         for (int i = 0; i < Players.Count; i++) {
-            PositionDataPackage pck = new PositionDataPackage {
-                PlayerID = Players [ i ].PlayerID,
-                Position = Players [ i ].CurrentPos
-            };
-            packageCollection [ i ] = pck;
+            packageCollection.Add(
+            new PositionDataPackage {
+                PlayerID = Players[i].PlayerID,
+                Position = Players[i].WorldPos
+            });
         }
-        PositionDataCollectionPackage package = new PositionDataCollectionPackage() {
-            PositionDataPackages = packageCollection
+
+        //Grid data
+        List<GridDataPackage> gridPackageCollection = new List<GridDataPackage>();
+        foreach (var item in ChangedCells)
+        {
+            gridPackageCollection.Add(new GridDataPackage() { X = item.X, Y = item.Y, Color = item.color });
+            if(item.color == Color.blue)
+            {
+                int a = 1;
+            }
+        }
+        ChangedCells.Clear();
+
+        DataCollectionPackage package = new DataCollectionPackage() {
+            PositionDataPackages = packageCollection,
+            GridDataPackages = gridPackageCollection
         };
 
         MessageType msgType = MessageType.ServerTick;

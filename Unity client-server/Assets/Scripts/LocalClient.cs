@@ -13,9 +13,13 @@ public class LocalClient : MonoBehaviour
     List<LocalActor> actors = new List<LocalActor>();
     UnityEngine.Object playerPrefab;
 
+    GridGenerater map;
+
     // Start is called before the first frame update
     void Start()
     {
+        map = GameObject.Find("GameMap").GetComponent<GridGenerater>();
+
         playerPrefab = Resources.Load("Prefabs/LocalActor");
         int port = 13000;
         //client = new TcpClient("178.155.161.248", port);
@@ -55,7 +59,7 @@ public class LocalClient : MonoBehaviour
         while (true)
         {
             int packagesRead = 0;
-            while (stream.DataAvailable && packagesRead < 8)
+            while (stream.DataAvailable && packagesRead < 2)
             {
                 //Debug.Log("Data received!");
 
@@ -88,10 +92,16 @@ public class LocalClient : MonoBehaviour
                         break;
                     case MessageType.Connect:
                         {
-                            PositionDataPackage temp = JsonUtility.FromJson<PositionDataPackage>(tempMsg[1]);
+                            DataCollectionPackage data = JsonUtility.FromJson<DataCollectionPackage>(tempMsg[1]);
+
+
+                            //PositionDataPackage temp = JsonUtility.FromJson<PositionDataPackage>(tempMsg[1]);
+
+                            map.Generate(data.GridDataPackages[0].X, data.GridDataPackages[0].Y);
+
                             LocalActor t = GameObject.FindGameObjectWithTag("Player").GetComponent<LocalActor>();
-                            t.playerID = temp.PlayerID;
-                            t.gameObject.transform.position = temp.Position;
+                            t.playerID = data.PositionDataPackages[0].PlayerID;
+                            t.gameObject.transform.position = data.PositionDataPackages[0].Position;
                             actors.Add(t);
                             //gameObject.transform.position = temp.Position;
                             connected = true;
@@ -99,8 +109,8 @@ public class LocalClient : MonoBehaviour
                         }
                     case MessageType.ServerTick:
                         {
-                            PositionDataCollectionPackage data = JsonUtility.FromJson<PositionDataCollectionPackage>(tempMsg[1]);
-                            for (int i = 0; i < data.PositionDataPackages.Length; i++)
+                            DataCollectionPackage data = JsonUtility.FromJson<DataCollectionPackage>(tempMsg[1]);
+                            for (int i = 0; i < data.PositionDataPackages.Count; i++)
                             {
                                 bool playerFound = false;
                                 for (int j = 0; j < actors.Count; j++)
@@ -110,6 +120,10 @@ public class LocalClient : MonoBehaviour
                                         actors[j].gameObject.transform.position = data.PositionDataPackages[i].Position;
                                         playerFound = true;
                                     }
+                                }
+                                foreach (var item in data.GridDataPackages)
+                                {
+                                    map.grid[item.X, item.Y].GetComponent<Cell>().SetColor(item.Color);
                                 }
                                 if (!playerFound)
                                 {
@@ -130,7 +144,7 @@ public class LocalClient : MonoBehaviour
             }
 
             packagesRead++;
-            Debug.Log("Read: " + packagesRead + " packages");
+            //Debug.Log("Read: " + packagesRead + " packages");
             yield return null;
         }
 

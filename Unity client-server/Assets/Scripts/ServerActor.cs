@@ -13,6 +13,8 @@ public class ServerActor : MonoBehaviour
     public EndPoint Endpoint { get; internal set; }
     public uint PlayerID;
     public Vector2 CurrentPos;
+    public Vector2 WorldPos;
+
 
     public int startingX;
     public int startingY;
@@ -27,7 +29,7 @@ public class ServerActor : MonoBehaviour
 
     void Start()
     {
-        CurrentPos = transform.position;
+        CurrentPos = new Vector2(newX, newY);
     }
 
 
@@ -76,7 +78,11 @@ public class ServerActor : MonoBehaviour
     {
         if (newMove)
         {
+            Server.ChangedCells.Add(Server.MapGrid.grid[startingX, startingY].GetComponent<Cell>());
+            Server.ChangedCells.Add(Server.MapGrid.grid[newX, newY].GetComponent<Cell>());
             Server.MapGrid.grid[newX, newY].GetComponent<Cell>().OccupyCell(gameObject);
+            CurrentPos = new Vector2(newX, newY);
+            WorldPos = transform.position;
             startingX = newX;
             startingY = newY;
             newMove = false;
@@ -85,6 +91,7 @@ public class ServerActor : MonoBehaviour
         //Debug.Log("Moving");
         if (currentMoveDirection != Vector2.zero)
         {
+            Server.MapGrid.grid[newX, newY].GetComponent<Cell>().UnmarkCell();
             if (currentMoveDirection.x + startingX < Server.MapGrid.gridWidth && currentMoveDirection.x + startingX >= 0)
             {
                 newX = startingX + (int)currentMoveDirection.x;
@@ -94,6 +101,8 @@ public class ServerActor : MonoBehaviour
             {
                 newY = startingY + (int)currentMoveDirection.y;
             }
+            Server.MapGrid.grid[newX, newY].GetComponent<Cell>().MarkCell();
+            Server.ChangedCells.Add(Server.MapGrid.grid[newX, newY].GetComponent<Cell>());
             currentMoveDirection = Vector2.zero;
         }
 

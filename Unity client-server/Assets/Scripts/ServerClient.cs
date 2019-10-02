@@ -29,7 +29,6 @@ public class ServerClient {
     /// </summary>
     public ServerActor SpawnActor (Vector2 index) {
         UnityEngine.Object playerPrefab = Resources.Load("Prefabs/ServerActor");
-        ServerGameManager gameManager = GameObject.Find("GameManager").GetComponent<ServerGameManager>();
 
         GameObject actorObject = (GameObject)GameObject.Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
         ServerActor actorComponent = actorObject.GetComponent<ServerActor>();
@@ -45,8 +44,6 @@ public class ServerClient {
         ClientConnected(actorComponent.PlayerID, actorComponent.CurrentPos);
         Server.Clients.Add(this);
         Server.Players.Add(actorComponent);
-        gameManager.Players.Add(actorComponent);
-        gameManager.MapGrid.grid[actorComponent.startingX, actorComponent.startingY].GetComponent<Cell>().OccupyCell(actorObject);
         return actorComponent;
     }
 
@@ -96,10 +93,24 @@ public class ServerClient {
     }
 
     private void ClientConnected (uint playerID, Vector2 playerPos) {
-        PositionDataPackage package = new PositionDataPackage() {
+
+        DataCollectionPackage package = new DataCollectionPackage();
+        PositionDataPackage pData = new PositionDataPackage()
+        {
             PlayerID = playerID,
             Position = playerPos
         };
+        package.PositionDataPackages.Add(pData);
+
+        //Første package er mappens dimensioner
+        GridDataPackage gData = new GridDataPackage()
+        {
+            X = Server.MapGrid.gridWidth,
+            Y = Server.MapGrid.gridHeigth
+        };
+        package.GridDataPackages.Add(gData);
+
+
         MessageType msgType = MessageType.Connect;
         string jsonPackage = JsonUtility.ToJson(package);
         string msg = ((int)msgType).ToString();

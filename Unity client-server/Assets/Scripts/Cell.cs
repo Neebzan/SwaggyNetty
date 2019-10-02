@@ -6,6 +6,16 @@ public class Cell : MonoBehaviour
 {
     // Start is called before the first frame update
     public GameObject Occupant;
+    //Get the Renderer component from the new cube
+    Renderer renderer;
+    public Color color = Color.white;
+    public int X;
+    public int Y;
+
+    private void Awake()
+    {
+        renderer = gameObject.GetComponent<Renderer>();
+    }
 
     void Start()
     {
@@ -22,21 +32,36 @@ public class Cell : MonoBehaviour
     {
         Occupant = obj;
         obj.transform.position = gameObject.transform.position;
-        //Get the Renderer component from the new cube
-        var cubeRenderer = gameObject.GetComponent<Renderer>();
-
+        color = Color.green;
         //Call SetColor using the shader property name "_Color" and setting the color to red
-        cubeRenderer.material.SetColor("_Color", Color.green);
+        renderer.material.SetColor("_Color", color);
+    }
+
+    public void MarkCell()
+    {
+        //Call SetColor using the shader property name "_Color" and setting the color to red
+        color = Color.blue;
+        renderer.material.SetColor("_Color", color);
+    }
+    
+    public void UnmarkCell()
+    {
+        //Call SetColor using the shader property name "_Color" and setting the color to red
+        color = Color.white;
+        renderer.material.SetColor("_Color", color);
+    }
+
+    public void SetColor(Color col)
+    {
+        renderer.material.SetColor("_Color", col);
     }
 
     public void UnoccupyCell()
     {
         Occupant = null;
-        //Get the Renderer component from the new cube
-        var cubeRenderer = gameObject.GetComponent<Renderer>();
 
         //Call SetColor using the shader property name "_Color" and setting the color to red
-        cubeRenderer.material.SetColor("_Color", Color.red);
+        renderer.material.SetColor("_Color", Color.white);
     }
 
 }
