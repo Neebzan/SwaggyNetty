@@ -140,7 +140,6 @@ namespace Login_Middleware {
                         } finally {
                             if (!Connected) {
                                 WriteLine("Connection Closed");
-                                tcpClient.Close();
                             }
                             isAlive = false;
                         }
@@ -203,7 +202,7 @@ namespace Login_Middleware {
                     errorMessage = $"An Account With Username: {errorObject.UserID}, Already Exists!";
                     break;
                 case RequestStatus.DoesNotExist:
-                    errorMessage = "Username or Password did not Match";
+                    errorMessage = "Username or Password does not Match, or user doesn't exist!";
                     break;
                 case RequestStatus.ConnectionError:
                     errorMessage = "Connection Error!";
@@ -239,10 +238,11 @@ namespace Login_Middleware {
                 ResponseQueue = Middleware_Main.tokenResponseQueue,
                 Body = JsonConvert.SerializeObject(databaseMessageObj)
             };
+            // Sends request to token server
             Middleware_Main.tokenRequestQueue.Send(tokenRequestMessage);
 
-            bool success = false;
-            while (!success) {
+            // Awaits response from token server, peeks the top queue stack.
+            while (true) {
                 Message peekedMessage = Middleware_Main.tokenResponseQueue.Peek();
                 peekedMessage.Formatter = new JsonMessageFormatter();
                 UserModel peekedModel = DeserializeRequest(peekedMessage.Body.ToString());
@@ -256,7 +256,6 @@ namespace Login_Middleware {
                     return tokenUserModel;
                 }
             }
-            return databaseMessageObj;
         }
 
         private void WriteToClient(string message) {
@@ -416,6 +415,5 @@ namespace Login_Middleware {
                 tcpClient.Close();
             }
         }
-
     }
 }

@@ -48,6 +48,12 @@ namespace Login_Middleware
             KeepAlive();
         }
 
+        /// <summary>
+        /// <para>KeepAlive, static function that expects a ReadLine Command, and
+        /// because of this, it locks the main thread so it doesn't use CPU Time</para>
+        /// It also provides a way to set the program to terminate.
+        /// This will however instantly terminate the console window, so all debug info is lost.
+        /// </summary>
         private static void KeepAlive() {
             if (Console.ReadLine() != "TERMINATE") {
                 Console.WriteLine("Program is Kept Alive, Type TERMINATE to close window and set to terminate when workload is done");
@@ -58,7 +64,8 @@ namespace Login_Middleware
             }
         }
          /// <summary>
-         /// 
+         /// While Program is running, if any users are in queue, start listening proces
+         /// and let the user indirectly queue requests to database and/or token system.
          /// </summary>
         public static void WaitForClients()
         {
