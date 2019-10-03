@@ -14,6 +14,7 @@ using System.Threading;
 using GlobalVariablesLib;
 using System.Security.Cryptography;
 using JWTlib;
+using System.Diagnostics;
 
 namespace Login_Middleware {
     /// <summary>
@@ -94,22 +95,23 @@ namespace Login_Middleware {
         /// converted from Json format to the User Model. Aborts on lost connection.
         /// </summary>
         public void ListenForMessages() {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
             while (isAlive) {
                 if (Connected) {
                     string data = MessageFormatter.ReadStreamOnce(stream);
                     if (!String.IsNullOrEmpty(data)) {
+                        stopwatch.Reset();
 
                         // Console info when recieveing data.
-                        {
-                            WriteLine(
-                                $"\nRequest Recieved\n_______________________________\n" +
-                                $"Received Data: {data}\nAttempting To Convert from Json String\n" +
-                                $"_______________________________\n");
-                        }
+                        WriteLine(
+                            $"\nRequest Recieved\n_______________________________\n" +
+                            $"Received Data: {data}\nAttempting To Convert from Json String\n" +
+                            $"_______________________________\n");
+
 
                         // Tries to convert recieved data to an object.
                         try {
-                           
                             // Queues request from client to db with object, containing recieved data from client
                             QueueRequest(data);
                         } catch (Exception e) {
@@ -129,19 +131,32 @@ namespace Login_Middleware {
 
                             WriteToClient(JsonConvert.SerializeObject(response));
 
-
                             if (Connected) {
                                 WriteLine("Closing TCP Connection");
                                 connectedClient.Close();
                             }
-                            isAlive = false;
                         } finally {
                             if (!Connected) {
                                 WriteLine("Connection Closed");
                             }
                             isAlive = false;
                         }
+                    } else {
+                        if (stopwatch.Elapsed > TimeSpan.FromMilliseconds(10000)) {
+                            UserModel timeOut = new UserModel() {
+                                RequestType = RequestTypes.Error, Message = "Request Timed Out"
+                            };
+                            WriteToClient(JsonConvert.SerializeObject(timeOut));
+                            isAlive = false;
+                            if (Connected) {
+                                connectedClient.Close();
+                            }
+                        } else {
+                            Thread.Sleep(500);
+                        }
                     }
+                } else {
+                    isAlive = false;
                 }
             }
             Console.WriteLine($"Middleware[{ThreadID}] Task: ListenForMessages() Finished all Work\n");
@@ -185,6 +200,7 @@ namespace Login_Middleware {
                 return false;
             }
         }
+
         /// <summary>
         /// Handles Error responses from database queue.
         /// </summary>
@@ -255,7 +271,6 @@ namespace Login_Middleware {
                 }
             }
         }
-
         private void WriteToClient(string message) {
             if (Connected) {
                 // Get bytes, Using The TcpHelper.MessageFormatter.MessageBytes Function
@@ -269,7 +284,6 @@ namespace Login_Middleware {
             Console.WriteLine($"Middleware_Client at ThreadID: {ThreadID}. " + message);
 #endif
         }
-
         private void QueueRequest(string userImputData) {
             // Deserialises to local obj
             UserModel userImputModel = DeserializeRequest(userImputData);
