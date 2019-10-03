@@ -270,9 +270,9 @@ namespace Launcher {
             Process p = new Process();
             p.StartInfo = new ProcessStartInfo(GamePath + GameName, "SessionToken=" + Settings.Default.SessionToken);
             if (!p.Start())
-                throw new Exception("Game failed to start");
-            else
                 BackendErrorEncountered?.Invoke(null, new BackendErrorEventArgs("Launch game error", "Could not launch the game"));
+            else
+                Environment.Exit(0);
         }
 
         /// <summary>
