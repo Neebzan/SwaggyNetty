@@ -13,7 +13,7 @@ public class LocalClient : MonoBehaviour
     bool connected = false;
     uint playerID;
     List<LocalActor> actors = new List<LocalActor>();
-    UnityEngine.Object playerPrefab;
+    public UnityEngine.Object playerPrefab;
     GridGenerater map;
     string token;
 
@@ -28,13 +28,15 @@ public class LocalClient : MonoBehaviour
 
         int port = 13000;
         //client = new TcpClient("178.155.161.248", port);
-        client = new TcpClient("127.0.0.1", port);
+        client = new TcpClient("192.168.87.107", port);
 
         client.NoDelay = true;
         Debug.Log("Connected?");
         stream = client.GetStream();
         SendTokenToServer();
         StartCoroutine(ListenToServer());
+
+        //playerPrefab = Resources.Load("Prefabs/LocalActor");
     }
 
     // Update is called once per frame
@@ -117,11 +119,11 @@ public class LocalClient : MonoBehaviour
                             DataCollectionPackage data = JsonUtility.FromJson<DataCollectionPackage>(tempMsg[1]);
                             //PositionDataPackage temp = JsonUtility.FromJson<PositionDataPackage>(tempMsg[1]);
                             map = GameObject.Find("GameMap").GetComponent<GridGenerater>();
-                            playerPrefab = Resources.Load("Prefabs/LocalActor");
 
                             map.Generate(data.GridDataPackages[0].X, data.GridDataPackages[0].Y);
 
                             LocalActor t = GameObject.FindGameObjectWithTag("Player").GetComponent<LocalActor>();
+                            t.gameObject.GetComponentInChildren<Text>().text = data.PositionDataPackages[0].PlayerName;
                             t.playerID = data.PositionDataPackages[0].PlayerID;
                             t.gameObject.transform.position = data.PositionDataPackages[0].Position;
                             actors.Add(t);

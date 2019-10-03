@@ -135,7 +135,7 @@ public static class Server
             packageCollection.Add(
             new PositionDataPackage
             {
-                //PlayerName = Players[i].Client.clientName,
+                PlayerName = Players[i].Client.clientName,
                 PlayerID = Players[i].PlayerID,
                 Position = Players[i].WorldPos
             });

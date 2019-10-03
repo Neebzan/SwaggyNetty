@@ -129,7 +129,7 @@ public class ServerClient
     {
         byte[] tokenData = TCPHelper.MessageBytes(token);
         //TcpClient client = new TcpClient(GlobalVariables.MIDDLEWARE_IP, GlobalVariables.TOKENSYSTEM_PORT);
-        TcpClient client = new TcpClient("127.0.0.1", GlobalVariables.TOKENSYSTEM_PORT);
+        TcpClient client = new TcpClient("192.168.87.107", GlobalVariables.TOKENSYSTEM_PORT);
 
         client.GetStream().Write(tokenData, 0, tokenData.Length);
         //Await response from TokenSystem
@@ -161,12 +161,13 @@ public class ServerClient
         return false;
     }
 
-    private void ClientConnected(uint playerID, Vector2 playerPos, string token = "")
+    private void ClientConnected(uint playerID, Vector2 playerPos)
     {
 
         DataCollectionPackage package = new DataCollectionPackage();
         PositionDataPackage pData = new PositionDataPackage()
         {
+            PlayerName = clientName,
             PlayerID = playerID,
             Position = playerPos
         };
