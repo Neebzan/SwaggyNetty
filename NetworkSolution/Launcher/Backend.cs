@@ -1,5 +1,6 @@
 ﻿using GlobalVariablesLib;
 using GlobalVariablesLib.Models;
+using Launcher.Properties;
 using PatchManagerClient;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,8 @@ namespace Launcher {
         public static float PatchProgress = 0f;
         public static float ConnectionTimeoutMS = 5000.0f;
         public static FileTransferModel PatchData = null;
+        public static string GamePath = @"Downloads";
+        public static string GameName = @"SwaggyNetty.exe";
 
         /// <summary>
         /// Invoke this when an error is encountered in the backend. Simply call the DisplayError method directly if encountered in the application instead.
@@ -96,7 +99,7 @@ namespace Launcher {
         /// <param name="client"></param>
         /// <param name="msg"></param>
         /// <returns></returns>
-        private static async Task<bool> WriteToMiddleware(TcpClient client, UserModel user) {
+        private static async Task<bool> WriteToMiddleware (TcpClient client, UserModel user) {
             byte [ ] msg = TcpHelper.MessageFormatter.MessageBytes<UserModel>(user);
 
             try {
@@ -123,11 +126,11 @@ namespace Launcher {
             TcpClient client = ConnectoToMiddleware(ConnectionTimeoutMS);
 
             if (client == null)
-                return false;            
+                return false;
 
             UserModel user = new UserModel() { UserID = username, PswdHash = hashedPassword, RequestType = GlobalVariablesLib.RequestTypes.Get_User };
 
-            
+
 
             if (!await WriteToMiddleware(client, user))
                 return false;
@@ -264,7 +267,12 @@ namespace Launcher {
         /// !! NOTE IMPLEMENTED YET !! Launches the game client, with the token as paramter
         /// </summary>
         public static void LaunchGame () {
-            Process.Start("F:/Steam/steamapps/common/Cube World/cubeworld.exe");
+            Process p = new Process();
+            p.StartInfo = new ProcessStartInfo(GamePath + GameName, "SessionToken=" + Settings.Default.SessionToken);
+            if (!p.Start())
+                throw new Exception("Game failed to start");
+            else
+                Environment.Exit(0);
         }
 
         /// <summary>
