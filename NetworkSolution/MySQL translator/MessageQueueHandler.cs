@@ -80,7 +80,7 @@ namespace MySQL_translator
         /// Pushes a message to the producer queue
         /// </summary>
         /// <param name="_user"></param>
-        public void PushProducerQueue (UserModel _user) {
+        public void EnqueueProducerQueue (UserModel _user) {
             Message msg = new Message(Newtonsoft.Json.JsonConvert.SerializeObject(_user));
             msg.Label = _user.UserID;
             msg.Formatter = new JsonMessageFormatter();
