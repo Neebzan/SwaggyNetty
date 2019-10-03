@@ -141,20 +141,7 @@ public static class Server
         }
 
         return packageCollection;
-
-        //Grid data
-        //List<GridDataPackage> gridPackageCollection = new List<GridDataPackage>();
-        //foreach (var item in ChangedCells)
-        //{
-        //    gridPackageCollection.Add(new GridDataPackage() { X = item.X, Y = item.Y, Color = item.color });
-        //}
-        //ChangedCells.Clear();
-
-        //DataCollectionPackage package = new DataCollectionPackage()
-        //{
-        //    PositionDataPackages = packageCollection,
-        //    GridDataPackages = gridPackageCollection
-        //};        
+  
     }
 
     public static byte[] PackageToByte(DataCollectionPackage package)
