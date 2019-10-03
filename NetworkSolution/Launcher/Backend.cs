@@ -272,7 +272,7 @@ namespace Launcher {
             if (!p.Start())
                 throw new Exception("Game failed to start");
             else
-                Environment.Exit(0);
+                BackendErrorEncountered?.Invoke(null, new BackendErrorEventArgs("Launch game error", "Could not launch the game"));
         }
 
         /// <summary>
