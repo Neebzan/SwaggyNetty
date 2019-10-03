@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 public class TCPHelper : MonoBehaviour
 {
@@ -61,13 +62,46 @@ public class TCPHelper : MonoBehaviour
     /// </summary>
     /// <param name="stream"></param>
     /// <returns></returns>
-    public static string ReadMessage(NetworkStream stream)
+    public static IEnumerable<string> ReadForMessages(NetworkStream stream)
     {
         string msg = string.Empty;
 
         byte[] readBuffer = new byte[4];
 
-        
+        while (stream.DataAvailable)
+        {
+            int bytesRead = 0;
+
+            while (bytesRead < 4)
+            {
+                bytesRead += stream.Read(readBuffer, bytesRead, 4 - bytesRead);
+            }
+
+            bytesRead = 0;
+            byte[] buffer = new byte[BitConverter.ToInt32(readBuffer, 0)];
+
+            while (bytesRead < buffer.Length)
+            {
+                bytesRead += stream.Read(buffer, bytesRead, buffer.Length - bytesRead);
+            }
+            msg = System.Text.Encoding.UTF8.GetString(buffer);
+            yield return msg;
+        }
+        yield return null;
+
+    }
+
+    /// <summary>
+    /// Reads the stream once for a message. If there is a message, reads first 4 bytes of integer length of message, then reads until the length of message has been read
+    /// </summary>
+    /// <param name="stream"></param>
+    /// <returns></returns>
+    public static string ReadStreamOnce(NetworkStream stream)
+    {
+        string msg = string.Empty;
+
+        byte[] readBuffer = new byte[4];
+
         if (stream.DataAvailable)
         {
             int bytesRead = 0;
@@ -85,9 +119,82 @@ public class TCPHelper : MonoBehaviour
                 bytesRead += stream.Read(buffer, bytesRead, buffer.Length - bytesRead);
             }
             msg = System.Text.Encoding.UTF8.GetString(buffer);
-            
         }
         return msg;
     }
+
+    public static bool ReadFile(TcpClient client, string fileName, string saveDirectory = "")
+    {
+        byte[] readBuffer = new byte[4];
+
+        if (saveDirectory != "")
+        {
+            if (saveDirectory[saveDirectory.Length - 1] != '\\')
+                saveDirectory += "\\";
+        }
+
+        while (client.GetStream().DataAvailable)
+        {
+            int bytesRead = 0;
+
+            while (bytesRead < 4)
+            {
+                bytesRead += client.GetStream().Read(readBuffer, bytesRead, 4 - bytesRead);
+            }
+
+            int totalFileSize = BitConverter.ToInt32(readBuffer, 0);
+
+            //Create subfolders if needed
+            string[] pathSplit = fileName.Split('/');
+            string subfolders = fileName.Replace(pathSplit[pathSplit.Length - 1], "");
+            Directory.CreateDirectory(saveDirectory + subfolders);
+
+            using (var output = File.Create(saveDirectory + fileName))
+            {
+                // read the file in chunks of 1KB
+                var buffer = new byte[1024];
+                bytesRead = 0; bytesRead = 0;
+                int totalBytesRead = 0;
+                while (totalBytesRead < totalFileSize)
+                {
+                    bytesRead = client.Client.Receive(buffer, buffer.Length, SocketFlags.None);
+                    output.Write(buffer, 0, bytesRead);
+                    totalBytesRead += bytesRead;
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static bool Connected(TcpClient tcpClient)
+    {
+        try
+        {
+            if (tcpClient.Client != null && tcpClient.Client.Connected)
+            {
+                if (tcpClient.Client.Poll(0, SelectMode.SelectRead))
+                {
+                    byte[] buff = new byte[1];
+
+                    if (tcpClient.Client.Receive(buff, SocketFlags.Peek) == 0)
+                    {
+                        return false;
+                    }
+
+                    return true;
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 }
+
 
