@@ -90,7 +90,7 @@ namespace Launcher
                             patch_status_label.Content = "Downloading..";
                             break;
                         case PatchStatus.Done:
-                            patch_status_label.Content = "Download completed";
+                            patch_status_label.Content = "Client is up to date";
                             break;
                         default:
                             break;

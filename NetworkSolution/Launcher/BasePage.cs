@@ -36,6 +36,9 @@ namespace Launcher {
                 case PageAnimation.SlideAndFadeOutToRight:
                     await this.SlideAndFadeOutToRight(this.SlideSeconds);
                     break;
+                case PageAnimation.FadeOut:
+                    await this.FadeOut(this.SlideSeconds);
+                    break;
                 default:
                     break;
             }
