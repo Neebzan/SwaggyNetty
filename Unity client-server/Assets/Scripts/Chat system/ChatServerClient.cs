@@ -12,6 +12,7 @@ public class ChatServerClient
     public List<KeyCode> ActiveInputs = new List<KeyCode>();
     NetworkStream networkStream;
     bool isDisconnecting = false;
+    public string clientName;
 
 
     public ChatServerClient(TcpClient _tcpClient)
@@ -20,7 +21,7 @@ public class ChatServerClient
 
         networkStream = tcpClient.GetStream();
         tcpClient.NoDelay = true;
-
+        clientName = tcpClient.Client.RemoteEndPoint.ToString();
        // ChatServer.Clients.Add(this);
 
 

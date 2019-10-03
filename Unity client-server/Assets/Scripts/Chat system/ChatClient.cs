@@ -136,7 +136,8 @@ public class ChatClient : MonoBehaviour
             ChatDataPackage cdp = new ChatDataPackage();
             cdp.ChatDataPackages.Add(new ChatData
             {
-                SenderName = ((IPEndPoint)client.Client.LocalEndPoint).Address.ToString(),
+                //  SenderName = "Tais",
+                SenderName = ((IPEndPoint)client.Client.LocalEndPoint).Address.ToString(),         
                 Message = msg,
                 port = ((IPEndPoint)client.Client.LocalEndPoint).Port.ToString(),
                 Target = chatTarget
