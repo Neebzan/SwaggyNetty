@@ -36,12 +36,14 @@ namespace MySQL_translator
             switch (e.RequestType) {
                 case GlobalVariablesLib.RequestTypes.Get_User:
                     newUser = DBConnection.Instance().Select(e.User);
-                    mQHandler.PushProducerQueue(newUser);
+                    newUser.RemoteEndPoint = e.User.RemoteEndPoint;
+                    mQHandler.EnqueueProducerQueue(newUser);
                     break;
 
                 case GlobalVariablesLib.RequestTypes.Create_User:
                     newUser = DBConnection.Instance().Insert(e.User);
-                    mQHandler.PushProducerQueue(newUser);
+                    newUser.RemoteEndPoint = e.User.RemoteEndPoint;
+                    mQHandler.EnqueueProducerQueue(newUser);
                     break;
 
                 default:

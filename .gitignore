@@ -11,3 +11,8 @@ NetworkSolution/MSMQHelper/.editorconfig
 NetworkSolution/.vs/NetworkSolution/v15/Server/sqlite3/storage.ide-shm
 NetworkSolution/.vs/NetworkSolution/v15/Server/sqlite3/storage.ide-wal
 NetworkSolution/.vs/NetworkSolution/v15/.suo
+NetworkSolution/StressTester/packages.config
+NetworkSolution/StressTester/StressTester.csproj
+NetworkSolution/StressTester/Properties/AssemblyInfo.cs
+NetworkSolution/StressTester/Program.cs
+NetworkSolution/StressTester/App.config

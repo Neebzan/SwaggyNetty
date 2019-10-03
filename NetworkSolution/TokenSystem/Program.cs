@@ -46,12 +46,9 @@ namespace TokenSystem
                 {
                     case TokenRequestType.CreateToken:
                         {
-                        UserModel originModel = MSMQHelper.GetMessageBody<UserModel>(m);
-                        UserModel userModel = new UserModel()
-                            {
-                                UserID = originModel.UserID, RequestType = originModel.RequestType
-                            };
-                            Console.WriteLine("UserModel received!");
+                        //UserModel originModel = MSMQHelper.GetMessageBody<UserModel>(m);
+                        UserModel userModel = MSMQHelper.GetMessageBody<UserModel>(m);
+                        Console.WriteLine("UserModel received!");
 
                             MSMQHelper.SendMessage(beaconInputMQ, "ServersData", "ServersData", beaconResponseMQ);
 

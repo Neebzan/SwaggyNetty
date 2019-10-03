@@ -18,27 +18,32 @@ public class ServerClient {
 
     public ServerClient (TcpClient _tcpClient) {
         tcpClient = _tcpClient;
-        ServerActor actor = SpawnActor();
+        //ServerActor actor = SpawnActor();
         networkStream = tcpClient.GetStream();
         tcpClient.NoDelay = true;
-        ClientConnected(actor.PlayerID, actor.CurrentPos);
-        Server.Clients.Add(this);
-        Server.Players.Add(actor);
+        
     }
 
     /// <summary>
     /// Instantiates a player actor in the scene
     /// </summary>
-    ServerActor SpawnActor () {
+    public ServerActor SpawnActor (Vector2 index) {
         UnityEngine.Object playerPrefab = Resources.Load("Prefabs/ServerActor");
 
         GameObject actorObject = (GameObject)GameObject.Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
         ServerActor actorComponent = actorObject.GetComponent<ServerActor>();
+        actorComponent.newX = (int)index.x;
+        actorComponent.newY = (int)index.y;
+
         actorComponent.Endpoint = tcpClient.Client.RemoteEndPoint;
         this.OnNewInputsRecieved += actorComponent.NewInputsRecieved;
         actorComponent.Client = this;
         Server.PlayersConnected++;
         actorComponent.PlayerID = Server.PlayersConnected;
+
+        ClientConnected(actorComponent.PlayerID, actorComponent.CurrentPos);
+        Server.Clients.Add(this);
+        Server.Players.Add(actorComponent);
         return actorComponent;
     }
 
@@ -88,10 +93,24 @@ public class ServerClient {
     }
 
     private void ClientConnected (uint playerID, Vector2 playerPos) {
-        PositionDataPackage package = new PositionDataPackage() {
+
+        DataCollectionPackage package = new DataCollectionPackage();
+        PositionDataPackage pData = new PositionDataPackage()
+        {
             PlayerID = playerID,
             Position = playerPos
         };
+        package.PositionDataPackages.Add(pData);
+
+        //Første package er mappens dimensioner
+        GridDataPackage gData = new GridDataPackage()
+        {
+            X = Server.MapGrid.gridWidth,
+            Y = Server.MapGrid.gridHeigth
+        };
+        package.GridDataPackages.Add(gData);
+
+
         MessageType msgType = MessageType.Connect;
         string jsonPackage = JsonUtility.ToJson(package);
         string msg = ((int)msgType).ToString();
@@ -131,7 +150,7 @@ public class ServerClient {
     }
 
     void HandleInputMessage (string msg) {
-        Vector2 moveDir = Vector2.zero;
+        //Vector2 moveDir = Vector2.zero;
         string [ ] msgSplit = msg.Split(':');
 
         for (int i = 0; i < msgSplit.Length; i++) {
