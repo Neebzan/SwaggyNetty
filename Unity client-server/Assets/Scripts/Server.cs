@@ -135,13 +135,14 @@ public static class Server
             packageCollection.Add(
             new PositionDataPackage
             {
+                //PlayerName = Players[i].Client.clientName,
                 PlayerID = Players[i].PlayerID,
                 Position = Players[i].WorldPos
             });
         }
 
         return packageCollection;
-  
+
     }
 
     public static byte[] PackageToByte(DataCollectionPackage package)
@@ -195,7 +196,8 @@ public static class Server
         {
             if (Players[i].PlayerID != playerID)
             {
-                Players[i].Client.SendToClient(totalPackage);
+                if (TCPHelper.Connected(Players[i].Client.tcpClient))
+                    Players[i].Client.SendToClient(totalPackage);
             }
         }
     }

@@ -5,9 +5,12 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Server.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 0
+    path: Assets/Scenes/LoadingScene.unity
+    guid: 215c1c23bf95ebc4e919768874244d4a
   - enabled: 0
     path: Assets/Scenes/Client.unity
     guid: d4c84fcabcd715140bd7de3d4678de0a
@@ -17,7 +20,4 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/ChatSystem.unity
     guid: 813b1ccfd66d1d346b29711f661fd413
-  - enabled: 1
-    path: Assets/Scenes/LoadingScene.unity
-    guid: 215c1c23bf95ebc4e919768874244d4a
   m_configObjects: {}

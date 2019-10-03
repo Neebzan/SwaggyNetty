@@ -28,12 +28,9 @@ public class ServerInitiator : MonoBehaviour
             {
                 if (Server.tcpClients.TryDequeue(out TcpClient tcpClient))
                 {
-                    //For sjov random placering
-                    Vector2 index = new Vector2(Random.Range(0, MapGrid.gridWidth), Random.Range(0, MapGrid.gridHeigth));
-
+                    
                     ServerClient client = new ServerClient(tcpClient);
-                    ServerActor actor = client.SpawnActor(index);
-                    MapGrid.grid[(int)index.x, (int)index.y].GetComponent<Cell>().OccupyCell(actor.gameObject);
+                    //ServerActor actor = client.SpawnActor(index);                    
                     StartCoroutine(client.ListenForMessages());
                 }
             }

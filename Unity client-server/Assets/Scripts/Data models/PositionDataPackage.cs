@@ -6,6 +6,7 @@ using UnityEngine;
 public class PositionDataPackage
 {
     public uint PlayerID;
+    public string PlayerName;
     public Vector2 Position;
 }
 
