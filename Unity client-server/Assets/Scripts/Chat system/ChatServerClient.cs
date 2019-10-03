@@ -24,11 +24,7 @@ public class ChatServerClient
         clientName = tcpClient.Client.RemoteEndPoint.ToString();
        // ChatServer.Clients.Add(this);
 
-
     }
-
-
-
 
 
     /// <summary>

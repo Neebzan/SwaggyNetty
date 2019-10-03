@@ -34,10 +34,10 @@ public class ChatServer : MonoBehaviour
 
     void Update()
     {
-        for (int i = 0; i < Clients.Count; i++)
-        {
-            chatGUI.chatHistorie.Add(Clients[i].clientName);
-        }
+        //for (int i = 0; i < Clients.Count; i++)
+        //{
+        //    chatGUI.chatHistorie.Add(Clients[i].clientName);
+        //}
 
 
 
@@ -116,14 +116,6 @@ public class ChatServer : MonoBehaviour
 
                     ChatServer.groups[i].Members.Add(client);
                 }
-
-                // var dasGroup = ChatServer.groups[i];
-
-                //var mes = TCPHelper.MessageBytes(ChatServer.groups[i]);
-                //for (int y = 0; y < dasGroup.Members.Count; y++)
-                //{
-                //    dasGroup.Members[i].SendToClient(mes);
-                //}
             }
         }
     }
