@@ -13,6 +13,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using TcpHelper;
 
 namespace TokenSystem
 {
@@ -145,9 +146,7 @@ namespace TokenSystem
 
                 Console.WriteLine("Connected!");
 
-                StreamReader stream = new StreamReader(client.GetStream());
-
-                string recievedToken = stream.ReadLine();
+                string recievedToken = MessageFormatter.ReadStreamOnce(client.GetStream());
 
                 if (JWTManager.VerifyToken(recievedToken))
                 {

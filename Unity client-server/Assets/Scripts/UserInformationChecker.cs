@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class UserInformationChecker : MonoBehaviour
 {
+    public string Token;
 
     // Start is called before the first frame update
     void Start()
@@ -23,9 +24,9 @@ public class UserInformationChecker : MonoBehaviour
     public void ValidateUser()
     {
         string[] args = Environment.GetCommandLineArgs();
-        string token = args[1];
+        Token = args[1];
 
-        GameObject.Find("TokenText").GetComponent<Text>().text = token;
+        GameObject.Find("TokenText").GetComponent<Text>().text = Token;
 
         //byte[] tokenData = TCPHelper.MessageBytes(token);
         //TcpClient client = new TcpClient(GlobalVariables.MIDDLEWARE_IP, GlobalVariables.TOKENSYSTEM_PORT);

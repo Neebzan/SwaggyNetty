@@ -29,8 +29,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatchManagerServer", "Patch
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileCheckerLib", "FileCheckerLib\FileCheckerLib.csproj", "{4036D89C-7AD8-485E-AFCE-9C70B0ADB44F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StressTester", "StressTester\StressTester.csproj", "{9D4AE0F8-E252-47FD-A4DA-2ED83C96352D}"
-EndProject
+
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
