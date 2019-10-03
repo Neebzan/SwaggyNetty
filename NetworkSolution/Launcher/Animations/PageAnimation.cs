@@ -11,5 +11,6 @@ namespace Launcher.Animations
         None = 0,
         SlideAndFadeInFromLeft = 1,
         SlideAndFadeOutToRight = 2,
+        FadeOut = 3,
     }
 }

@@ -34,6 +34,7 @@ namespace Launcher {
             autoLogin = _autoLogin;
             Loaded += StartLogin;
             spinner_imageawesome.Visibility = Visibility.Visible;
+            this.PageUnloadAnimation = Animations.PageAnimation.FadeOut;
         }
 
         private void StartLogin (object sender, RoutedEventArgs e) {
@@ -45,7 +46,7 @@ namespace Launcher {
         }
 
         private async void LoginRequest (SecureString password, string username, bool? rememberUsername) {
-            await Task.Delay(500);
+            await Task.Delay(TimeSpan.FromSeconds(this.SlideSeconds));
             try {
                 if (await Backend.SendLoginCredentials(username, password)) {
                     if (rememberUsername == true) {
