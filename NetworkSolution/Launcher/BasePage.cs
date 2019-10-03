@@ -5,10 +5,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
 
-namespace Launcher
-{
-    public class BasePage : Page
-    {
+namespace Launcher {
+    public class BasePage : Page {
         public PageAnimation PageLoadAnimation { get; set; } = PageAnimation.SlideAndFadeInFromLeft;
         public PageAnimation PageUnloadAnimation { get; set; } = PageAnimation.SlideAndFadeOutToRight;
 
@@ -18,7 +16,6 @@ namespace Launcher
             if (this.PageLoadAnimation != PageAnimation.None) {
                 this.Visibility = Visibility.Collapsed;
             }
-
             this.Loaded += BasePage_Loaded;
         }
 
@@ -44,11 +41,10 @@ namespace Launcher
             }
         }
 
-        public async Task AnimateIn () {                
-
+        public async Task AnimateIn () {
             switch (this.PageLoadAnimation) {
                 case PageAnimation.None:
-                        return;
+                    return;
                 case PageAnimation.SlideAndFadeInFromLeft:
                     await this.SlideAndFadeInFromLeft(this.SlideSeconds);
                     break;
@@ -58,9 +54,6 @@ namespace Launcher
                 default:
                     break;
             }
-
         }
-
-
     }
 }

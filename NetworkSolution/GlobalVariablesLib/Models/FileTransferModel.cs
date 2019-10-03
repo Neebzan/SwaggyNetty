@@ -8,6 +8,7 @@ namespace GlobalVariablesLib.Models {
 public class FileTransferModel {
         public List<FileModel> Files { get; set; } = new List<FileModel>();
         public long TotalSize { get; set; }
+        public long RemainingSize { get; set; }
     }
 
     public class FileModel {

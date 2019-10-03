@@ -11,36 +11,19 @@
     <Frame x:Name="frame"  Background="Transparent">
         <Frame.Content>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left">
-                <Label Content="Username" Margin="20,20,20,0" FontSize="16" VerticalContentAlignment="Bottom"  Grid.Row="1" Padding="0"/>
-
+                <Label Content="Username" Margin="20,20,20,0" FontSize="14" VerticalContentAlignment="Bottom" Padding="0"/>
                 <TextBox x:Name="username_textbox">
                 </TextBox>
-                <Label Content="Password" Margin="20,20,20,0" FontSize="16" VerticalContentAlignment="Bottom" UseLayoutRounding="False" Grid.Row="3" Padding="0"/>
+                <Label Content="Password" Margin="20,20,20,0" FontSize="14" VerticalContentAlignment="Bottom" UseLayoutRounding="False" Padding="0"/>
                 <PasswordBox x:Name="password_textbox"/>
-                <CheckBox x:Name="remember_username_tick" Content="  Remember username" Margin="20,5,20,1" Grid.Row="5" Padding="0" VerticalContentAlignment="Center" Grid.ColumnSpan="2" Unchecked="Remember_username_tick_Unchecked">
-                    <CheckBox.Effect>
-                        <DropShadowEffect Opacity="0.25"/>
-                    </CheckBox.Effect>
-                </CheckBox>
-                <CheckBox x:Name="automatic_login_tick" Content="  Automatic login" Margin="20,1" Grid.Row="6" Padding="0" VerticalContentAlignment="Center" Grid.ColumnSpan="2">
-                    <CheckBox.Effect>
-                        <DropShadowEffect Opacity="0.25"/>
-                    </CheckBox.Effect>
-                </CheckBox>
+                <CheckBox x:Name="remember_username_tick" Opacity=".8" Content="  Remember username" Margin="20,5,20,1" Grid.Row="5" Padding="0" VerticalContentAlignment="Center" Grid.ColumnSpan="2" Unchecked="Remember_username_tick_Unchecked" Checked="Remember_username_tick_Checked"/>
+                <CheckBox x:Name="automatic_login_tick" Opacity=".8" Content="  Automatic login" Margin="20,1" Grid.Row="6" Padding="0" VerticalContentAlignment="Center" Grid.ColumnSpan="2" Unchecked="Automatic_login_tick_Unchecked" Checked="Automatic_login_tick_Checked"/>
                 <StackPanel Margin="20,20" Orientation="Horizontal" Height="46">
                     <Button Content="Login" Style="{StaticResource BaseButtonStyle}" Click="Login_Button_Clicked" Width="111"/>
                     <Label Content="or " Margin="20,5,0,5" FontWeight="Light" FontSize="12" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
                     <Button Content="create an account" FontWeight="Light" Style="{StaticResource BaseButtonStyleNoBackground}" Margin="0,5,20,5" Grid.Row="7" Click="Register_Button_Clicked"/>
-                    <fa:ImageAwesome x:Name="spinner_imageawesome"/>
+                    <fa:ImageAwesome x:Name="spinner_imageawesome" Opacity=".8"/>
                 </StackPanel>
-
-                <Popup x:Name="Error_Popup" IsOpen="False" PlacementTarget="{Binding ElementName=username, Mode=OneWay}" PopupAnimation="Fade" AllowsTransparency="True" StaysOpen="False" Grid.Row="5" Grid.RowSpan="3" Grid.ColumnSpan="2" Margin="20,5" ClipToBounds="True" UseLayoutRounding="True" HorizontalAlignment="Center" VerticalAlignment="Center" Placement="Relative" VerticalOffset="250" HorizontalOffset="20">
-                    <TextBlock x:Name="Error_Popup_Label" Background="#FFFF005C" Text="Username already exists" TextAlignment="Left" Padding="5" TextWrapping="Wrap" VerticalAlignment="Top" Width="275.2" UseLayoutRounding="True" Foreground="White" LineHeight="6" FontStyle="Italic">
-                        <TextBlock.Effect>
-                            <DropShadowEffect Opacity="0.25"/>
-                        </TextBlock.Effect>
-                    </TextBlock>
-                </Popup>
             </StackPanel>
         </Frame.Content>
     </Frame>

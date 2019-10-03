@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.29306.81
+VisualStudioVersion = 16.0.29230.61
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TokenSystem", "TokenSystem\TokenSystem.csproj", "{5F3BC860-6C1A-4CC5-A626-998268C74E08}"
 EndProject
@@ -27,7 +27,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatchManagerClient", "Patch
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatchManagerServer", "PatchManagerServer\PatchManagerServer.csproj", "{F093DBDF-C9F9-412C-A85D-3A1313F70795}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileCheckerLib", "C:\Users\Esben\Desktop\FileCheckerLib\FileCheckerLib.csproj", "{4036D89C-7AD8-485E-AFCE-9C70B0ADB44F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileCheckerLib", "FileCheckerLib\FileCheckerLib.csproj", "{4036D89C-7AD8-485E-AFCE-9C70B0ADB44F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StressTester", "StressTester\StressTester.csproj", "{9D4AE0F8-E252-47FD-A4DA-2ED83C96352D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,6 +89,10 @@ Global
 		{4036D89C-7AD8-485E-AFCE-9C70B0ADB44F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4036D89C-7AD8-485E-AFCE-9C70B0ADB44F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4036D89C-7AD8-485E-AFCE-9C70B0ADB44F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D4AE0F8-E252-47FD-A4DA-2ED83C96352D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D4AE0F8-E252-47FD-A4DA-2ED83C96352D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D4AE0F8-E252-47FD-A4DA-2ED83C96352D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D4AE0F8-E252-47FD-A4DA-2ED83C96352D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -55,6 +55,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FileCheckerLib\FileCheckerLib.csproj">
+      <Project>{4036d89c-7ad8-485e-afce-9c70b0adb44f}</Project>
+      <Name>FileCheckerLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GlobalVariablesLib\GlobalVariablesLib.csproj">
       <Project>{fa66e8ef-4684-4487-94cf-042a955f904d}</Project>
       <Name>GlobalVariablesLib</Name>
@@ -62,10 +66,6 @@
     <ProjectReference Include="..\TcpHelper\TcpHelper.csproj">
       <Project>{812fcb5e-7617-4944-aee9-7a2935e952c8}</Project>
       <Name>TcpHelper</Name>
-    </ProjectReference>
-    <ProjectReference Include="C:\Users\Esben\Desktop\FileCheckerLib\FileCheckerLib.csproj">
-      <Project>{4036d89c-7ad8-485e-afce-9c70b0adb44f}</Project>
-      <Name>FileCheckerLib</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

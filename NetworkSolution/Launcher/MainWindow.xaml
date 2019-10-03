@@ -21,9 +21,13 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="70"/>
             <RowDefinition Height="300"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="45"/>
             <RowDefinition Height="60"/>
         </Grid.RowDefinitions>
+
+        <Popup x:Name="Error_Popup" IsOpen="True" PlacementTarget="{Binding ElementName=username, Mode=OneWay}" PopupAnimation="Fade" VerticalOffset="0" HorizontalOffset="400" AllowsTransparency="True" StaysOpen="False" Grid.Column="1" Grid.Row="1" ClipToBounds="True" UseLayoutRounding="True" HorizontalAlignment="Stretch" VerticalAlignment="Top" Placement="Relative">
+            <TextBlock x:Name="Error_Popup_Label" Background="#FF404040" Text="Username already exists" TextAlignment="Left" Padding="5"  TextWrapping="Wrap" Foreground="White" Width="400" LineHeight="6" FontStyle="Italic"/>
+        </Popup>
 
         <Label Content="Swaggy Netty" Margin="20,5" Grid.Row="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" UseLayoutRounding="True" Grid.ColumnSpan="1" FontSize="30" FontFamily="Segoe UI Historic" d:IsLocked="True">
             <Label.Effect>
@@ -38,27 +42,24 @@
             </Image.Effect>
         </Image>
         <StackPanel Grid.ColumnSpan="2" Grid.Row="2">
-            <Label Content="Files Remaining: " Margin="20,0" FontSize="10"/>
-            <Label Content="Downloading: " Margin="20,0" FontSize="10"/>
-
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.ColumnSpan="2" VerticalAlignment="Center">
-            <Label x:Name="patchpercentage_label" Content="0%" FontSize="10" Margin="20,0,0,0" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
-            <Grid>
-                <Rectangle Fill="Black" Width="611" Height="16"/>
-                <ProgressBar x:Name="progress_bar" Value="50" Margin="5" VerticalContentAlignment="Stretch" Width="610" Height="14" BorderThickness="0" Background="#FF404040" BorderBrush="Black" Foreground="#FFBD2222" HorizontalContentAlignment="Stretch" SnapsToDevicePixels="True">
-                <ProgressBar.Effect>
-                    <DropShadowEffect Opacity="0.25"/>
-                </ProgressBar.Effect>
-            </ProgressBar>
-                
-            </Grid>
+            <Label x:Name="files_remaining_label" Content="" Margin="20,0" FontSize="10" Opacity=".6"/>
+            <Label x:Name="file_label" Content="" Margin="20,0" FontSize="10" Opacity=".6"/>
+            <Label x:Name="patch_status_label" Content="" FontWeight="Bold" Margin="20,0" FontSize="10" Opacity=".6"/>
         </StackPanel>
 
-        <Button x:Name="play_button" Content="Play" Margin="20,5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Column="1" FontWeight="Bold" FontSize="18" HorizontalAlignment="Right" Width="117" Opacity="1" Grid.Row="3">
-            <Button.Effect>
-                <DropShadowEffect Opacity="0.25"/>
-            </Button.Effect>
+
+        <Grid Grid.Row="3" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="150"/>
+            </Grid.ColumnDefinitions>
+            <Label x:Name="patchpercentage_label" Grid.Column="0" Content="0%" FontSize="10" Margin="20,22,0,25" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
+            <Rectangle Fill="Black" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Width="582" Height="16"/>
+            <local:BaseProgressBar x:Name="progress_bar" Grid.Column="1" Value="0" VerticalAlignment="Center" Width="580" Height="14" HorizontalAlignment="Center" BorderThickness="0" Background="#FF404040" Foreground="#FFBD2222" Margin="5,23"/>
+        </Grid>
+
+        <Button x:Name="play_button" Content="Play" Margin="20,5" BorderThickness="2" BorderBrush="Black" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Column="1" FontWeight="Bold" FontSize="22" HorizontalAlignment="Right" Width="117" Opacity="1" Grid.Row="3">
             <Button.Style>
                 <Style TargetType="{x:Type Button}">
                     <Setter Property="Background" Value="#FFBD2222"/>
