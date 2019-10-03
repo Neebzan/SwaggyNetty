@@ -24,11 +24,11 @@ public class LocalClient : MonoBehaviour
         //string[] args = Environment.GetCommandLineArgs();
         //token = args[1];
         //GameObject.Find("TokenText").GetComponent<Text>().text = token;
-        token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJKV1RQYXlsb2FkIjoie1wiU2VydmVyc0luZm9cIjp7XCJTZXJ2ZXJzXCI6W119LFwiVXNlcklEXCI6XCJKZW5zXCJ9IiwibmJmIjoxNTcwMTE5MjkwLCJleHAiOjE1NzA1NTEyOTAsImlhdCI6MTU3MDExOTI5MH0.L31Fkm8kaOpVoglhgEv_GvCAD6b1ep0h56OstUnF0d4";
+        //token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJKV1RQYXlsb2FkIjoie1wiU2VydmVyc0luZm9cIjp7XCJTZXJ2ZXJzXCI6W119LFwiVXNlcklEXCI6XCJKZW5zXCJ9IiwibmJmIjoxNTcwMTE5MjkwLCJleHAiOjE1NzA1NTEyOTAsImlhdCI6MTU3MDExOTI5MH0.L31Fkm8kaOpVoglhgEv_GvCAD6b1ep0h56OstUnF0d4";
 
         int port = 13000;
         //client = new TcpClient("178.155.161.248", port);
-        client = new TcpClient("192.168.87.107", port);
+        client = new TcpClient("127.0.0.1", port);
 
         client.NoDelay = true;
         Debug.Log("Connected?");
@@ -47,9 +47,9 @@ public class LocalClient : MonoBehaviour
 
     public void SendTokenToServer()
     {
-        //byte[] tokenData = TCPHelper.MessageBytes(token);
-        //TcpClient client = new TcpClient(GlobalVariables.MIDDLEWARE_IP, GlobalVariables.TOKENSYSTEM_PORT);
-        //client.GetStream().Write(tokenData, 0, tokenData.Length);
+        byte[] tokenData = TCPHelper.MessageBytes(token);
+        TcpClient client = new TcpClient(GlobalVariables.MIDDLEWARE_IP, GlobalVariables.TOKENSYSTEM_PORT);
+        client.GetStream().Write(tokenData, 0, tokenData.Length);
         string validateRequest = ((int)MessageType.Validate).ToString() + Server.MESSAGE_TYPE_INDICATOR + token;
         Message(validateRequest);
 
