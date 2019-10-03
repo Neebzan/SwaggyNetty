@@ -23,7 +23,7 @@ public class UserInformationChecker : MonoBehaviour
     public void ValidateUser()
     {
         string[] args = Environment.GetCommandLineArgs();
-        string token = args[0];
+        string token = args[1];
 
         GameObject.Find("TokenText").GetComponent<Text>().text = token;
 
