@@ -20,7 +20,7 @@ namespace Login_Middleware {
     /// Middleware_Client Represents a User with a TCP Connection internally
     /// </summary>
     class Middleware_Client {
-        private TcpClient tcpClient;
+        private TcpClient connectedClient;
         private UserModel user_obj;
         private NetworkStream stream;
         private bool isAlive = true;
@@ -40,11 +40,11 @@ namespace Login_Middleware {
         public bool Connected {
             get {
                 try {
-                    if (tcpClient.Client != null && tcpClient.Client.Connected) {
-                        if (tcpClient.Client.Poll(0, SelectMode.SelectRead)) {
+                    if (connectedClient.Client != null && connectedClient.Client.Connected) {
+                        if (connectedClient.Client.Poll(0, SelectMode.SelectRead)) {
                             byte[] buff = new byte[1];
 
-                            if (tcpClient.Client.Receive(buff, SocketFlags.Peek) == 0) {
+                            if (connectedClient.Client.Receive(buff, SocketFlags.Peek) == 0) {
                                 return false;
                             }
 
@@ -69,9 +69,9 @@ namespace Login_Middleware {
         /// <param name="client"></param>
         public Middleware_Client(TcpClient client) {
             Console.WriteLine($"Middleware_Client Created!");
-            tcpClient = client;
+            connectedClient = client;
             if (Connected) {
-                stream = tcpClient.GetStream();
+                stream = connectedClient.GetStream();
             }
         }
         ~Middleware_Client() {
@@ -109,11 +109,9 @@ namespace Login_Middleware {
 
                         // Tries to convert recieved data to an object.
                         try {
-                            // Deserialises to local obj
-                            user_obj = DeserializeRequest(data);
-                            WriteLine("Object Deserialisation Successful!");
+                           
                             // Queues request from client to db with object, containing recieved data from client
-                            QueueRequest(user_obj);
+                            QueueRequest(data);
                         } catch (Exception e) {
                             WriteLine($"EXCEPTION:\n" +
                                 $"-----------------------------------\n" +
@@ -134,7 +132,7 @@ namespace Login_Middleware {
 
                             if (Connected) {
                                 WriteLine("Closing TCP Connection");
-                                tcpClient.Close();
+                                connectedClient.Close();
                             }
                             isAlive = false;
                         } finally {
@@ -247,12 +245,12 @@ namespace Login_Middleware {
                 peekedMessage.Formatter = new JsonMessageFormatter();
                 UserModel peekedModel = DeserializeRequest(peekedMessage.Body.ToString());
 
-                if (peekedMessage.Label == databaseMessageObj.UserID && peekedModel.RequestType == databaseMessageObj.RequestType) {
+                if (peekedMessage.Label == databaseMessageObj.UserID && peekedModel.RemoteEndPoint == databaseMessageObj.RemoteEndPoint) {
                     Message recievedMessage = Middleware_Main.tokenResponseQueue.Receive();
                     recievedMessage.Formatter = new JsonMessageFormatter();
 
                     UserModel tokenUserModel = DeserializeRequest(recievedMessage.Body.ToString());
-                    tokenUserModel.UserID = databaseMessageObj.UserID;
+                    //tokenUserModel.UserID = databaseMessageObj.UserID;
                     return tokenUserModel;
                 }
             }
@@ -266,27 +264,35 @@ namespace Login_Middleware {
                 stream.Write(msg, 0, msg.Length);
             }
         }
-
         private void WriteLine(string message) {
-            //Console.WriteLine($"Middleware_Client at ThreadID: {ThreadID}. " + message);
+#if DEBUG
+            Console.WriteLine($"Middleware_Client at ThreadID: {ThreadID}. " + message);
+#endif
         }
 
-        private void QueueRequest(UserModel userImputData) {
-            if (!String.IsNullOrEmpty(userImputData.PswdHash)) {
-                userImputData.PswdHash = GetPasswordHash(userImputData.PswdHash);
+        private void QueueRequest(string userImputData) {
+            // Deserialises to local obj
+            UserModel userImputModel = DeserializeRequest(userImputData);
+            userImputModel.RemoteEndPoint = connectedClient.Client.RemoteEndPoint;
+
+            WriteLine("Object Deserialisation Successful!");
+            if (!String.IsNullOrEmpty(userImputModel.PswdHash)) {
+                userImputModel.PswdHash = GetPasswordHash(userImputModel.PswdHash);
             }
+            userImputData = JsonConvert.SerializeObject(userImputModel);
 
             // Bool used to determine when the correct message has been recieved, to end message peek loop
             bool success = false;
-            string userImputRequestString = JsonConvert.SerializeObject(userImputData);
+            //string userImputRequestString = JsonConvert.SerializeObject(userImputData);
 
-            switch (userImputData.RequestType) {
+            switch (userImputModel.RequestType) {
                 /// Case: Requests User information from the Database, based on recieved user data
                 case RequestTypes.Get_User:
+
                     // Setup DB request message
                     Message getRequest = new Message() {
-                        Body = userImputRequestString,
-                        Label = userImputData.UserID+tcpClient.Client.RemoteEndPoint.ToString(),
+                        Body = userImputData,
+                        Label = userImputModel.UserID,
                         Formatter = new JsonMessageFormatter()
                     };
 
@@ -298,7 +304,7 @@ namespace Login_Middleware {
 
                     // Json client response setup
                     UserModel login_partial_response = new UserModel() {
-                        Message = $"Login Request For: [ {userImputData.UserID} ], Sent to Database",
+                        Message = $"Login Request For: [ {userImputModel.UserID} ], Sent to Database",
                         RequestType = RequestTypes.Response
                     };
                     WriteToClient(JsonConvert.SerializeObject(login_partial_response));
@@ -309,21 +315,21 @@ namespace Login_Middleware {
                     WriteLine("Waiting on Response from Database");
                     while (!success) {
                         // Peeks top of queue, and sets the right formatter
-                        Message peekedMessage = Middleware_Main.databaseResponseQueue.Peek();
+                        Message peekedMessage = Middleware_Main.databaseResponseQueue.Peek(TimeSpan.FromMinutes(2));
                         peekedMessage.Formatter = new JsonMessageFormatter();
                         UserModel peekedModel = DeserializeRequest(peekedMessage.Body.ToString());
                         // WriteLine($"\nExpected ID: {userImputData.UserID}\nActual ID: {peekedModel.UserID}\nLabel ID: {peekedMessage.Label}\n");
                         // if the label is as expected, and the request type is the same, consume message
                         // specifically made to be sure a user making two requests at once, can't get the wrong message back.
-                        if (peekedMessage.Label == userImputData.UserID + tcpClient.Client.RemoteEndPoint.ToString() && peekedModel.RequestType == RequestTypes.Get_User) {
-                            Message msg = Middleware_Main.databaseResponseQueue.Receive();
-                            msg.Formatter = new JsonMessageFormatter();
+                        if (peekedMessage.Label == userImputModel.UserID && peekedModel.RemoteEndPoint == connectedClient.Client.RemoteEndPoint && peekedModel.RequestType == RequestTypes.Get_User) {
+                            Message actualMessage = Middleware_Main.databaseResponseQueue.Receive();
+                            actualMessage.Formatter = new JsonMessageFormatter();
 
-                            UserModel dataBaseResponseObj = DeserializeRequest(msg.Body.ToString());
+                            UserModel dataBaseResponseObj = DeserializeRequest(actualMessage.Body.ToString());
                             WriteLine("Response Message Recieved from Database, Requesting Token From Token Server");
 
-                            if (dataBaseResponseObj.Status == RequestStatus.Success && CheckHash(dataBaseResponseObj, userImputData)) {
-                                UserModel tokenReponse = RequestToken(userImputData, TokenRequestType.CreateToken);
+                            if (dataBaseResponseObj.Status == RequestStatus.Success && CheckHash(dataBaseResponseObj, userImputModel)) {
+                                UserModel tokenReponse = RequestToken(userImputModel, TokenRequestType.CreateToken);
                                 tokenReponse.Status = RequestStatus.Success;
                                 WriteLine("Token Successfully Created And Retrieved!");
                                 WriteToClient(JsonConvert.SerializeObject(tokenReponse));
@@ -350,8 +356,8 @@ namespace Login_Middleware {
                     WriteLine("User Issued a Signup Request");
                     // Setup of DB request message
                     Message createRequest = new Message() {
-                        Body = userImputRequestString,
-                        Label = userImputData.UserID + tcpClient.Client.RemoteEndPoint.ToString(),
+                        Body = userImputData,
+                        Label = userImputModel.UserID,
                         Formatter = new JsonMessageFormatter()
                     };
 
@@ -363,7 +369,7 @@ namespace Login_Middleware {
                     // Client Response Message
                     // Json client response setup
                     UserModel createResponse = new UserModel() {
-                        Message = $"Signup Request For: [ {userImputData.UserID} ], Sent to Database",
+                        Message = $"Signup Request For: [ {userImputModel.UserID} ], Sent to Database",
                         RequestType = RequestTypes.Response,
                         Status = RequestStatus.Success
                     };
@@ -371,11 +377,11 @@ namespace Login_Middleware {
 
                     WriteLine("Waiting on response from Database");
                     while (!success) {
-                        Message tempMessage = Middleware_Main.databaseResponseQueue.Peek();
-                        tempMessage.Formatter = new JsonMessageFormatter();
-
+                        Message peekedMessage = Middleware_Main.databaseResponseQueue.Peek();
+                        peekedMessage.Formatter = new JsonMessageFormatter();
+                        UserModel peekedModel = DeserializeRequest(peekedMessage.Body.ToString());
                         // Peeks top of queue, and only when it's the right pulls it from the queue;
-                        if (tempMessage.Label == userImputData.UserID + tcpClient.Client.RemoteEndPoint.ToString() && DeserializeRequest(tempMessage.Body.ToString()).RequestType == RequestTypes.Create_User) {
+                        if (peekedMessage.Label == userImputModel.UserID && peekedModel.RemoteEndPoint == userImputModel.RemoteEndPoint && peekedModel.RequestType == RequestTypes.Create_User) {
                             Message m = Middleware_Main.databaseResponseQueue.Receive();
                             m.Formatter = new JsonMessageFormatter();
                             UserModel userModel = DeserializeRequest(m.Body.ToString());
@@ -404,7 +410,7 @@ namespace Login_Middleware {
                 case RequestTypes.Token_Check:
                     WriteLine("Token Login Request Recieved");
                     WriteLine("Sending Verification Request to Token server");
-                    WriteToClient(JsonConvert.SerializeObject(RequestToken(userImputData, TokenRequestType.VerifyToken)));
+                    WriteToClient(JsonConvert.SerializeObject(RequestToken(userImputModel, TokenRequestType.VerifyToken)));
                     WriteLine("Response From Token Server Sent to User");
                     break;
                 default:
@@ -413,7 +419,7 @@ namespace Login_Middleware {
             }
             if (Connected) {
                 isAlive = false;
-                tcpClient.Close();
+                connectedClient.Close();
             }
         }
     }
