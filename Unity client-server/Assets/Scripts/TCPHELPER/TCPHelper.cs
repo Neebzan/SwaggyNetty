@@ -43,6 +43,39 @@ public class TCPHelper : MonoBehaviour
         return totalPackage;
     }
 
+    /// <summary>
+    /// Reads the stream once for a message. If there is a message, reads first 4 bytes of integer length of message, then reads until the length of message has been read
+    /// </summary>
+    /// <param name="stream"></param>
+    /// <returns></returns>
+    public static string ReadMessage(NetworkStream stream)
+    {
+        string msg = string.Empty;
+
+        byte[] readBuffer = new byte[4];
+
+
+        if (stream.DataAvailable)
+        {
+            int bytesRead = 0;
+
+            while (bytesRead < 4)
+            {
+                bytesRead += stream.Read(readBuffer, bytesRead, 4 - bytesRead);
+            }
+
+            bytesRead = 0;
+            byte[] buffer = new byte[BitConverter.ToInt32(readBuffer, 0)];
+
+            while (bytesRead < buffer.Length)
+            {
+                bytesRead += stream.Read(buffer, bytesRead, buffer.Length - bytesRead);
+            }
+            msg = System.Text.Encoding.UTF8.GetString(buffer);
+
+        }
+        return msg;
+    }
 
     private static byte[] AddSizeHeaderToPackage(byte[] _package)
     {
