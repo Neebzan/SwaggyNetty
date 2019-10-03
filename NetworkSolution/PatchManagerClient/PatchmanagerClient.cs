@@ -21,6 +21,7 @@ namespace PatchManagerClient {
         public static FileTransferModel MissingFiles = null;
         static TcpClient client;
         public static PatchStatus Status = PatchStatus.Connecting;
+        public static bool Completed = false;
 
 
         static string downloadDirectory = @"";
@@ -58,14 +59,14 @@ namespace PatchManagerClient {
 
             SendFileDictionaryToServer();
             MissingFiles = null;
-            bool completed = false;
+            Completed = false;
 
             bool waitingForFile = false;
 
             Status = PatchStatus.Downloading;
             StatusChanged.Invoke(null, new EventArgs());
 
-            while (!completed) {
+            while (!Completed) {
                 if (MessageFormatter.Connected(client)) {
                     if (MissingFiles == null) {
                         while (client.GetStream().DataAvailable) {
@@ -76,7 +77,7 @@ namespace PatchManagerClient {
                                 DownloadComplete.Invoke(null, new EventArgs());
                                 Status = PatchStatus.Done;
                                 StatusChanged.Invoke(null, new EventArgs());
-                                completed = true;
+                                Completed = true;
                             }
                         }
                     }
@@ -101,7 +102,7 @@ namespace PatchManagerClient {
                             DownloadComplete.Invoke(null, new EventArgs());
                             Status = PatchStatus.Done;
                             StatusChanged.Invoke(null, new EventArgs());
-                            completed = true;
+                            Completed = true;
                         }
                     }
                 }

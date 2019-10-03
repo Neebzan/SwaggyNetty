@@ -32,7 +32,7 @@ namespace Launcher {
         public static float ConnectionTimeoutMS = 5000.0f;
         public static FileTransferModel PatchData = null;
         public static string GamePath = @"Downloads";
-        public static string GameName = @"SwaggyNetty.exe";
+        public static string GameName = @"\SwaggyNetty.exe";
 
         /// <summary>
         /// Invoke this when an error is encountered in the backend. Simply call the DisplayError method directly if encountered in the application instead.
@@ -268,7 +268,7 @@ namespace Launcher {
         /// </summary>
         public static void LaunchGame () {
             Process p = new Process();
-            p.StartInfo = new ProcessStartInfo(GamePath + GameName, "SessionToken=" + Settings.Default.SessionToken);
+            p.StartInfo = new ProcessStartInfo(GamePath + GameName, Settings.Default.SessionToken);
             if (!p.Start())
                 BackendErrorEncountered?.Invoke(null, new BackendErrorEventArgs("Launch game error", "Could not launch the game"));
             else

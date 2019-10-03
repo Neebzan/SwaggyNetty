@@ -59,7 +59,7 @@
             <local:BaseProgressBar x:Name="progress_bar" Grid.Column="1" Value="0" VerticalAlignment="Center" Width="580" Height="14" HorizontalAlignment="Center" BorderThickness="0" Background="#FF404040" Foreground="#FFBD2222" Margin="5,23"/>
         </Grid>
 
-        <Button x:Name="play_button" Content="Play" Margin="20,5" BorderThickness="2" BorderBrush="Black" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Column="1" FontWeight="Bold" FontSize="22" HorizontalAlignment="Right" Width="117" Opacity="1" Grid.Row="3">
+        <Button x:Name="play_button" Content="Play" Margin="20,5" BorderThickness="2" BorderBrush="Black" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Column="1" FontWeight="Bold" FontSize="22" HorizontalAlignment="Right" Width="117" Opacity="1" Grid.Row="3" Click="Play_button_Click">
             <Button.Style>
                 <Style TargetType="{x:Type Button}">
                     <Setter Property="Background" Value="#FFBD2222"/>

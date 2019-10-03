@@ -114,5 +114,9 @@ namespace Launcher
         private void StartBackend (object sender, RoutedEventArgs e) {
             Backend.InitiatePatchClient();
         }
+
+        private void Play_button_Click (object sender, RoutedEventArgs e) {
+            Backend.LaunchGame();
+        }
     }
 }

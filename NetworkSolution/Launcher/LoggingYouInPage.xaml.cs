@@ -50,9 +50,9 @@ namespace Launcher {
                 if (await Backend.SendLoginCredentials(username, password)) {
                     if (rememberUsername == true) {
                         Settings.Default.username = Backend.loggedUser.UserID;
+                    }
                         Settings.Default.SessionToken = Backend.loggedUser.Token;
                         Settings.Default.Save();
-                    }
 
                     Dispatcher.Invoke(DispatcherPriority.Background,
                     new Action(async () => {
