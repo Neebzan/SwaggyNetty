@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GlobalVariablesLib;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net;
@@ -19,6 +20,7 @@ public static class Server
 
     //static TcpListener listener = new TcpListener(iPAd, SERVER_PORT);
     static TcpListener listener = new TcpListener(IPAddress.Any, SERVER_PORT);
+    public static TcpClient SessionClient;
 
     public static System.Timers.Timer roundTimer = new System.Timers.Timer(1000);
     public static System.Timers.Timer packageTimer = new System.Timers.Timer(16.667);
@@ -34,7 +36,14 @@ public static class Server
     {
         StartTick();
         UnityEngine.Application.quitting += StopServer;
-
+        try
+        {
+            SessionClient = new TcpClient("127.0.0.1", GlobalVariables.SESSION_SERVER_PORT);
+        }
+        catch
+        {
+            Debug.Log("No connection to sessionmanager!");
+        }
     }
 
 
@@ -161,6 +170,16 @@ public static class Server
 
     public static void Disconnect(ServerClient disconnectedClient)
     {
+        try
+        {
+            UserSession ses = new UserSession() { UserID = disconnectedClient.clientName, InGame = false, Request = SessionRequest.SetStatus };
+            byte[] data = TCPHelper.MessageBytes(ses);
+            Server.SessionClient.GetStream().Write(data, 0, data.Length);
+        }
+        catch
+        {
+
+        }
         ServerActor disconnectedActor = null;
         foreach (ServerActor actor in Players)
         {

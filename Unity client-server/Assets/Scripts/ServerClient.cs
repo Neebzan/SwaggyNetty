@@ -84,9 +84,21 @@ public class ServerClient
                                 JwtSecurityToken token = new JwtSecurityToken(newMessage);
                                 JWTPayload payload = JWTManager.GetModelFromToken<JWTPayload>(token);
                                 clientName = payload.UserID;
+                                //Tjek om spilleren allerede er ingame
+                                foreach (var item in Server.Clients)
+                                {
+                                    if (item.clientName == clientName)
+                                    {
+                                        isDisconnecting = true;
+                                        DisconnectClient();
+                                    }
+                                }
                                 //string name = token.Claims.Where(n => n.Type == "UserID").Select(c => c.Value).FirstOrDefault().ToString();
-                                Vector2 index = new Vector2(UnityEngine.Random.Range(0, Server.MapGrid.gridWidth), UnityEngine.Random.Range(0, Server.MapGrid.gridHeigth));
-                                Server.MapGrid.grid[(int)index.x, (int)index.y].GetComponent<Cell>().OccupyCell(SpawnActor(index, clientName).gameObject);
+                                if (!isDisconnecting)
+                                {
+                                    Vector2 index = new Vector2(UnityEngine.Random.Range(0, Server.MapGrid.gridWidth), UnityEngine.Random.Range(0, Server.MapGrid.gridHeigth));
+                                    Server.MapGrid.grid[(int)index.x, (int)index.y].GetComponent<Cell>().OccupyCell(SpawnActor(index, clientName).gameObject);
+                                }
                             }
                             else
                             {
@@ -191,6 +203,17 @@ public class ServerClient
         byte[] totalPackage = Server.AddSizeHeaderToPackage(byteData);
 
         SendToClient(totalPackage);
+
+        try
+        {
+            UserSession ses = new UserSession() { UserID = clientName, InGame = true, Request = SessionRequest.SetStatus };
+            byte[] data = TCPHelper.MessageBytes(ses);
+            Server.SessionClient.GetStream().Write(data, 0, data.Length);
+        }
+        catch
+        {
+
+        }
     }
 
 
