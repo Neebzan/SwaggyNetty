@@ -57,7 +57,7 @@ public class LocalClient : MonoBehaviour
 
     public void OnMapLoad()
     {
-        
+
     }
 
     public void Message(string msg)
@@ -111,6 +111,21 @@ public class LocalClient : MonoBehaviour
                     case MessageType.Input:
                         break;
                     case MessageType.Disconnect:
+                        {
+                            Debug.Log("Disconnect detected");
+                            uint discPlayerID = UInt32.Parse(tempMsg[1]);
+                            GameObject disconnectedPlayer = null;
+                            foreach (var item in actors)
+                            {
+                                if (item.playerID == discPlayerID)
+                                {
+                                    disconnectedPlayer = item.gameObject;
+                                    break;
+                                }
+                            }
+                            if (disconnectedPlayer != null)
+                                GameObject.Destroy(disconnectedPlayer);
+                        }
                         break;
                     case MessageType.Connect:
                         {

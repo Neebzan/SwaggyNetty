@@ -188,7 +188,7 @@ public static class Server
     private static void SendDisconnectNotification(uint playerID)
     {
         string msg = ((int)MessageType.Disconnect).ToString();
-        msg += playerID.ToString();
+        msg += MESSAGE_TYPE_INDICATOR + playerID.ToString();
         byte[] data = System.Text.Encoding.ASCII.GetBytes(msg);
         byte[] totalPackage = AddSizeHeaderToPackage(data);
 
@@ -196,8 +196,8 @@ public static class Server
         {
             if (Players[i].PlayerID != playerID)
             {
-                if (TCPHelper.Connected(Players[i].Client.tcpClient))
-                    Players[i].Client.SendToClient(totalPackage);
+
+                Players[i].Client.SendToClient(totalPackage);
             }
         }
     }

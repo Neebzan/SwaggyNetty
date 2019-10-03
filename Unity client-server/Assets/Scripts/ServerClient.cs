@@ -128,8 +128,8 @@ public class ServerClient
     public bool ValidateToken(string token)
     {
         byte[] tokenData = TCPHelper.MessageBytes(token);
-        //TcpClient client = new TcpClient(GlobalVariables.MIDDLEWARE_IP, GlobalVariables.TOKENSYSTEM_PORT);
-        TcpClient client = new TcpClient("192.168.87.107", GlobalVariables.TOKENSYSTEM_PORT);
+        TcpClient client = new TcpClient(GlobalVariables.MIDDLEWARE_IP, GlobalVariables.TOKENSYSTEM_PORT);
+        //TcpClient client = new TcpClient("192.168.87.107", GlobalVariables.TOKENSYSTEM_PORT);
 
         client.GetStream().Write(tokenData, 0, tokenData.Length);
         //Await response from TokenSystem
