@@ -27,6 +27,7 @@ public class ChatServerInitiator : MonoBehaviour
                 {
                     Debug.Log("YAY CLIENT");
                     ChatServerClient client = new ChatServerClient(tcpClient);
+                    ChatServer.Clients.Add(client);
                     StartCoroutine(client.ListenForMessages());
                 }
             }

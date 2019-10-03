@@ -5,13 +5,13 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using UnityEngine;
+using System.Linq;
 
 public class ChatClient : MonoBehaviour
 {
 
 
     TcpClient client;
-    // Task task;
     ChatSystem chatSystem;
     public string userName = string.Empty;
     public List<ChatGroup> mygroups = new List<ChatGroup>();
@@ -32,9 +32,9 @@ public class ChatClient : MonoBehaviour
         //client.NoDelay = true;
         Debug.Log("Connected?");
 
-        //stream = client.GetStream();
+     
         StartCoroutine(ListenToServer());
-        //task = Task.Factory.StartNew(ListenToServer, TaskCreationOptions.LongRunning);
+       
 
     }
 
@@ -42,30 +42,57 @@ public class ChatClient : MonoBehaviour
     {
 
     }
-    public string GetTargetString(string mesg)
+
+    public string[] MyStringSplitter(string msg)
+    {
+        return msg.Split().Where(m => m != string.Empty).Distinct().ToArray();
+    }
+
+    public bool GetTargetString(string mesg)
     {
         if (mesg[0] == '/')
         {
-               
 
-            //if (chatTarget.Split(' ')[0] == "create")
-            //{
-            //    chatTarget = chatTarget.Split(' ')[1];
-            //}
-           mesg = mesg.Remove(0, 1);
-            string[] target = mesg.Split(' ');
-            if(target[0] == "create")
+            try
             {
-                chatTarget =  target[0] + " " + target[1];
+
+                mesg = mesg.Remove(0, 1);
+                string[] target = MyStringSplitter(mesg);
+
+                if (target[0] == "create")
+                {
+                    chatTarget = target[0] + " " + target[1];
+               
+                }
+                else if (target[0] == "tell")
+                {
+                    chatTarget = target[0] + " " + target[1];
+                }
+                else
+                {
+
+                    chatTarget = target[0];
+                }
+                return true;
             }
-            if (target[0] == "tell")
+            catch
             {
-                chatTarget =  target[0] + " " + target[1];
+                chatSystem.SendMessageToChat("Invalid command!", Messages.messageTypeColor.fail);
+                return false;
             }
-             chatTarget = target[0];
         }
-        
-        return chatTarget;
+
+        return true;
+    }
+
+    public string MessageCleaner(string msg)
+    {
+        if (msg[0] == '/')
+        {
+            msg = msg.Remove(0, msg.IndexOf(' '));
+
+        }
+            return msg;
     }
 
     public bool Connected
@@ -102,23 +129,27 @@ public class ChatClient : MonoBehaviour
 
     public void Message(string msg)
     {
-        chatTarget = GetTargetString(msg);
-        ChatDataPackage cdp = new ChatDataPackage();
-        cdp.ChatDataPackages.Add(new ChatData
+        //  chatTarget = GetTargetString(msg);
+        if (GetTargetString(msg))
         {
-            SenderName = ((IPEndPoint)client.Client.LocalEndPoint).Address.ToString(),
-            Message = msg,
-            port = ((IPEndPoint)client.Client.LocalEndPoint).Port.ToString(),
-            Target = chatTarget
-        });
+            msg = MessageCleaner(msg);
+            ChatDataPackage cdp = new ChatDataPackage();
+            cdp.ChatDataPackages.Add(new ChatData
+            {
+                SenderName = ((IPEndPoint)client.Client.LocalEndPoint).Address.ToString(),
+                Message = msg,
+                port = ((IPEndPoint)client.Client.LocalEndPoint).Port.ToString(),
+                Target = chatTarget
+            });
 
 
 
-        byte[] data = TCPHelper.MessageBytes(cdp);
+            byte[] data = TCPHelper.MessageBytes(cdp);
 
-        client.GetStream().Write(data, 0, data.Length);
+            client.GetStream().Write(data, 0, data.Length);
 
-        Debug.Log("Sent: " + msg);
+            Debug.Log("Sent: " + msg);
+        }
     }
 
     public IEnumerator ListenToServer()
