@@ -13,7 +13,7 @@ namespace GlobalVariablesLib
         public string UserID { get; set; }
         public string PswdHash { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
-        public EndPoint RemoteEndPoint { get; set; }
+        public string RemoteEndPoint { get; set; }
 
         public string Token { get; set; }
         /// <summary>

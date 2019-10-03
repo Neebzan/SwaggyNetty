@@ -287,7 +287,7 @@ namespace Login_Middleware {
         private void QueueRequest(string userImputData) {
             // Deserialises to local obj
             UserModel userImputModel = DeserializeRequest(userImputData);
-            userImputModel.RemoteEndPoint = connectedClient.Client.RemoteEndPoint;
+            userImputModel.RemoteEndPoint = connectedClient.Client.RemoteEndPoint.ToString();
 
             WriteLine("Object Deserialisation Successful!");
             if (!String.IsNullOrEmpty(userImputModel.PswdHash)) {
@@ -335,7 +335,7 @@ namespace Login_Middleware {
                         // WriteLine($"\nExpected ID: {userImputData.UserID}\nActual ID: {peekedModel.UserID}\nLabel ID: {peekedMessage.Label}\n");
                         // if the label is as expected, and the request type is the same, consume message
                         // specifically made to be sure a user making two requests at once, can't get the wrong message back.
-                        if (peekedMessage.Label == userImputModel.UserID && peekedModel.RemoteEndPoint == connectedClient.Client.RemoteEndPoint && peekedModel.RequestType == RequestTypes.Get_User) {
+                        if (peekedMessage.Label == userImputModel.UserID && peekedModel.RemoteEndPoint == connectedClient.Client.RemoteEndPoint.ToString() && peekedModel.RequestType == RequestTypes.Get_User) {
                             Message actualMessage = Middleware_Main.databaseResponseQueue.Receive();
                             actualMessage.Formatter = new JsonMessageFormatter();
 
