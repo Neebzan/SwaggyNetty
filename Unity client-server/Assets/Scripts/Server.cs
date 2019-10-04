@@ -38,7 +38,7 @@ public static class Server
         UnityEngine.Application.quitting += StopServer;
         try
         {
-            SessionClient = new TcpClient("127.0.0.1", GlobalVariables.SESSION_SERVER_PORT);
+            SessionClient = new TcpClient("127.0.0.1", Globals.SESSION_SERVER_PORT);
         }
         catch
         {

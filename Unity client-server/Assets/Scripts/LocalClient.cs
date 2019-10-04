@@ -50,7 +50,7 @@ public class LocalClient : MonoBehaviour
     public void SendTokenToServer()
     {
         byte[] tokenData = TCPHelper.MessageBytes(token);
-        TcpClient client = new TcpClient(GlobalVariables.MIDDLEWARE_IP, GlobalVariables.TOKENSYSTEM_PORT);
+        TcpClient client = new TcpClient(Globals.MIDDLEWARE_IP, Globals.TOKENSYSTEM_PORT);
         client.GetStream().Write(tokenData, 0, tokenData.Length);
         string validateRequest = ((int)MessageType.Validate).ToString() + Server.MESSAGE_TYPE_INDICATOR + token;
         Message(validateRequest);
