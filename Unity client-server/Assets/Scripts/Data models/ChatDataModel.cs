@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static Messages;
 
 [Serializable]
 public class ChatData
@@ -11,6 +12,7 @@ public class ChatData
     public string Target;
     public ChatServerClient SenderClient;
     public string PlayerName;
+    public messageTypeColor typeColor;
 
 }
 

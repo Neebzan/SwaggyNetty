@@ -168,6 +168,7 @@ public class ChatServer : MonoBehaviour
         Clients.Remove(disconnectedClient);
     }
 
+    
 
 
     public void SendToAll()
@@ -182,7 +183,7 @@ public class ChatServer : MonoBehaviour
 
                 }
             // DEBUG end
-
+            
             byte[] mes = TCPHelper.MessageBytes(tickMessages);
             for (int i = 0; i < Clients.Count; i++)
             {

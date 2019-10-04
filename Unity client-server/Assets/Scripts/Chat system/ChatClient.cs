@@ -9,6 +9,7 @@ using System.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using GlobalVariablesLib;
 using JWTlib;
+using static Messages;
 
 public class ChatClient : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class ChatClient : MonoBehaviour
     public List<ChatGroup> mygroups = new List<ChatGroup>();
     public string chatTarget = "all";
     public string clientName;
+    public messageTypeColor msColor;
 
 
   
@@ -78,16 +80,25 @@ public class ChatClient : MonoBehaviour
                 if (target[0] == "create")
                 {
                     chatTarget = target[0] + " " + target[1];
+                    msColor = messageTypeColor.group;
+                    
                
                 }
                 else if (target[0] == "tell")
                 {
                     chatTarget = target[0] + " " + target[1];
+                    msColor = messageTypeColor.playerMessage;
+                }
+                else if (target[0] == "all")
+                {
+                    chatTarget = target[0];
+                    msColor = messageTypeColor.all;
                 }
                 else
                 {
 
                     chatTarget = target[0];
+                    msColor = messageTypeColor.group;
                 }
                 return true;
             }
@@ -157,7 +168,9 @@ public class ChatClient : MonoBehaviour
                 Message = msg,
                 port = ((IPEndPoint)client.Client.LocalEndPoint).Port.ToString(),
                 Target = chatTarget,
-                PlayerName = clientName
+                PlayerName = clientName,
+                typeColor = msColor
+                
             });
 
 
@@ -185,7 +198,10 @@ public class ChatClient : MonoBehaviour
                     // dele op i grupper her
                     string senderClient = item.PlayerName;
                     string msg = senderClient + ": " + item.Message;
-                    chatSystem.SendMessageToChat(msg, Messages.messageTypeColor.playerMessage);
+
+                    // check for at ændre farve
+                    
+                    chatSystem.SendMessageToChat(msg, item.typeColor);
                     msg = "";
                 }
             }
