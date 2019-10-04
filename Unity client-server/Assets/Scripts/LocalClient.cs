@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GlobalVariablesLib;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.Sockets;
@@ -21,14 +22,15 @@ public class LocalClient : MonoBehaviour
     void Start()
     {
 
-        //string[] args = Environment.GetCommandLineArgs();
-        //token = args[1];
+        string[] args = Environment.GetCommandLineArgs();
+        token = args[1];
         //GameObject.Find("TokenText").GetComponent<Text>().text = token;
-        token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJKV1RQYXlsb2FkIjoie1wiU2VydmVyc0luZm9cIjp7XCJTZXJ2ZXJzXCI6W119LFwiVXNlcklEXCI6XCJKZW5zXCJ9IiwibmJmIjoxNTcwMTE5MjkwLCJleHAiOjE1NzA1NTEyOTAsImlhdCI6MTU3MDExOTI5MH0.L31Fkm8kaOpVoglhgEv_GvCAD6b1ep0h56OstUnF0d4";
+       // token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJKV1RQYXlsb2FkIjoie1wiU2VydmVyc0luZm9cIjp7XCJTZXJ2ZXJzXCI6W119LFwiVXNlcklEXCI6XCJKZW5zXCJ9IiwibmJmIjoxNTcwMTE5MjkwLCJleHAiOjE1NzA1NTEyOTAsImlhdCI6MTU3MDExOTI5MH0.L31Fkm8kaOpVoglhgEv_GvCAD6b1ep0h56OstUnF0d4";
 
         int port = 13000;
-        //client = new TcpClient("178.155.161.248", port);
-        client = new TcpClient("10.131.67.203", port);
+
+        client = new TcpClient("178.155.161.248", port);
+       
 
         client.NoDelay = true;
         Debug.Log("Connected?");
