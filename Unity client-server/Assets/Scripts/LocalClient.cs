@@ -28,7 +28,7 @@ public class LocalClient : MonoBehaviour
 
         int port = 13000;
         //client = new TcpClient("178.155.161.248", port);
-        client = new TcpClient("127.0.0.1", port);
+        client = new TcpClient("10.131.67.203", port);
 
         client.NoDelay = true;
         Debug.Log("Connected?");

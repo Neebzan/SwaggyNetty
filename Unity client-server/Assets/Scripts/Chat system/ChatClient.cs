@@ -41,7 +41,7 @@ public class ChatClient : MonoBehaviour
         chatSystem = gameObject.GetComponent<ChatSystem>();
 
         int port = 13001;
-        string IpAdress = "127.0.0.1";
+        string IpAdress = "10.131.67.203";
         client = new TcpClient(IpAdress, port);
         userName = ((IPEndPoint)client.Client.LocalEndPoint).Address.ToString();
 
@@ -183,7 +183,7 @@ public class ChatClient : MonoBehaviour
                 foreach (var item in packet.ChatDataPackages)
                 {
                     // dele op i grupper her
-                    string senderClient = item.SenderName;
+                    string senderClient = item.PlayerName;
                     string msg = senderClient + ": " + item.Message;
                     chatSystem.SendMessageToChat(msg, Messages.messageTypeColor.playerMessage);
                     msg = "";

@@ -178,7 +178,7 @@ public class ChatServer : MonoBehaviour
             if (chatGUI != null)
                 foreach (var item in tickMessages.ChatDataPackages)
                 {
-                    chatGUI.chatHistorie.Add(item.SenderName + " : " + item.port + " : " + item.Message);
+                    chatGUI.chatHistorie.Add(item.PlayerName + " : " + item.port + " : " + item.Message);
 
                 }
             // DEBUG end
@@ -188,7 +188,7 @@ public class ChatServer : MonoBehaviour
             {
 
                 Clients[i].SendToClient(mes);
-                chatGUI.chatHistorie.Add(Clients[i].ToString());
+                chatGUI.chatHistorie.Add(Clients[i].clientName);
             }
 
         }
@@ -204,7 +204,7 @@ public class ChatServer : MonoBehaviour
             if (chatGUI != null)
                 foreach (var item in tickMessages.ChatDataPackages)
                 {
-                    chatGUI.chatHistorie.Add(item.SenderName + " : " + item.port + " : " + item.Message + " : to: " + item.Target);
+                    chatGUI.chatHistorie.Add(item.PlayerName + " : " + item.port + " : " + item.Message + " : to: " + item.Target);
 
                 }
 
