@@ -43,6 +43,7 @@ public class ChatServerClient
                     foreach (var item in msg.ChatDataPackages)
                     {
                         item.SenderClient = this;
+                        clientName = item.PlayerName;
                         lock (ChatServer.tickMessages)
                         {
                             ChatServer.tickMessages.ChatDataPackages.Add(item);

@@ -6,9 +6,13 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using UnityEngine;
 using System.Linq;
+using System.IdentityModel.Tokens.Jwt;
+using GlobalVariablesLib;
+using JWTlib;
 
 public class ChatClient : MonoBehaviour
 {
+
 
 
     TcpClient client;
@@ -16,12 +20,24 @@ public class ChatClient : MonoBehaviour
     public string userName = string.Empty;
     public List<ChatGroup> mygroups = new List<ChatGroup>();
     public string chatTarget = "all";
+    public string clientName;
 
+
+  
 
 
     // Start is called before the first frame update
     void Start()
     {
+        //string[] args = Environment.GetCommandLineArgs();
+        //token = args[1];
+        
+        string token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJKV1RQYXlsb2FkIjoie1wiU2VydmVyc0luZm9cIjp7XCJTZXJ2ZXJzXCI6W119LFwiVXNlcklEXCI6XCJKZW5zXCJ9IiwibmJmIjoxNTcwMTE5MjkwLCJleHAiOjE1NzA1NTEyOTAsImlhdCI6MTU3MDExOTI5MH0.L31Fkm8kaOpVoglhgEv_GvCAD6b1ep0h56OstUnF0d4";
+
+        JwtSecurityToken tokenSent = new JwtSecurityToken(token);
+        JWTPayload payload = JWTManager.GetModelFromToken<JWTPayload>(token);
+        clientName = payload.UserID;
+
         chatSystem = gameObject.GetComponent<ChatSystem>();
 
         int port = 13001;
@@ -137,10 +153,11 @@ public class ChatClient : MonoBehaviour
             cdp.ChatDataPackages.Add(new ChatData
             {
                 //  SenderName = "Tais",
-                SenderName = ((IPEndPoint)client.Client.LocalEndPoint).Address.ToString(),         
+                SenderName = ((IPEndPoint)client.Client.LocalEndPoint).Address.ToString(),
                 Message = msg,
                 port = ((IPEndPoint)client.Client.LocalEndPoint).Port.ToString(),
-                Target = chatTarget
+                Target = chatTarget,
+                PlayerName = clientName
             });
 
 

@@ -10,6 +10,7 @@ public class ChatData
     public string Message;
     public string Target;
     public ChatServerClient SenderClient;
+    public string PlayerName;
 
 }
 
