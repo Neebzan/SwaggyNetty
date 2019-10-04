@@ -114,12 +114,25 @@ public class ChatClient : MonoBehaviour
 
     public string MessageCleaner(string msg)
     {
-        if (msg[0] == '/')
+        string[] temp = msg.Split(' ');
+        if (temp[0] == "/tell")
+        {
+            msg = msg.Remove(0, msg.IndexOf(' ')+1);
+            int gimmeDatIndex = msg.IndexOf(' ');
+            msg = msg.Remove(0, gimmeDatIndex);
+
+            msColor = messageTypeColor.playerMessage;
+        }
+        else if (msg[0] == '/')
         {
             msg = msg.Remove(0, msg.IndexOf(' '));
 
         }
-            return msg;
+
+
+      
+
+        return msg;
     }
 
     public bool Connected
