@@ -49,7 +49,7 @@ public class ChatServerClient
                             ChatServer.tickMessages.ChatDataPackages.Add(item);
                         }
 
-                    }
+                    } 
                     Debug.Log(msg);
                 }
                 yield return null;
