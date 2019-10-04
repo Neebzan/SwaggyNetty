@@ -83,10 +83,19 @@ public class ChatServer : MonoBehaviour
     {
         ChatGroup mygroup = new ChatGroup() { GroupName = groupName, ID = ChatServer.idNumber };
         ChatServer.idNumber += 1;
+        bool exists = false;
 
-        if (!groups.Contains(new ChatGroup() { GroupName = groupName }))
+        foreach (var item in groups)
         {
+            if (item.GroupName == groupName)
+            {
+                exists = true;
+                break;
+            }
+        }
 
+        if (!exists)
+        {
             ChatServer.groups.Add(mygroup);
         }
 
@@ -168,7 +177,7 @@ public class ChatServer : MonoBehaviour
         Clients.Remove(disconnectedClient);
     }
 
-    
+
 
 
     public void SendToAll()
@@ -183,7 +192,7 @@ public class ChatServer : MonoBehaviour
 
                 }
             // DEBUG end
-            
+
             byte[] mes = TCPHelper.MessageBytes(tickMessages);
             for (int i = 0; i < Clients.Count; i++)
             {
