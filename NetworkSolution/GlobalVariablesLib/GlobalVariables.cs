@@ -36,5 +36,9 @@ namespace GlobalVariablesLib
         public const string MYSQL_LOGIN_DB_DATABASENAME = "authentication_data";
         public const string MYSQL_LOGIN_DB_USERNAME = "netty";
         public const string MYSQL_LOGIN_DB_PASSWORD = "swaggynetty";
+
+        public const string DEAD_LETTER_QUEUE = "Dead_Letter_Queue";
+        public const string INVALID_LETTER_QUEUE = "INVALID_Letter_Queue";
+
     }
 }

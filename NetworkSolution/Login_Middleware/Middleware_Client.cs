@@ -22,7 +22,6 @@ namespace Login_Middleware {
     /// </summary>
     class Middleware_Client {
         private TcpClient connectedClient;
-        private UserModel user_obj;
         private NetworkStream stream;
         private bool isAlive = true;
         private string ThreadID {
@@ -69,14 +68,13 @@ namespace Login_Middleware {
         /// </summary>
         /// <param name="client"></param>
         public Middleware_Client(TcpClient client) {
-            Console.WriteLine($"Middleware_Client Created!");
+
+            string date = DateTime.Now.ToString("h:mm:ss tt");
+            Middleware_Main.WriteLine($"{date} Middleware_Client Created!");
             connectedClient = client;
             if (Connected) {
                 stream = connectedClient.GetStream();
             }
-        }
-        ~Middleware_Client() {
-
         }
 
         /// <summary>
@@ -95,6 +93,7 @@ namespace Login_Middleware {
         /// converted from Json format to the User Model. Aborts on lost connection.
         /// </summary>
         public void ListenForMessages() {
+            Thread.CurrentThread.Name = $"MIDDLEWARE_CLIENT[{ThreadID}]";
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             while (isAlive) {
@@ -108,7 +107,6 @@ namespace Login_Middleware {
                             $"\nRequest Recieved\n_______________________________\n" +
                             $"Received Data: {data}\nAttempting To Convert from Json String\n" +
                             $"_______________________________\n");
-
 
                         // Tries to convert recieved data to an object.
                         try {
@@ -254,6 +252,8 @@ namespace Login_Middleware {
             };
             // Sends request to token server
             Middleware_Main.tokenRequestQueue.Send(tokenRequestMessage);
+            Stopwatch timeout = new Stopwatch();
+            timeout.Start();
 
             // Awaits response from token server, peeks the top queue stack.
             while (true) {
@@ -269,8 +269,19 @@ namespace Login_Middleware {
                     //tokenUserModel.UserID = databaseMessageObj.UserID;
                     return tokenUserModel;
                 }
+                else if(timeout.Elapsed > TimeSpan.FromSeconds(30)) {
+                    UserModel timeOutModel = new UserModel() {
+                        RequestType = RequestTypes.Error, Message = "Request Timed Out"
+                    };
+                    return timeOutModel;
+                }
             }
         }
+
+        /// <summary>
+        /// Writes a string of data as a stream to a connected user
+        /// </summary>
+        /// <param name="message"></param>
         private void WriteToClient(string message) {
             if (Connected) {
                 // Get bytes, Using The TcpHelper.MessageFormatter.MessageBytes Function
@@ -279,17 +290,30 @@ namespace Login_Middleware {
                 stream.Write(msg, 0, msg.Length);
             }
         }
+
+        /// <summary>
+        /// <para>WriteLine writes to the console screen using Console.WriteLine,</para> 
+        /// <para>but adds an identifier and with that, the current Instance of Middleware_Client</para>
+        /// </summary>
+        /// <param name="message"></param>
         private void WriteLine(string message) {
 #if DEBUG
-            Console.WriteLine($"Middleware_Client at ThreadID: {ThreadID}. " + message);
+            string date = DateTime.Now.ToString();
+            Console.WriteLine($"{date} {Thread.CurrentThread.Name}: " + message);
 #endif
         }
+
+        /// <summary>
+        /// QueueRequests takes a string and tries to convert it to a UserModel
+        /// </summary>
+        /// <param name="userImputData"></param>
         private void QueueRequest(string userImputData) {
             // Deserialises to local obj
             UserModel userImputModel = DeserializeRequest(userImputData);
             userImputModel.RemoteEndPoint = connectedClient.Client.RemoteEndPoint.ToString();
 
             WriteLine("Object Deserialisation Successful!");
+            // if no null, its presumed that a password was recieved from a user.
             if (!String.IsNullOrEmpty(userImputModel.PswdHash)) {
                 userImputModel.PswdHash = GetPasswordHash(userImputModel.PswdHash);
             }
@@ -299,6 +323,8 @@ namespace Login_Middleware {
             bool success = false;
             //string userImputRequestString = JsonConvert.SerializeObject(userImputData);
 
+            Stopwatch timeOut = new Stopwatch();
+
             switch (userImputModel.RequestType) {
                 /// Case: Requests User information from the Database, based on recieved user data
                 case RequestTypes.Get_User:
@@ -307,7 +333,8 @@ namespace Login_Middleware {
                     Message getRequest = new Message() {
                         Body = userImputData,
                         Label = userImputModel.UserID,
-                        Formatter = new JsonMessageFormatter()
+                        Formatter = new JsonMessageFormatter(),
+                        UseDeadLetterQueue = true
                     };
 
                     // Send DB request
@@ -327,12 +354,15 @@ namespace Login_Middleware {
                     // While it has no success try, to recieve message from database producer queue with peeking
                     // to make sure it only takes the correct message...
                     WriteLine("Waiting on Response from Database");
+
+                    timeOut.Start();
+
                     while (!success) {
                         // Peeks top of queue, and sets the right formatter
-                        Message peekedMessage = Middleware_Main.databaseResponseQueue.Peek(TimeSpan.FromMinutes(2));
+                        Message peekedMessage = Middleware_Main.databaseResponseQueue.Peek();
                         peekedMessage.Formatter = new JsonMessageFormatter();
-                        UserModel peekedModel = DeserializeRequest(peekedMessage.Body.ToString());
-                        // WriteLine($"\nExpected ID: {userImputData.UserID}\nActual ID: {peekedModel.UserID}\nLabel ID: {peekedMessage.Label}\n");
+                        UserModel peekedModel = new UserModel();
+
                         // if the label is as expected, and the request type is the same, consume message
                         // specifically made to be sure a user making two requests at once, can't get the wrong message back.
                         if (peekedMessage.Label == userImputModel.UserID && peekedModel.RemoteEndPoint == connectedClient.Client.RemoteEndPoint.ToString() && peekedModel.RequestType == RequestTypes.Get_User) {
@@ -361,7 +391,14 @@ namespace Login_Middleware {
                                 #endregion
                             }
                             success = true;
+                        } else if (timeOut.Elapsed > TimeSpan.FromSeconds(30)) {
+                            success = true;
+                            UserModel timeOutModel = new UserModel() {
+                                RequestType = RequestTypes.Error, Message = "Request Timed Out"
+                            };
+                            WriteToClient(JsonConvert.SerializeObject(timeOutModel));
                         }
+
                     }
                     break;
 
@@ -372,7 +409,8 @@ namespace Login_Middleware {
                     Message createRequest = new Message() {
                         Body = userImputData,
                         Label = userImputModel.UserID,
-                        Formatter = new JsonMessageFormatter()
+                        Formatter = new JsonMessageFormatter(),
+                        UseDeadLetterQueue = true
                     };
 
                     // Sending DB request message to message queue
@@ -388,6 +426,8 @@ namespace Login_Middleware {
                         Status = RequestStatus.Success
                     };
                     WriteToClient(JsonConvert.SerializeObject(createResponse));
+
+                    timeOut.Start();
 
                     WriteLine("Waiting on response from Database");
                     while (!success) {
@@ -409,10 +449,18 @@ namespace Login_Middleware {
                                     break;
                                 default:
                                     WriteLine($"Error: {HandleError(userModel)}");
+                                    userModel.RequestType = RequestTypes.Error;
+                                    userModel.Message = $"Error: {HandleError(userModel)}";
                                     break;
                             }
                             WriteToClient(JsonConvert.SerializeObject(userModel));
                             success = true;
+                        } else if (timeOut.Elapsed > TimeSpan.FromSeconds(30)) {
+                            success = true;
+                            UserModel timeOutModel = new UserModel() {
+                                RequestType = RequestTypes.Error, Message = "Request Timed Out"
+                            };
+                            WriteToClient(JsonConvert.SerializeObject(timeOutModel));
                         }
                     }
                     break;
