@@ -8,6 +8,9 @@
         <Style x:Key="BaseWindowStyle" TargetType="Window">
             <Setter Property="ResizeMode" Value="CanMinimize"/>
             <Setter Property="SizeToContent" Value="WidthAndHeight"/>
+            <!--<Setter Property="Width" Value="800"/>
+            <Setter Property="Height" Value="475"/>-->
+
             <!--<Setter Property="WindowChrome.WindowChrome">
                 <Setter.Value>
                     <WindowChrome GlassFrameThickness="0" CornerRadius="0" CaptionHeight="0"/>

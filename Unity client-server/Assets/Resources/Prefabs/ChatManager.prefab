@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6873133960951155564
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6873133960951155563}
+  - component: {fileID: 6873133960951155562}
+  - component: {fileID: 6873133960951155561}
+  m_Layer: 0
+  m_Name: ChatManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6873133960951155563
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6873133960951155564}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6873133960951155562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6873133960951155564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b59826bd02c4e984396144ff8f2099e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chatPanel: {fileID: 0}
+  TextObject: {fileID: 6084807630336989359, guid: b23019855d80dcd4680990037845fe7f,
+    type: 3}
+  chatBox: {fileID: 0}
+  playerMessage: {r: 0.8867924, g: 0.13803846, b: 0.13803846, a: 1}
+  group: {r: 0.4000089, g: 0.45871073, b: 0.9528302, a: 0}
+  fail: {r: 0.8207547, g: 0.78836966, b: 0.027100407, a: 0}
+  all: {r: 0.124961905, g: 0.5943396, b: 0.014017441, a: 0}
+  cClient: {fileID: 6873133960951155561}
+  chatHistory: []
+--- !u!114 &6873133960951155561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6873133960951155564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 186757c6977c35641b8bd75108f304c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  userName: 
+  mygroups: []
+  chatTarget: all
+  clientName: 

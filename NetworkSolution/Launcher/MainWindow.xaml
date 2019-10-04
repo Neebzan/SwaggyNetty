@@ -6,7 +6,6 @@
         xmlns:local="clr-namespace:Launcher"
         mc:Ignorable="d"
         Title="Swaggy Netty" Style="{StaticResource BaseWindowStyle}" WindowStartupLocation="CenterScreen">
-
     <Window.Background>
         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
             <GradientStop Color="#FFF0F0F0" Offset="1"/>
@@ -36,7 +35,7 @@
         </Label>
 
         <Frame x:Name="frame" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1" Grid.RowSpan="1" NavigationUIVisibility="Hidden" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-        <Image Margin="20" Grid.Column="1" Grid.Row="1" Source="Content/deusvulttransparent.png" Stretch="Uniform">
+        <Image Margin="20" Grid.Column="1" Grid.Row="1" Source="Content/deusvulttransparent.png" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Image.Effect>
                 <DropShadowEffect Opacity="0.25"/>
             </Image.Effect>
@@ -59,7 +58,7 @@
             <local:BaseProgressBar x:Name="progress_bar" Grid.Column="1" Value="0" VerticalAlignment="Center" Width="580" Height="14" HorizontalAlignment="Center" BorderThickness="0" Background="#FF404040" Foreground="#FFBD2222" Margin="5,23"/>
         </Grid>
 
-        <Button x:Name="play_button" Content="Play" Margin="20,5" BorderThickness="2" BorderBrush="Black" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Column="1" FontWeight="Bold" FontSize="22" HorizontalAlignment="Right" Width="117" Opacity="1" Grid.Row="3">
+        <Button x:Name="play_button" Content="Play" Margin="20,5" BorderThickness="2" BorderBrush="Black" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Column="1" FontWeight="Bold" FontSize="22" HorizontalAlignment="Right" Width="117" Opacity="1" Grid.Row="3" Click="Play_button_Click">
             <Button.Style>
                 <Style TargetType="{x:Type Button}">
                     <Setter Property="Background" Value="#FFBD2222"/>

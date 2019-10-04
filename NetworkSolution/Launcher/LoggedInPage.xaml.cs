@@ -38,7 +38,7 @@ namespace Launcher {
             };
 
 
-            if (Backend.PatchData != null && Backend.PatchData?.RemainingSize == 0) {
+            if (PatchmanagerClient.Completed) {
                 (Application.Current.MainWindow as MainWindow).playButton.IsEnabled = true;
                 (Application.Current.MainWindow as MainWindow).playButton.Opacity = 1;
             }

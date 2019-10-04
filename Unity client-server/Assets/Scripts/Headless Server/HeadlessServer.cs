@@ -77,15 +77,18 @@ public static class HeadlessServer
 
     private static byte [ ] PositionData () {
         //Create package from player ID and position
-        PositionDataPackage [ ] packageCollection = new PositionDataPackage [ Players.Count ];
-        for (int i = 0; i < Players.Count; i++) {
-            PositionDataPackage pck = new PositionDataPackage {
-                PlayerID = Players [ i ].PlayerID,
-                Position = Players [ i ].CurrentPos
-            };
-            packageCollection [ i ] = pck;
+        List<PositionDataPackage> packageCollection = new List<PositionDataPackage>();
+        for (int i = 0; i < Players.Count; i++)
+        {
+            packageCollection.Add(
+            new PositionDataPackage
+            {
+                PlayerID = Players[i].PlayerID,
+                Position = Players[i].CurrentPos
+            });
         }
-        PositionDataCollectionPackage package = new PositionDataCollectionPackage() {
+        DataCollectionPackage package = new DataCollectionPackage()
+        {
             PositionDataPackages = packageCollection
         };
 

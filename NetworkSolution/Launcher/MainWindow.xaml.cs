@@ -90,7 +90,7 @@ namespace Launcher
                             patch_status_label.Content = "Downloading..";
                             break;
                         case PatchStatus.Done:
-                            patch_status_label.Content = "Download completed";
+                            patch_status_label.Content = "Client is up to date";
                             break;
                         default:
                             break;
@@ -113,6 +113,10 @@ namespace Launcher
 
         private void StartBackend (object sender, RoutedEventArgs e) {
             Backend.InitiatePatchClient();
+        }
+
+        private void Play_button_Click (object sender, RoutedEventArgs e) {
+            Backend.LaunchGame();
         }
     }
 }

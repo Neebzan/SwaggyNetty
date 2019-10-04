@@ -10,6 +10,8 @@ namespace GlobalVariablesLib
     public enum TokenRequestType { VerifyToken, CreateToken }
     public enum RequestTypes { Get_User, Create_User, Update_User, Delete_User, Response, Error, Token_Get, Token_Check }
     public enum RequestStatus { Success, AlreadyExists, DoesNotExist, ConnectionError }
+    public enum SessionRequest { GetAllSessions, GetUserSession, GetOnlineSessions, SetStatus }
+
 
     public static class GlobalVariables
     {
@@ -30,6 +32,9 @@ namespace GlobalVariablesLib
 
         public const int TOKENSYSTEM_PORT = 13005;
         public const int BEACON_PORT = 13006;
+        public const int SESSION_USER_PORT = 13007;
+        public const int SESSION_SERVER_PORT = 13008;
+
 
         public const int MYSQL_LOGIN_DB_PORT = 3306;
         public const string MYSQL_LOGIN_DB_IP = "178.155.161.248";

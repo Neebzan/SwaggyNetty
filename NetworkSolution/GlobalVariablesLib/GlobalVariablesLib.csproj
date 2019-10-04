@@ -50,6 +50,7 @@
     <Compile Include="Models\JWTPayload.cs" />
     <Compile Include="Models\ServerData.cs" />
     <Compile Include="Models\UserModel.cs" />
+    <Compile Include="Models\UserSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

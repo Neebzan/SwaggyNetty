@@ -33,5 +33,19 @@ namespace Launcher.Animations
 
             page.Visibility = Visibility.Hidden;
         }
+
+        public static async Task FadeOut (this Page page, float seconds) {
+            var sb = new Storyboard();
+
+            sb.AddFadeOut(seconds);
+
+            sb.Begin(page);
+
+            page.Visibility = Visibility.Visible;
+
+            await Task.Delay((int)(seconds * 1000));
+
+            page.Visibility = Visibility.Hidden;
+        }
     }
 }
