@@ -654,6 +654,21 @@ PrefabInstance:
       propertyPath: chatPanel
       value: 
       objectReference: {fileID: 1540855118}
+    - target: {fileID: 6873133960951155562, guid: ff757e149b3e5ea49a8201ecd4d29a5a,
+        type: 3}
+      propertyPath: group.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6873133960951155562, guid: ff757e149b3e5ea49a8201ecd4d29a5a,
+        type: 3}
+      propertyPath: fail.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6873133960951155562, guid: ff757e149b3e5ea49a8201ecd4d29a5a,
+        type: 3}
+      propertyPath: all.a
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ff757e149b3e5ea49a8201ecd4d29a5a, type: 3}
 --- !u!114 &1220652165 stripped
