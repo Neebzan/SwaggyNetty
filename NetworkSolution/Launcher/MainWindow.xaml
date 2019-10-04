@@ -5,52 +5,82 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Launcher"
         mc:Ignorable="d"
-        Title="Swaggy Netty" Height="450" Width="800" ResizeMode="CanMinimize" WindowStyle="SingleBorderWindow">
-    <Grid Margin="0" Height="419.5">
+        Title="Swaggy Netty" Style="{StaticResource BaseWindowStyle}" WindowStartupLocation="CenterScreen">
+    <Window.Background>
+        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FFF0F0F0" Offset="1"/>
+            <GradientStop Color="White"/>
+        </LinearGradientBrush>
+    </Window.Background>
+    <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*" />
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="4.5*"/>
-            <ColumnDefinition Width="1.5*"/>
+            <ColumnDefinition Width="400"/>
+            <ColumnDefinition Width="400"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition x:Name="Game_title" Height="2*"/>
-            <RowDefinition x:Name="Username_label" Height="30"/>
-            <RowDefinition x:Name="Username_entry" Height="40"/>
-            <RowDefinition x:Name="Password_label" Height="30"/>
-            <RowDefinition x:Name="Password_entry" Height="40"/>
-            <RowDefinition x:Name="Remember_username_tick" Height="25"/>
-            <RowDefinition x:Name="Remember_password_tick" Height="25"/>
-            <RowDefinition x:Name="Login_button" Height="40"/>
-            <RowDefinition x:Name="Progresss_bar" Height="80"/>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="300"/>
+            <RowDefinition Height="45"/>
+            <RowDefinition Height="60"/>
         </Grid.RowDefinitions>
 
+        <Popup x:Name="Error_Popup" IsOpen="True" PlacementTarget="{Binding ElementName=username, Mode=OneWay}" PopupAnimation="Fade" VerticalOffset="0" HorizontalOffset="400" AllowsTransparency="True" StaysOpen="False" Grid.Column="1" Grid.Row="1" ClipToBounds="True" UseLayoutRounding="True" HorizontalAlignment="Stretch" VerticalAlignment="Top" Placement="Relative">
+            <TextBlock x:Name="Error_Popup_Label" Background="#FF404040" Text="Username already exists" TextAlignment="Left" Padding="5"  TextWrapping="Wrap" Foreground="White" Width="400" LineHeight="6" FontStyle="Italic"/>
+        </Popup>
 
-        <Frame  Margin="0" Grid.RowSpan="9" Grid.ColumnSpan="4" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-            <Frame.Background>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="#FFDADADA" Offset="1"/>
-                    <GradientStop Color="#FFF4F4F4" Offset="0.017"/>
-                </LinearGradientBrush>
-            </Frame.Background>
-        </Frame>
+        <Label Content="Swaggy Netty" Margin="20,5" Grid.Row="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" UseLayoutRounding="True" Grid.ColumnSpan="1" FontSize="30" FontFamily="Segoe UI Historic" d:IsLocked="True">
+            <Label.Effect>
+                <DropShadowEffect Opacity="0.25"/>
+            </Label.Effect>
+        </Label>
 
-
-        <Label Content="Username" Margin="20,0" VerticalContentAlignment="Bottom" UseLayoutRounding="False" Grid.Row="1" Padding="0"/>
-        <Button Content="Login" Margin="20,5" Grid.Row="7" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="#FFD1D1D1" Click="Button_Click" FontSize="16" BorderThickness="0"/>
-        <Label Content="Password" Margin="20,0" VerticalContentAlignment="Bottom" UseLayoutRounding="False" Grid.Row="3" Padding="0"/>
-        <Label Content="Swaggy Netty" Margin="20,5,5,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" UseLayoutRounding="True" Padding="6,5,5,5" Grid.ColumnSpan="2" FontSize="30" FontFamily="Segoe UI Historic"/>
-        <TextBox x:Name="username_textbox" Grid.ColumnSpan="2" Margin="20,5,20,10" Grid.Row="2" TextWrapping="Wrap" VerticalContentAlignment="Center" Padding="5"/>
-        <PasswordBox x:Name="password_textbox" Grid.ColumnSpan="2" Margin="20,5,20,10" Grid.Row="4" VerticalContentAlignment="Center" Padding="5"/>
-        <CheckBox Content="  Remember username" Margin="20,0" Grid.Row="5" Padding="0" VerticalContentAlignment="Center"/>
-        <CheckBox Content="  Automatic login" Margin="20,0" Grid.Row="6" Padding="0" VerticalContentAlignment="Center"/>
-        <Label Content="Forgot your password?" Margin="5" VerticalContentAlignment="Center" UseLayoutRounding="False" Grid.Row="3" Padding="0" FontSize="10" Grid.Column="1" Background="{x:Null}" Foreground="Red"/>
-        <StackPanel Grid.Column="1" Margin="5" Orientation="Horizontal" Grid.Row="7">
-            <Label Content="or" Margin="0" VerticalContentAlignment="Center" UseLayoutRounding="False" Padding="0" FontSize="10" Background="{x:Null}" HorizontalContentAlignment="Right" FlowDirection="RightToLeft"/>
-            <Label Content="create an account" Margin="2,0,0,0" VerticalContentAlignment="Center" UseLayoutRounding="False" Padding="0" FontSize="10" Background="{x:Null}" HorizontalContentAlignment="Right" FlowDirection="RightToLeft" Foreground="Red"/>
+        <Frame x:Name="frame" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1" Grid.RowSpan="1" NavigationUIVisibility="Hidden" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        <Image Margin="20" Grid.Column="1" Grid.Row="1" Source="Content/deusvulttransparent.png" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Image.Effect>
+                <DropShadowEffect Opacity="0.25"/>
+            </Image.Effect>
+        </Image>
+        <StackPanel Grid.ColumnSpan="2" Grid.Row="2">
+            <Label x:Name="files_remaining_label" Content="" Margin="20,0" FontSize="10" Opacity=".6"/>
+            <Label x:Name="file_label" Content="" Margin="20,0" FontSize="10" Opacity=".6"/>
+            <Label x:Name="patch_status_label" Content="" FontWeight="Bold" Margin="20,0" FontSize="10" Opacity=".6"/>
         </StackPanel>
-        <ProgressBar Margin="20,5" VerticalContentAlignment="Center" Grid.Row="8" Grid.ColumnSpan="3" Height="29"/>
-        <Button Content="Play" Margin="20" Grid.Row="8" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="#FFF0F0F0" Grid.Column="3"/>
-        <Image Grid.RowSpan="8" Grid.Column="2" Margin="5" Grid.ColumnSpan="2" Source="Content\deusvult.png" Stretch="UniformToFill"/>
+
+
+        <Grid Grid.Row="3" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="150"/>
+            </Grid.ColumnDefinitions>
+            <Label x:Name="patchpercentage_label" Grid.Column="0" Content="0%" FontSize="10" Margin="20,22,0,25" VerticalAlignment="Center" VerticalContentAlignment="Center"/>
+            <Rectangle Fill="Black" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Width="582" Height="16"/>
+            <local:BaseProgressBar x:Name="progress_bar" Grid.Column="1" Value="0" VerticalAlignment="Center" Width="580" Height="14" HorizontalAlignment="Center" BorderThickness="0" Background="#FF404040" Foreground="#FFBD2222" Margin="5,23"/>
+        </Grid>
+
+        <Button x:Name="play_button" Content="Play" Margin="20,5" BorderThickness="2" BorderBrush="Black" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Column="1" FontWeight="Bold" FontSize="22" HorizontalAlignment="Right" Width="117" Opacity="1" Grid.Row="3" Click="Play_button_Click">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Background" Value="#FFBD2222"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type Button}">
+                                <Border Background="{TemplateBinding Background}">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#FFF11212"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
     </Grid>
 </Window>

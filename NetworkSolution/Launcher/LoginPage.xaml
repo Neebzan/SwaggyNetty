@@ -1,0 +1,30 @@
+﻿<local:BasePage x:Class="Launcher.LoginPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:Launcher"
+      xmlns:fa="http://schemas.fontawesome.io/icons/"
+      mc:Ignorable="d" 
+      Title="LoginPage" Style="{StaticResource BasePageStyle}">
+
+    <Frame x:Name="frame"  Background="Transparent">
+        <Frame.Content>
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left">
+                <Label Content="Username" Margin="20,20,20,0" FontSize="14" VerticalContentAlignment="Bottom" Padding="0"/>
+                <TextBox x:Name="username_textbox">
+                </TextBox>
+                <Label Content="Password" Margin="20,20,20,0" FontSize="14" VerticalContentAlignment="Bottom" UseLayoutRounding="False" Padding="0"/>
+                <PasswordBox x:Name="password_textbox"/>
+                <CheckBox x:Name="remember_username_tick" Opacity=".8" Content="  Remember username" Margin="20,5,20,1" Grid.Row="5" Padding="0" VerticalContentAlignment="Center" Grid.ColumnSpan="2" Unchecked="Remember_username_tick_Unchecked" Checked="Remember_username_tick_Checked"/>
+                <CheckBox x:Name="automatic_login_tick" Opacity=".8" Content="  Automatic login" Margin="20,1" Grid.Row="6" Padding="0" VerticalContentAlignment="Center" Grid.ColumnSpan="2" Unchecked="Automatic_login_tick_Unchecked" Checked="Automatic_login_tick_Checked"/>
+                <StackPanel Margin="20,20" Orientation="Horizontal" Height="46">
+                    <Button Content="Login" Style="{StaticResource BaseButtonStyle}" Click="Login_Button_Clicked" Width="111"/>
+                    <Label Content="or " Margin="20,5,0,5" FontWeight="Light" FontSize="12" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
+                    <Button Content="create an account" FontWeight="Light" Style="{StaticResource BaseButtonStyleNoBackground}" Margin="0,5,20,5" Grid.Row="7" Click="Register_Button_Clicked"/>
+                    <fa:ImageAwesome x:Name="spinner_imageawesome" Opacity=".8"/>
+                </StackPanel>
+            </StackPanel>
+        </Frame.Content>
+    </Frame>
+</local:BasePage>

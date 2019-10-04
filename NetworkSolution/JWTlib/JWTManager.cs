@@ -70,6 +70,14 @@ namespace JWTlib
             return JsonConvert.DeserializeObject<T>(token.Claims.Where(c => c.Type == typeof(T).Name).Select(c => c.Value).FirstOrDefault().ToString());
         }
 
+        public static Claim[] GetClaims(string tokenString) {
+            JwtSecurityToken token = new JwtSecurityToken(tokenString);
+
+            return token.Claims.ToArray();
+
+            //return JsonConvert.DeserializeObject<T>(token.Claims.Where(c => c.Type == typeof(T).Name).Select(c => c.Value).FirstOrDefault().ToString());
+        }
+
         /// <summary>
         /// Check if the token is valid and has the correct signature
         /// </summary>

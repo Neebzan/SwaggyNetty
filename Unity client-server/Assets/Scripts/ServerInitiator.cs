@@ -6,9 +6,13 @@ using UnityEngine;
 
 public class ServerInitiator : MonoBehaviour
 {
-    void Start () {
+    public static GridGenerater MapGrid;
+    void Start()
+    {
         StartCoroutine(WaitForClients());
         Task.Factory.StartNew(Server.ListenForClients, TaskCreationOptions.LongRunning);
+        MapGrid = GameObject.Find("GameMap").GetComponent<GridGenerater>();
+        Server.MapGrid = MapGrid;
     }
 
     /// <summary>
@@ -16,11 +20,17 @@ public class ServerInitiator : MonoBehaviour
     /// and instantiates internal clients on unity threads.
     /// </summary>
     /// <returns></returns>
-    public IEnumerator WaitForClients () {
-        while (true) {
-            while (Server.tcpClients.Count > 0) {
-                if (Server.tcpClients.TryDequeue(out TcpClient tcpClient)) {
+    public IEnumerator WaitForClients()
+    {
+        while (true)
+        {
+            while (Server.tcpClients.Count > 0)
+            {
+                if (Server.tcpClients.TryDequeue(out TcpClient tcpClient))
+                {
+                    
                     ServerClient client = new ServerClient(tcpClient);
+                    //ServerActor actor = client.SpawnActor(index);                    
                     StartCoroutine(client.ListenForMessages());
                 }
             }
