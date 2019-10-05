@@ -409,6 +409,8 @@ namespace Login_Middleware {
                                     break;
                                 default:
                                     WriteLine($"Error: {HandleError(userModel)}");
+                                    userModel.RequestType = RequestTypes.Error;
+                                    userModel.Message = $"Error: {HandleError(userModel)}";
                                     break;
                             }
                             WriteToClient(JsonConvert.SerializeObject(userModel));
