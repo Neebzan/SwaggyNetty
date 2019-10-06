@@ -15,7 +15,6 @@ namespace MySQL_PlayerData_Translator {
         private static PlayerDataModel data;
 
         private static void Main (string [ ] args) {
-
             SetupDBConnections();
             handler = new MSMQHandler();
             data = new PlayerDataModel();
