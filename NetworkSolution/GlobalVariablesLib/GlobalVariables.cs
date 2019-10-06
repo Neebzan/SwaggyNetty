@@ -41,5 +41,7 @@ namespace GlobalVariablesLib
         public const string MYSQL_LOGIN_DB_DATABASENAME = "authentication_data";
         public const string MYSQL_LOGIN_DB_USERNAME = "netty";
         public const string MYSQL_LOGIN_DB_PASSWORD = "swaggynetty";
+        public static string MYSQL_PLAYER_CONSUMER_QUEUE_NAME = "playerdb_request_consumer";
+        public static string MYSQL_PLAYER_PRODUCER_QUEUE_NAME = "playerdb_request_producer";
     }
 }

@@ -16,5 +16,6 @@ namespace GlobalVariablesLib.Models {
         public bool Online { get; set; }
         public PlayerDataRequest PlayerDataRequest { get; set; }
         public PlayerDataStatus  PlayerDataStatus { get; set; }
+        public int ReadSlaveNumber { get; set; } = 1;
     }
 }
