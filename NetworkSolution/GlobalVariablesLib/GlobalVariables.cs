@@ -43,5 +43,20 @@ namespace GlobalVariablesLib
         public const string MYSQL_LOGIN_DB_DATABASENAME = "authentication_data";
         public const string MYSQL_LOGIN_DB_USERNAME = "netty";
         public const string MYSQL_LOGIN_DB_PASSWORD = "swaggynetty";
+        public const string MYSQL_PLAYER_DB_CONSUMER_QUEUE_NAME = "playerdb_request_consumer";
+        public const string MYSQL_PLAYER_DB_PRODUCER_QUEUE_NAME = "playerdb_request_producer";
+
+        #region MySQL Player database
+        public const string MYSQL_PLAYER_DB_MASTER_USERNAME = "replication_user";
+        public const string MYSQL_PLAYER_DB_SLAVE_USERNAME = "replication_reader";
+        public const string MYSQL_PLAYER_DB_MASTER_PASSWORD = "swaggynetty";
+        public const string MYSQL_PLAYER_DB_SLAVE_PASSWORD = "swaggynetty";
+        public const string MYSQL_PLAYER_DB_DATABASENAME = "player_data";
+        public const string MYSQL_PLAYER_DB_IP = "178.155.161.248";
+        public const int MYSQL_PLAYER_DB_MASTER_PORT = 3307;
+        public const int MYSQL_PLAYER_DB_SLAVE1_PORT = 3308;
+        public const int MYSQL_PLAYER_DB_SLAVE2_PORT = 3309;
+        #endregion
+
     }
 }
