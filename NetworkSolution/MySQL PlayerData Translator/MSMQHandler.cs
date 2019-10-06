@@ -51,7 +51,7 @@ namespace MySQL_PlayerData_Translator {
                     PlayerDataModel data = Newtonsoft.Json.JsonConvert.DeserializeObject<PlayerDataModel>(m.Body.ToString());
 
                     EventHandler<InputRecievedEventArgs> handler = NewInputRecieved;
-                    handler?.Invoke(this, new InputRecievedEventArgs() { Data = data, RequestType = data.PlayerDataRequest });
+                    Task.Factory.StartNew(() => handler?.Invoke(this, new InputRecievedEventArgs() { Data = data, RequestType = data.PlayerDataRequest }));
                 }
                 catch (Exception eM) {
                     Console.WriteLine(eM.Message);

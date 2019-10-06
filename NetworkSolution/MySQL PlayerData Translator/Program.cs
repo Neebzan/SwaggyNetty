@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MySQL_PlayerData_Translator {
@@ -22,6 +23,7 @@ namespace MySQL_PlayerData_Translator {
         }
 
         private static void OnInputRecieved (object sender, InputRecievedEventArgs e) {
+            Console.WriteLine("Thread: " + Task.CurrentId + " executing OnInputRecieved");
             switch (e.RequestType) {
                 case PlayerDataRequest.Create:
                     data = dbConnectionMaster.Insert(data);
