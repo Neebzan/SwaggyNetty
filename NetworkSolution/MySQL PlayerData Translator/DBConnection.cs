@@ -69,12 +69,12 @@ namespace MySQL_PlayerData_Translator {
 
                     else {
                         Console.WriteLine("User with ID " + data.UserID + " does not exist, or couldn't be found");
-                        return new PlayerDataModel() { UserID = data.UserID, PlayerDataRequest = PlayerDataRequest.Read, PlayerDataStatus = PlayerDataStatus.Failure };
+                        return new PlayerDataModel() { UserID = data.UserID, PlayerDataRequest = PlayerDataRequest.Read, PlayerDataStatus = PlayerDataStatus.DoesNotExist };
                     }
                 }
                 catch (Exception e) {
                     Console.WriteLine("ERROR: " + e.Message);
-                    return new PlayerDataModel() { UserID = data.UserID, PlayerDataRequest = PlayerDataRequest.Read, PlayerDataStatus = PlayerDataStatus.Failure };
+                    return new PlayerDataModel() { UserID = data.UserID, PlayerDataRequest = PlayerDataRequest.Read, PlayerDataStatus = PlayerDataStatus.ConnectionFailed };
                 }
             }
         }
@@ -101,12 +101,12 @@ namespace MySQL_PlayerData_Translator {
                     }
                     catch (Exception e) {
                         Console.WriteLine("ERROR: " + e.Message);
-                        return new PlayerDataModel() { UserID = data.UserID, PositionX = data.PositionX, PositionY = data.PositionY, Online = data.Online, PlayerDataRequest = PlayerDataRequest.Create, PlayerDataStatus = PlayerDataStatus.Failure };
+                        return new PlayerDataModel() { UserID = data.UserID, PositionX = data.PositionX, PositionY = data.PositionY, Online = data.Online, PlayerDataRequest = PlayerDataRequest.Create, PlayerDataStatus = PlayerDataStatus.AlreadyExists };
                     }
                 }
                 catch (Exception e) {
                     Console.WriteLine("ERROR: " + e.Message);
-                    return new PlayerDataModel() { UserID = data.UserID, PositionX = data.PositionX, PositionY = data.PositionY, Online = data.Online, PlayerDataRequest = PlayerDataRequest.Create, PlayerDataStatus = PlayerDataStatus.Failure };
+                    return new PlayerDataModel() { UserID = data.UserID, PositionX = data.PositionX, PositionY = data.PositionY, Online = data.Online, PlayerDataRequest = PlayerDataRequest.Create, PlayerDataStatus = PlayerDataStatus.ConnectionFailed };
                 }
             }
         }
@@ -138,12 +138,12 @@ namespace MySQL_PlayerData_Translator {
                     }
                     catch (Exception e) {
                         Console.WriteLine("ERROR: " + e.Message);
-                        return new PlayerDataModel() { UserID = data.UserID, PositionX = data.PositionX, PositionY = data.PositionY, Online = data.Online, PlayerDataRequest = PlayerDataRequest.Update, PlayerDataStatus = PlayerDataStatus.Failure };
+                        return new PlayerDataModel() { UserID = data.UserID, PositionX = data.PositionX, PositionY = data.PositionY, Online = data.Online, PlayerDataRequest = PlayerDataRequest.Update, PlayerDataStatus = PlayerDataStatus.DoesNotExist };
                     }
                 }
                 catch (Exception e) {
                     Console.WriteLine("ERROR: " + e.Message);
-                    return new PlayerDataModel() { UserID = data.UserID, PositionX = data.PositionX, PositionY = data.PositionY, Online = data.Online, PlayerDataRequest = PlayerDataRequest.Update, PlayerDataStatus = PlayerDataStatus.Failure };
+                    return new PlayerDataModel() { UserID = data.UserID, PositionX = data.PositionX, PositionY = data.PositionY, Online = data.Online, PlayerDataRequest = PlayerDataRequest.Update, PlayerDataStatus = PlayerDataStatus.ConnectionFailed };
                 }
             }
         }

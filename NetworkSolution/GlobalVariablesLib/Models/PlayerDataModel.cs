@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace GlobalVariablesLib.Models {
 
     public enum PlayerDataRequest { Create, Read, Update, Delete};
-    public enum PlayerDataStatus { None, Success, Failure};
+    public enum PlayerDataStatus { None, Success, ConnectionFailed, AlreadyExists, DoesNotExist};
 
    public class PlayerDataModel {
         public string UserID { get; set; }
