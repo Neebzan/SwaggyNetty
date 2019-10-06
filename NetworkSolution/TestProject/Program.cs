@@ -30,10 +30,16 @@ namespace TestProject
                         RequestJWTToken();
                         break;
                     }
+                case ConsoleKey.D2:
+                    {
+                        break;
+                    }
             }
 
             Console.ReadKey();
         }
+
+
 
         static void RequestJWTToken()
         {

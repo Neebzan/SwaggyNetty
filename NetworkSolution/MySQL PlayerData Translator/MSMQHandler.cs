@@ -1,4 +1,4 @@
-﻿using GlobalVariablesLib.Models;
+﻿using GlobalVariablesLib;
 using MSMQHelperUtilities;
 using System;
 using System.Collections.Generic;

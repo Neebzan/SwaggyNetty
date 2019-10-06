@@ -1,4 +1,4 @@
-﻿using GlobalVariablesLib.Models;
+﻿using GlobalVariablesLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +20,9 @@ namespace MySQL_PlayerData_Translator {
             handler = new MSMQHandler();
             data = new PlayerDataModel();
             handler.NewInputRecieved += OnInputRecieved;
+
+
+            Console.ReadKey();
         }
 
         private static void OnInputRecieved (object sender, InputRecievedEventArgs e) {
