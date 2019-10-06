@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29306.81
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.572
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TokenSystem", "TokenSystem\TokenSystem.csproj", "{5F3BC860-6C1A-4CC5-A626-998268C74E08}"
 EndProject
@@ -31,7 +31,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileCheckerLib", "FileCheck
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SessionManager", "SessionManager\SessionManager.csproj", "{49BFEBE4-AFB3-4D9D-896C-16E19CE96EC2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySQL PlayerData Translator", "MySQL PlayerData Translator\MySQL PlayerData Translator.csproj", "{45F03545-884D-486F-A01D-D5DECD8D0993}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameDatabaseLoadbalancer", "GameDatabaseLoadbalancer\GameDatabaseLoadbalancer.csproj", "{BCE503E9-CEA3-41DA-BC83-3505AE5E48A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -95,10 +95,10 @@ Global
 		{49BFEBE4-AFB3-4D9D-896C-16E19CE96EC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49BFEBE4-AFB3-4D9D-896C-16E19CE96EC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49BFEBE4-AFB3-4D9D-896C-16E19CE96EC2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{45F03545-884D-486F-A01D-D5DECD8D0993}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{45F03545-884D-486F-A01D-D5DECD8D0993}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{45F03545-884D-486F-A01D-D5DECD8D0993}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{45F03545-884D-486F-A01D-D5DECD8D0993}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCE503E9-CEA3-41DA-BC83-3505AE5E48A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCE503E9-CEA3-41DA-BC83-3505AE5E48A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCE503E9-CEA3-41DA-BC83-3505AE5E48A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCE503E9-CEA3-41DA-BC83-3505AE5E48A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

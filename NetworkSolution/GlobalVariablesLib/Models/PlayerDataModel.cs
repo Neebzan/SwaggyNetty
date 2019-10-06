@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GlobalVariablesLib.Models {
+namespace GlobalVariablesLib {
 
     public enum PlayerDataRequest { Create, Read, Update, Delete};
     public enum PlayerDataStatus { None, Success, Failure};
