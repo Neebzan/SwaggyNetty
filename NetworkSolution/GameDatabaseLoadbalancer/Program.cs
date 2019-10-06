@@ -10,6 +10,7 @@ namespace GameDatabaseLoadbalancer
     {
         static void Main(string[] args)
         {
+
         }
     }
 }

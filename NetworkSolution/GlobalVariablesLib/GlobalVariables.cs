@@ -34,6 +34,8 @@ namespace GlobalVariablesLib
         public const int BEACON_PORT = 13006;
         public const int SESSION_USER_PORT = 13007;
         public const int SESSION_SERVER_PORT = 13008;
+        public const int GAME_DATABASE_LOADBALANCER_PORT = 13009;
+
 
 
         public const int MYSQL_LOGIN_DB_PORT = 3306;
