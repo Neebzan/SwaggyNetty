@@ -50,7 +50,7 @@ public class ChatServerClient
                         }
 
                     } 
-                    Debug.Log(msg);
+                    //Debug.Log(msg);
                 }
                 yield return null;
             }
