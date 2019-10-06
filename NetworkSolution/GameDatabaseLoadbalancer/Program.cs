@@ -10,7 +10,9 @@ namespace GameDatabaseLoadbalancer
     {
         static void Main(string[] args)
         {
+            LoadBalancer loadBalancer = new LoadBalancer();
 
+            Console.ReadKey();
         }
     }
 }
