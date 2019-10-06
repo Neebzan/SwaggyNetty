@@ -192,6 +192,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7314320691756801143, guid: 0eb084b0c642b9d41ade891e6d66fcf4,
+        type: 3}
+      propertyPath: chatBox
+      value: 
+      objectReference: {fileID: 1220652165}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0eb084b0c642b9d41ade891e6d66fcf4, type: 3}
 --- !u!4 &104700230 stripped
@@ -414,6 +419,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 31.800049
+      objectReference: {fileID: 0}
+    - target: {fileID: 1236378778302304750, guid: e9604e8193a88984c8f0290475a543ff,
+        type: 3}
+      propertyPath: m_Interactable
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1236378778302304748, guid: e9604e8193a88984c8f0290475a543ff,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e9604e8193a88984c8f0290475a543ff, type: 3}
@@ -683,6 +698,11 @@ PrefabInstance:
         type: 3}
       propertyPath: group.b
       value: 0.9339623
+      objectReference: {fileID: 0}
+    - target: {fileID: 6873133960951155561, guid: ff757e149b3e5ea49a8201ecd4d29a5a,
+        type: 3}
+      propertyPath: msColor
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ff757e149b3e5ea49a8201ecd4d29a5a, type: 3}

@@ -310,7 +310,6 @@ public class ServerClient
     public void SendToClient(byte[] data)
     {
         StreamWriter writer = new StreamWriter(networkStream);
-
         networkStream.Write(data, 0, data.Length);
     }
 }

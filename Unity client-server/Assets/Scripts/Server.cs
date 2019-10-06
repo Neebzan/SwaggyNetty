@@ -13,7 +13,6 @@ public static class Server
 {
     public const char MESSAGE_TYPE_INDICATOR = '?';
     public const int SERVER_PORT = 13000;
-    public static IPAddress iPAd = IPAddress.Parse("10.131.69.85");
     public static ConcurrentQueue<TcpClient> tcpClients = new ConcurrentQueue<TcpClient>();
     public static List<ServerActor> Players = new List<ServerActor>();
     public static List<ServerClient> Clients = new List<ServerClient>();
@@ -30,6 +29,7 @@ public static class Server
     public static GridGenerater MapGrid;
     //public static List<Cell> ChangedCells = new List<Cell>();
     public static Dictionary<Cell, uint> ChangedCells = new Dictionary<Cell, uint>();
+    static List<ServerClient> disconnectedClients = new List<ServerClient>();
 
 
     static Server()
@@ -87,6 +87,7 @@ public static class Server
 
     private static void PackageTick(object sender, ElapsedEventArgs e)
     {
+        
         lock (Server.ChangedCells)
         {
             List<PositionDataPackage> positionData = PositionData();
@@ -96,10 +97,19 @@ public static class Server
                 List<GridDataPackage> gridData = GridData(Players[i].PlayerID);
 
                 byte[] package = PackageToByte(new DataCollectionPackage() { PositionDataPackages = positionData, GridDataPackages = gridData });
-                Players[i].Client.SendToClient(package);
+                if (TCPHelper.Connected(Players[i].Client.tcpClient))
+                    Players[i].Client.SendToClient(package);
+                else
+                    disconnectedClients.Add(Players[i].Client);
             }
             ChangedCells.Clear();
         }
+
+        foreach (var item in disconnectedClients)
+        {
+            Disconnect(item);
+        }
+        disconnectedClients.Clear();
     }
 
     private static void RoundTick(object sender, ElapsedEventArgs e)

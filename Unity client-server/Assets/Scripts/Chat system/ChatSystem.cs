@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using UnityEngine.EventSystems;
 
 public class ChatSystem : MonoBehaviour
 {
@@ -38,10 +39,14 @@ public class ChatSystem : MonoBehaviour
 
     }
 
+
     public void Update()
     {
-
-        if (chatBox.text != "")
+        if (chatBox.isFocused && Input.GetKeyDown(KeyCode.Return))
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+        }
+        else if (chatBox.text != "")
         {
             if (Input.GetKeyDown(KeyCode.Return))
             {
@@ -56,21 +61,43 @@ public class ChatSystem : MonoBehaviour
                     SendMessageToChat(e.ToString(), Messages.messageTypeColor.fail);
                 }
                 chatBox.text = "";
-
-                //send to a person
-
-
-                // send to groupe
-
+                //chatBox.DeactivateInputField();
+                EventSystem.current.SetSelectedGameObject(null);
             }
         }
-        else
+        else if (!chatBox.isFocused && Input.GetKeyDown(KeyCode.Return))
         {
-            if (!chatBox.isFocused && Input.GetKeyDown(KeyCode.Return))
-            {
-                chatBox.ActivateInputField();
-            }
+            Debug.Log("Focus, YAY");
+            chatBox.Select();
         }
+
+        //if (!chatBox.isFocused && Input.GetKeyDown(KeyCode.Return))
+        //{
+        //    chatBox.ActivateInputField();
+        //}
+        //else if (chatBox.text != "" && Input.GetKeyDown(KeyCode.Return))
+        //{
+        //    // send to all
+        //    try
+        //    {
+        //        cClient.Message(chatBox.text); //sent to server
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        SendMessageToChat(e.ToString(), Messages.messageTypeColor.fail);
+        //    }
+        //    chatBox.text = "";
+        //    chatBox.DeactivateInputField();
+        //}
+        //else if(chatBox.isFocused && Input.GetKeyDown(KeyCode.Return))
+        //{
+        //    chatBox.DeactivateInputField();
+        //}
+
+
+
+
         // network info from server
         if (cClient.Connected)
         {
