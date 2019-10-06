@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace MySQL_PlayerData_Translator {
     class Program {
-        private static DBConnection DBConnectionMaster;
-        private static DBConnection DBConnectionSlave1;
-        private static DBConnection DBConnectionSlave2;
+        private static DBConnection dbConnectionMaster;
+        private static DBConnection dbConnectionSlave1;
+        private static DBConnection dbConnectionSlave2;
         private static MSMQHandler handler;
 
         private static PlayerDataModel data;
@@ -25,21 +25,21 @@ namespace MySQL_PlayerData_Translator {
         private static void OnInputRecieved (object sender, InputRecievedEventArgs e) {
             switch (e.RequestType) {
                 case PlayerDataRequest.Create:
-                    data = DBConnectionMaster.Insert(data);
+                    data = dbConnectionMaster.Insert(data);
                     handler.EnqueueProducerQueue(data);
                     break;
 
                 case PlayerDataRequest.Update:
-                    data = DBConnectionMaster.Update(data);
+                    data = dbConnectionMaster.Update(data);
                     handler.EnqueueProducerQueue(data);
                     break;
 
                 case PlayerDataRequest.Read:
                     if (data.ReadSlaveNumber == 1) {
-                        data = DBConnectionSlave1.Select(data);
+                        data = dbConnectionSlave1.Select(data);
                     }
                     else {
-                        data = DBConnectionSlave2.Select(data);
+                        data = dbConnectionSlave2.Select(data);
                     }
                     handler.EnqueueProducerQueue(data);
                     break;
@@ -55,26 +55,21 @@ namespace MySQL_PlayerData_Translator {
         }
 
         static void SetupDBConnections () {
-            DBConnectionMaster = new DBConnection();
-            DBConnectionMaster.DatabaseName = "player_data";
-            DBConnectionMaster.ServerIP = "178.155.161.248";
-            DBConnectionMaster.ServerPort = 3307;
-            DBConnectionMaster.Username = "replication_user";
-            DBConnectionMaster.Password = "swaggynetty";
+            dbConnectionMaster = new DBConnection();
+            dbConnectionSlave1 = new DBConnection();
+            dbConnectionSlave2 = new DBConnection();
 
-            DBConnectionSlave1 = new DBConnection();
-            DBConnectionSlave1.DatabaseName = "player_data";
-            DBConnectionSlave1.ServerIP = "178.155.161.248";
-            DBConnectionSlave1.ServerPort = 3308;
-            DBConnectionSlave1.Username = "replication_reader";
-            DBConnectionSlave1.Password = "swaggynetty";
+            dbConnectionMaster.Username = GlobalVariablesLib.GlobalVariables.MYSQL_PLAYER_DB_MASTER_USERNAME;
+            dbConnectionMaster.Password = GlobalVariablesLib.GlobalVariables.MYSQL_PLAYER_DB_MASTER_PASSWORD;
+            dbConnectionSlave1.Username = dbConnectionSlave2.Username = GlobalVariablesLib.GlobalVariables.MYSQL_PLAYER_DB_SLAVE_USERNAME;
+            dbConnectionSlave1.Password = dbConnectionSlave2.Password = GlobalVariablesLib.GlobalVariables.MYSQL_PLAYER_DB_SLAVE_PASSWORD;
 
-            DBConnectionSlave2 = new DBConnection();
-            DBConnectionSlave2.DatabaseName = "player_data";
-            DBConnectionSlave2.ServerIP = "178.155.161.248";
-            DBConnectionSlave2.ServerPort = 3309;
-            DBConnectionSlave2.Username = "replication_reader";
-            DBConnectionSlave2.Password = "swaggynetty";
+            dbConnectionMaster.DatabaseName = dbConnectionSlave1.DatabaseName = dbConnectionSlave2.DatabaseName = GlobalVariablesLib.GlobalVariables.MYSQL_PLAYER_DB_DATABASENAME;
+            dbConnectionMaster.ServerIP = dbConnectionSlave1.ServerIP = dbConnectionSlave2.ServerIP = GlobalVariablesLib.GlobalVariables.MYSQL_PLAYER_DB_IP;
+            dbConnectionMaster.ServerPort = GlobalVariablesLib.GlobalVariables.MYSQL_PLAYER_DB_MASTER_PORT;
+            dbConnectionSlave1.ServerPort = GlobalVariablesLib.GlobalVariables.MYSQL_PLAYER_DB_SLAVE1_PORT;
+            dbConnectionSlave2.ServerPort = GlobalVariablesLib.GlobalVariables.MYSQL_PLAYER_DB_SLAVE2_PORT;
+
         }
     }
 }

@@ -32,8 +32,8 @@ namespace MySQL_PlayerData_Translator {
             /// Instantiates the message queues
             /// </summary>
             void SetupQueues () {
-                consumerQueue = MSMQHelper.CreateMessageQueue(GlobalVariablesLib.GlobalVariables.MYSQL_PLAYER_CONSUMER_QUEUE_NAME);
-                producerQueue = MSMQHelper.CreateMessageQueue(GlobalVariablesLib.GlobalVariables.MYSQL_PLAYER_PRODUCER_QUEUE_NAME);
+                consumerQueue = MSMQHelper.CreateMessageQueue(GlobalVariablesLib.GlobalVariables.MYSQL_PLAYER_DB_CONSUMER_QUEUE_NAME);
+                producerQueue = MSMQHelper.CreateMessageQueue(GlobalVariablesLib.GlobalVariables.MYSQL_PLAYER_DB_PRODUCER_QUEUE_NAME);
             }
 
             /// <summary>
