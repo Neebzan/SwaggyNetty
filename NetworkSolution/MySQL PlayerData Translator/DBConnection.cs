@@ -32,19 +32,7 @@ namespace MySQL_PlayerData_Translator {
             set { username = value; }
         }
 
-
         public string Password { get; set; }
-
-        private DBConnection () {
-
-        }
-
-        private static DBConnection _instance = null;
-        public static DBConnection Instance () {
-            if (_instance == null)
-                _instance = new DBConnection();
-            return _instance;
-        }
 
         public MySqlConnection CreateConnection () {
             string connstring = string.Format("datasource={0}; port={1}; database={2}; username={3}; password={4}", ServerIP, ServerPort, DatabaseName, Username, Password);
@@ -52,112 +40,112 @@ namespace MySQL_PlayerData_Translator {
             return connection;
         }
 
-   
-        public PlayerDataModel Select (UserModel _user) {
+
+        public PlayerDataModel Select (PlayerDataModel data) {
             using (MySqlConnection connection = CreateConnection()) {
                 try {
                     connection.Open();
                     MySqlCommand command = connection.CreateCommand();
 
-                    command.CommandText = "SELECT user_id, password_hash, created_at FROM users WHERE user_id = @user_id";
-                    command.Parameters.AddWithValue("@user_id", _user.UserID);
+                    command.CommandText = "SELECT user_id, position_x, position_y, online FROM players WHERE user_id = @user_id";
+                    command.Parameters.AddWithValue("@user_id", data.UserID);
 
                     MySqlDataReader reader = command.ExecuteReader();
 
-                    string userID = "";
-                    string userPass = "";
+                    string user_id = "";
+                    float position_x = 0;
+                    float position_y = 0;
+                    bool online = false;
                     DateTimeOffset createdAt = DateTime.Now;
 
                     while (reader.Read()) {
-                        userID = reader [ "user_id" ].ToString();
-                        userPass = reader [ "password_hash" ].ToString();
-                        createdAt = DateTimeOffset.Parse(reader [ "created_at" ].ToString());
+                        user_id = reader [ "user_id" ].ToString();
+                        position_x = float.Parse((reader [ "position_x" ].ToString()));
+                        position_y = float.Parse((reader [ "position_y" ].ToString()));
+                        online = Convert.ToBoolean((reader [ "online" ]));
                     }
-                    if (!string.IsNullOrEmpty(userID))
-                        return new UserModel() { UserID = userID, PswdHash = userPass, CreatedAt = createdAt, RequestType = GlobalVariablesLib.RequestTypes.Get_User, Status = GlobalVariablesLib.RequestStatus.Success };
+                    if (!string.IsNullOrEmpty(user_id))
+                        return new PlayerDataModel() { UserID = user_id, PositionX = position_x, PositionY = position_y, Online = online, PlayerDataRequest = PlayerDataRequest.Read, PlayerDataStatus = PlayerDataStatus.Success };
 
                     else {
-                        Console.WriteLine("User with ID " + _user.UserID + " does not exist, or couldn't be found");
-                        return new UserModel() { UserID = _user.UserID, RequestType = GlobalVariablesLib.RequestTypes.Get_User, Status = GlobalVariablesLib.RequestStatus.DoesNotExist };
+                        Console.WriteLine("User with ID " + data.UserID + " does not exist, or couldn't be found");
+                        return new PlayerDataModel() { UserID = data.UserID, PlayerDataRequest = PlayerDataRequest.Read, PlayerDataStatus = PlayerDataStatus.Failure };
                     }
                 }
                 catch (Exception e) {
                     Console.WriteLine("ERROR: " + e.Message);
-                    return new UserModel() { UserID = _user.UserID, RequestType = GlobalVariablesLib.RequestTypes.Get_User, Status = GlobalVariablesLib.RequestStatus.ConnectionError };
+                    return new PlayerDataModel() { UserID = data.UserID, PlayerDataRequest = PlayerDataRequest.Read, PlayerDataStatus = PlayerDataStatus.Failure };
                 }
             }
         }
 
-        ///// <summary>
-        ///// SELECT * FROM users
-        ///// </summary>
-        //public List<User> Select () {
-        //    using (MySqlConnection connection = CreateConnection()) {
-        //        try {
-        //            connection.Open();
-        //            MySqlCommand command = connection.CreateCommand();
-
-        //            command.CommandText = "SELECT * FROM users";
-        //            try {
-        //                MySqlDataReader reader = command.ExecuteReader();
-
-        //                List<User> users = new List<User>();
-        //                string userID = "";
-        //                string userPass = "";
-
-        //                while (reader.Read()) {
-        //                    userID = reader [ "user_id" ].ToString();
-        //                    userPass = reader [ "password_hash" ].ToString();
-        //                    Console.WriteLine("User ID: " + userID + "  User PswdHash: " + userPass);
-        //                    users.Add(new User() { UserID = userID, PswdHash = userPass });
-        //                }
-        //                return users;
-        //            }
-        //            catch (Exception e) {
-        //                Console.WriteLine("ERROR: " + e.Message);
-        //                return null;
-        //            }
-        //        }
-        //        catch (Exception e) {
-        //            Console.WriteLine("ERROR: " + e.Message);
-        //            return null;
-        //        }
-        //    }
-        //}
-
-        /// <summary>
-        /// Inserts user into database
-        /// </summary>
-        /// <param name="_user"></param>
-        /// <returns></returns>
-        public UserModel Insert (UserModel _user) {
+        public PlayerDataModel Insert (PlayerDataModel data) {
             using (MySqlConnection connection = CreateConnection()) {
                 try {
                     connection.Open();
-
                     MySqlCommand command = connection.CreateCommand();
 
-                    command.CommandText = "INSERT INTO users (user_id, password_hash) VALUES (@user_id, @password_hash)";
+                    command.CommandText = "INSERT INTO players (user_id, position_x, position_y, online) VALUES (@user_id, @position_x, @position_y, @online)";
 
-                    command.Parameters.AddWithValue("@user_id", _user.UserID);
-                    command.Parameters.AddWithValue("@password_hash", _user.PswdHash);
+
+                    command.Parameters.AddWithValue("@user_id", data.UserID);
+                    command.Parameters.AddWithValue("@position_x", data.PositionX);
+                    command.Parameters.AddWithValue("@position_y", data.PositionY);
+                    command.Parameters.AddWithValue("@online", data.Online);
+
 
                     try {
                         int rowsAffected = command.ExecuteNonQuery();
-                        Console.WriteLine("User " + _user.UserID + " inserted");
-                        return new UserModel() { UserID = _user.UserID, PswdHash = _user.PswdHash, RequestType = GlobalVariablesLib.RequestTypes.Create_User, Status = GlobalVariablesLib.RequestStatus.Success };
+                        Console.WriteLine("User " + data.UserID + " inserted");
+                        return new PlayerDataModel() { UserID = data.UserID, PositionX = data.PositionX, PositionY = data.PositionY, Online = data.Online, PlayerDataRequest = PlayerDataRequest.Create, PlayerDataStatus = PlayerDataStatus.Success};
                     }
                     catch (Exception e) {
                         Console.WriteLine("ERROR: " + e.Message);
-                        return new UserModel() { UserID = _user.UserID, PswdHash = _user.PswdHash, RequestType = GlobalVariablesLib.RequestTypes.Create_User, Status = GlobalVariablesLib.RequestStatus.AlreadyExists };
+                        return new PlayerDataModel() { UserID = data.UserID, PositionX = data.PositionX, PositionY = data.PositionY, Online = data.Online, PlayerDataRequest = PlayerDataRequest.Create, PlayerDataStatus = PlayerDataStatus.Failure };
                     }
                 }
                 catch (Exception e) {
                     Console.WriteLine("ERROR: " + e.Message);
-                    return new UserModel() { UserID = _user.UserID, PswdHash = _user.PswdHash, RequestType = GlobalVariablesLib.RequestTypes.Create_User, Status = GlobalVariablesLib.RequestStatus.ConnectionError };
+                    return new PlayerDataModel() { UserID = data.UserID, PositionX = data.PositionX, PositionY = data.PositionY, Online = data.Online, PlayerDataRequest = PlayerDataRequest.Create, PlayerDataStatus = PlayerDataStatus.Failure };
                 }
             }
         }
 
+        public PlayerDataModel Update (PlayerDataModel data) {
+            using (MySqlConnection connection = CreateConnection()) {
+                try {
+                    connection.Open();
+                    MySqlCommand command = connection.CreateCommand();
+
+                    command.CommandText = "UPDATE players " +
+                        "SET user_id = @user_id," +
+                        "position_x = @position_x," +
+                        "position_y = @position_y," +
+                        "online = @online " +
+                        "WHERE user_id = @user_id";
+
+
+                    command.Parameters.AddWithValue("@user_id", data.UserID);
+                    command.Parameters.AddWithValue("@position_x", data.PositionX);
+                    command.Parameters.AddWithValue("@position_y", data.PositionY);
+                    command.Parameters.AddWithValue("@online", data.Online);
+
+
+                    try {
+                        int rowsAffected = command.ExecuteNonQuery();
+                        Console.WriteLine("User " + data.UserID + " updated");
+                        return new PlayerDataModel() { UserID = data.UserID, PositionX = data.PositionX, PositionY = data.PositionY, Online = data.Online, PlayerDataRequest = PlayerDataRequest.Update, PlayerDataStatus = PlayerDataStatus.Success };
+                    }
+                    catch (Exception e) {
+                        Console.WriteLine("ERROR: " + e.Message);
+                        return new PlayerDataModel() { UserID = data.UserID, PositionX = data.PositionX, PositionY = data.PositionY, Online = data.Online, PlayerDataRequest = PlayerDataRequest.Update, PlayerDataStatus = PlayerDataStatus.Failure };
+                    }
+                }
+                catch (Exception e) {
+                    Console.WriteLine("ERROR: " + e.Message);
+                    return new PlayerDataModel() { UserID = data.UserID, PositionX = data.PositionX, PositionY = data.PositionY, Online = data.Online, PlayerDataRequest = PlayerDataRequest.Update, PlayerDataStatus = PlayerDataStatus.Failure };
+                }
+            }
+        }
     }
 }
