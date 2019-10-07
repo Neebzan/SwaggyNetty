@@ -27,6 +27,8 @@ namespace GlobalVariablesLib
         public const string PATCHMANAGER_IP = "178.155.161.248";
         public const int PATCHMANAGER_PORT = 13011;
 
+        public const string LOADBALANCER_IP = "178.155.161.248";
+
         public const string CONSUMER_QUEUE_NAME = "userdb_request_consumer";
         public const string PRODUCER_QUEUE_NAME = "userdb_request_producer";
 

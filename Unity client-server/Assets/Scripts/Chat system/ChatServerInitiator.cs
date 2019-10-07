@@ -25,7 +25,6 @@ public class ChatServerInitiator : MonoBehaviour
             {
                 if (ChatServer.tcpClients.TryDequeue(out TcpClient tcpClient))
                 {
-                    Debug.Log("YAY CLIENT");
                     ChatServerClient client = new ChatServerClient(tcpClient);
                     ChatServer.Clients.Add(client);
                     StartCoroutine(client.ListenForMessages());

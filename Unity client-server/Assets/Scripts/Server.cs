@@ -38,7 +38,8 @@ public static class Server
 
     static Server()
     {
-        databaseClient = new TcpClient(GlobalVariables.MYSQL_PLAYER_DB_IP, GlobalVariables.GAME_DATABASE_LOADBALANCER_PORT);
+        //databaseClient = new TcpClient(GlobalVariables.MYSQL_PLAYER_DB_IP, GlobalVariables.GAME_DATABASE_LOADBALANCER_PORT);
+        databaseClient = new TcpClient(GlobalVariables.LOADBALANCER_IP, GlobalVariables.GAME_DATABASE_LOADBALANCER_PORT);
         StartTick();
         UnityEngine.Application.quitting += StopServer;
         try
@@ -95,23 +96,26 @@ public static class Server
 
     private static void SaveTick(object sender, ElapsedEventArgs e)
     {
-        List<PlayerDataModel> characterSaves = new List<PlayerDataModel>();
-        lock (Players)
-            foreach (var item in Players)
-            {
-                characterSaves.Add(new PlayerDataModel()
+        if (Players.Count > 0)
+        {
+            List<PlayerDataModel> characterSaves = new List<PlayerDataModel>();
+            lock (Players)
+                foreach (var item in Players)
                 {
-                    PlayerDataRequest = PlayerDataRequest.Update,
-                    Online = true,
-                    PositionX = item.startingX,
-                    PositionY = item.startingY,
-                    UserID = item.Client.clientName,
-                    ResponseExpected = false
-                });
-            }
+                    characterSaves.Add(new PlayerDataModel()
+                    {
+                        PlayerDataRequest = PlayerDataRequest.Update,
+                        Online = true,
+                        PositionX = item.startingX,
+                        PositionY = item.startingY,
+                        UserID = item.Client.clientName,
+                        ResponseExpected = false
+                    });
+                }
 
-        byte[] data = TCPHelper.MessageBytes(characterSaves);
-        databaseClient.GetStream().Write(data, 0, data.Length);
+            byte[] data = TCPHelper.MessageBytesNewton(characterSaves);
+            databaseClient.GetStream().Write(data, 0, data.Length);
+        }
 
 
     }
@@ -245,7 +249,7 @@ public static class Server
                 UserID = disconnectedActor.Client.clientName,
                 ResponseExpected = false
             });
-            byte[] data = TCPHelper.MessageBytes(saveStates);
+            byte[] data = TCPHelper.MessageBytesNewton(saveStates);
             databaseClient.GetStream().Write(data, 0, data.Length);
 
             //Fjern fra spillet

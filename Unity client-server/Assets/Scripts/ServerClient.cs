@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
@@ -164,7 +165,8 @@ public class ServerClient
 
     private PlayerDataModel GetCharacterFromDB()
     {
-        TcpClient client = new TcpClient(GlobalVariables.MYSQL_PLAYER_DB_IP, GlobalVariables.GAME_DATABASE_LOADBALANCER_PORT);
+        TcpClient client = new TcpClient(GlobalVariables.LOADBALANCER_IP, GlobalVariables.GAME_DATABASE_LOADBALANCER_PORT);
+        //TcpClient client = new TcpClient("127.0.0.1", GlobalVariables.GAME_DATABASE_LOADBALANCER_PORT);
 
         List<PlayerDataModel> requests = new List<PlayerDataModel>();
         PlayerDataModel model = new PlayerDataModel()
@@ -174,18 +176,29 @@ public class ServerClient
         };
         requests.Add(model);
         //Sent to database
-        byte[] data = TCPHelper.MessageBytes(requests);
-        Server.databaseClient.GetStream().Write(data, 0, data.Length);
+        byte[] data = TCPHelper.MessageBytesNewton(requests);
+
+        client.GetStream().Write(data, 0, data.Length);
 
         PlayerDataModel responseModel = null;
         //Wait for response
-        while (responseModel == null)
+        bool done = false;
+        while (!done)
         {
-            if (client.GetStream().DataAvailable)
+            if (TCPHelper.Connected(client))
             {
-                string responseString = TCPHelper.ReadStreamOnce(client.GetStream());
-                PlayerDataModel response = JsonConvert.DeserializeObject<PlayerDataModel>(responseString);
+                if (client.GetStream().DataAvailable)
+                {
+                    Debug.Log("INCOMMING DATA");
+                    string responseString = TCPHelper.ReadStreamOnce(client.GetStream());
+                    responseModel = JsonConvert.DeserializeObject<PlayerDataModel>(responseString);
+                    done = true;
+                }
             }
+            else
+                done = true;
+
+            Thread.Sleep(16);
         }
         //When response have been received, check the response
         switch (responseModel.PlayerDataStatus)
@@ -222,18 +235,28 @@ public class ServerClient
         };
         requests.Add(model);
         //Sent to database
-        byte[] data = TCPHelper.MessageBytes(requests);
-        Server.databaseClient.GetStream().Write(data, 0, data.Length);
+        byte[] data = TCPHelper.MessageBytesNewton(requests);
+        client.GetStream().Write(data, 0, data.Length);
 
         PlayerDataModel responseModel = null;
         //Wait for response
-        while (responseModel == null)
+        bool done = false;
+        while (!done)
         {
-            if (client.GetStream().DataAvailable)
+            if (TCPHelper.Connected(client))
             {
-                string responseString = TCPHelper.ReadStreamOnce(client.GetStream());
-                PlayerDataModel response = JsonConvert.DeserializeObject<PlayerDataModel>(responseString);
+                if (client.GetStream().DataAvailable)
+                {
+                    Debug.Log("INCOMMING DATA");
+                    string responseString = TCPHelper.ReadStreamOnce(client.GetStream());
+                    responseModel = JsonConvert.DeserializeObject<PlayerDataModel>(responseString);
+                    done = true;
+                }
             }
+            else
+                done = true;
+
+            Thread.Sleep(16);
         }
 
         switch (responseModel.PlayerDataStatus)

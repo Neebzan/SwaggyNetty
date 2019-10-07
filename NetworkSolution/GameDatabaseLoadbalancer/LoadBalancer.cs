@@ -55,7 +55,7 @@ namespace GameDatabaseLoadbalancer
 
             Task.Factory.StartNew(() => ProcessMessage(m));
 
-            
+
             mQ.BeginReceive();
         }
 
@@ -78,9 +78,10 @@ namespace GameDatabaseLoadbalancer
                             if (item.UserID == model.UserID && item.RequestTime == model.RequestTime)
                             {
                                 temp = item;
+                                model.RequesterClient = item.RequesterClient;
                                 break;
                             }
-                        }
+                        }                        
                         slaveOneRequests.Remove(temp);
 
 
@@ -102,6 +103,7 @@ namespace GameDatabaseLoadbalancer
                             if (item.UserID == model.UserID && item.RequestTime == model.RequestTime)
                             {
                                 temp = item;
+                                model.RequesterClient = item.RequesterClient;
                                 break;
                             }
                         }
@@ -124,6 +126,7 @@ namespace GameDatabaseLoadbalancer
                 {
                     byte[] data = MessageFormatter.MessageBytes(model);
                     model.RequesterClient.GetStream().Write(data, 0, data.Length);
+                    Console.WriteLine("Data sent to client via TCP");
                 }
                 Console.WriteLine("Message handled!\nCurrent request distribution:\nSlave One:{0} requests\nSlave Two {1} requests", slaveOneRequests.Count, slaveTwoRequests.Count);
             }
@@ -161,8 +164,8 @@ namespace GameDatabaseLoadbalancer
                     playerModels = JsonConvert.DeserializeObject<List<PlayerDataModel>>(modelsString);
                     Console.WriteLine("Requests received from server");
 
-                    
-                    long batchTick = DateTime.Now.Ticks;
+
+                    //long batchTick = DateTime.Now.Ticks;
                     foreach (var model in playerModels)
                     {
                         if (slaveOneRequests.Count <= slaveTwoRequests.Count)
@@ -173,6 +176,8 @@ namespace GameDatabaseLoadbalancer
                                 model.ReadSlaveNumber = 1;
                                 model.RequesterClient = client;
                                 slaveOneRequests.Add(model);
+                                //byte[] data = MessageFormatter.MessageBytes(model);
+                                //model.RequesterClient.GetStream().Write(data, 0, data.Length);
                             }
                             SendRequest(model);
                         }
@@ -184,11 +189,15 @@ namespace GameDatabaseLoadbalancer
                                 model.ReadSlaveNumber = 2;
                                 model.RequesterClient = client;
                                 slaveTwoRequests.Add(model);
+                                //byte[] data = MessageFormatter.MessageBytes(model);
+                                //model.RequesterClient.GetStream().Write(data, 0, data.Length);
                             }
                             SendRequest(model);
                         }
                         tempIndex++;
                     }
+
+
 
                     Console.WriteLine("Requests sent to translator\nCurrent request distribution:\nSlave One:{0} requests\nSlave Two {1} requests", slaveOneRequests.Count, slaveTwoRequests.Count);
                 }
