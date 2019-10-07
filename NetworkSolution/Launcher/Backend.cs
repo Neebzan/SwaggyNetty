@@ -128,7 +128,7 @@ namespace Launcher {
             if (client == null)
                 return false;
 
-            UserModel user = new UserModel() { UserID = username, PswdHash = hashedPassword, RequestType = GlobalVariablesLib.RequestTypes.Get_User };
+            UserModel user = new UserModel() { UserID = username, PswdHash = hashedPassword, RequestType = GlobalVariablesLib.RequestType.Get_User };
 
 
 
@@ -141,8 +141,8 @@ namespace Launcher {
                 string result = TcpHelper.MessageFormatter.ReadStreamOnce(client.GetStream());
                 if (!string.IsNullOrEmpty(result)) {
                     UserModel resultUser = Newtonsoft.Json.JsonConvert.DeserializeObject<UserModel>(result);
-                    if (resultUser.RequestType != RequestTypes.Error) {
-                        if (resultUser.RequestType == RequestTypes.Token_Get) {
+                    if (resultUser.RequestType != RequestType.Error) {
+                        if (resultUser.RequestType == RequestType.Token_Get) {
                             loggedUser = resultUser;
                             client.Dispose();
                             return true;
@@ -173,7 +173,7 @@ namespace Launcher {
             if (client == null)
                 return false;
 
-            UserModel user = new UserModel() { UserID = userID, Token = token, RequestType = RequestTypes.Token_Check };
+            UserModel user = new UserModel() { UserID = userID, Token = token, RequestType = RequestType.Token_Check };
 
             if (!await WriteToMiddleware(client, user))
                 return false;
@@ -184,7 +184,7 @@ namespace Launcher {
                 string result = TcpHelper.MessageFormatter.ReadStreamOnce(client.GetStream());
                 if (!string.IsNullOrEmpty(result)) {
                     UserModel resultUser = Newtonsoft.Json.JsonConvert.DeserializeObject<UserModel>(result);
-                    if (resultUser.RequestType != RequestTypes.Error) {
+                    if (resultUser.RequestType != RequestType.Error) {
                         if (resultUser.TokenResponse == TokenResponse.Valid) {
                             loggedUser = resultUser;
                             client.Dispose();
@@ -224,7 +224,7 @@ namespace Launcher {
             if (client == null)
                 return false;
 
-            UserModel user = new UserModel() { UserID = username, PswdHash = hashedPassword, RequestType = RequestTypes.Create_User };
+            UserModel user = new UserModel() { UserID = username, PswdHash = hashedPassword, RequestType = RequestType.Create_User };
 
             if (!await WriteToMiddleware(client, user))
                 return false;
@@ -235,8 +235,8 @@ namespace Launcher {
                 string result = TcpHelper.MessageFormatter.ReadStreamOnce(client.GetStream());
                 if (!string.IsNullOrEmpty(result)) {
                     UserModel resultUser = Newtonsoft.Json.JsonConvert.DeserializeObject<UserModel>(result);
-                    if (resultUser.RequestType != RequestTypes.Error) {
-                        if (resultUser.RequestType == RequestTypes.Create_User) {
+                    if (resultUser.RequestType != RequestType.Error) {
+                        if (resultUser.RequestType == RequestType.Create_User) {
                             loggedUser = resultUser;
                             client.Dispose();
                             return true;

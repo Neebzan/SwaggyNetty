@@ -126,7 +126,7 @@ namespace Login_Middleware {
                             // Json client response setup
                             UserModel response = new UserModel() {
                                 Message = $"ERROR: [ {e.Message} ] \nHost Closed the Connection!",
-                                RequestType = RequestTypes.Error
+                                RequestType = RequestType.Error
                             };
 
                             WriteToClient(JsonConvert.SerializeObject(response));
@@ -144,7 +144,7 @@ namespace Login_Middleware {
                     } else {
                         if (stopwatch.Elapsed > TimeSpan.FromMilliseconds(10000)) {
                             UserModel timeOut = new UserModel() {
-                                RequestType = RequestTypes.Error, Message = "Request Timed Out"
+                                RequestType = RequestType.Error, Message = "Request Timed Out"
                             };
                             WriteToClient(JsonConvert.SerializeObject(timeOut));
                             isAlive = false;
@@ -239,10 +239,10 @@ namespace Login_Middleware {
             // Switch to determine the type of return expected
             switch (tokenRequestType) {
                 case TokenRequestType.VerifyToken:
-                    databaseMessageObj.RequestType = RequestTypes.Token_Check;
+                    databaseMessageObj.RequestType = RequestType.Token_Check;
                     break;
                 case TokenRequestType.CreateToken:
-                    databaseMessageObj.RequestType = RequestTypes.Token_Get;
+                    databaseMessageObj.RequestType = RequestType.Token_Get;
                     break;
             }
 
@@ -301,7 +301,7 @@ namespace Login_Middleware {
 
             switch (userImputModel.RequestType) {
                 /// Case: Requests User information from the Database, based on recieved user data
-                case RequestTypes.Get_User:
+                case RequestType.Get_User:
 
                     // Setup DB request message
                     Message getRequest = new Message() {
@@ -319,7 +319,7 @@ namespace Login_Middleware {
                     // Json client response setup
                     UserModel login_partial_response = new UserModel() {
                         Message = $"Login Request For: [ {userImputModel.UserID} ], Sent to Database",
-                        RequestType = RequestTypes.Response
+                        RequestType = RequestType.Response
                     };
                     WriteToClient(JsonConvert.SerializeObject(login_partial_response));
 
@@ -335,7 +335,7 @@ namespace Login_Middleware {
                         // WriteLine($"\nExpected ID: {userImputData.UserID}\nActual ID: {peekedModel.UserID}\nLabel ID: {peekedMessage.Label}\n");
                         // if the label is as expected, and the request type is the same, consume message
                         // specifically made to be sure a user making two requests at once, can't get the wrong message back.
-                        if (peekedMessage.Label == userImputModel.UserID && peekedModel.RemoteEndPoint == connectedClient.Client.RemoteEndPoint.ToString() && peekedModel.RequestType == RequestTypes.Get_User) {
+                        if (peekedMessage.Label == userImputModel.UserID && peekedModel.RemoteEndPoint == connectedClient.Client.RemoteEndPoint.ToString() && peekedModel.RequestType == RequestType.Get_User) {
                             Message actualMessage = Middleware_Main.databaseResponseQueue.Receive();
                             actualMessage.Formatter = new JsonMessageFormatter();
 
@@ -353,7 +353,7 @@ namespace Login_Middleware {
                                 // Json client response setup
                                 UserModel response = new UserModel() {
                                     Message = $"Access Denied: {HandleError(dataBaseResponseObj)}.\n Please Try again",
-                                    RequestType = RequestTypes.Error,
+                                    RequestType = RequestType.Error,
                                     Status = dataBaseResponseObj.Status
                                 };
                                 WriteToClient(JsonConvert.SerializeObject(response));
@@ -366,7 +366,7 @@ namespace Login_Middleware {
                     break;
 
                 /// Case: Requests Create call on data base, based on recieved user data
-                case RequestTypes.Create_User:
+                case RequestType.Create_User:
                     WriteLine("User Issued a Signup Request");
                     // Setup of DB request message
                     Message createRequest = new Message() {
@@ -384,7 +384,7 @@ namespace Login_Middleware {
                     // Json client response setup
                     UserModel createResponse = new UserModel() {
                         Message = $"Signup Request For: [ {userImputModel.UserID} ], Sent to Database",
-                        RequestType = RequestTypes.Response,
+                        RequestType = RequestType.Response,
                         Status = RequestStatus.Success
                     };
                     WriteToClient(JsonConvert.SerializeObject(createResponse));
@@ -395,7 +395,7 @@ namespace Login_Middleware {
                         peekedMessage.Formatter = new JsonMessageFormatter();
                         UserModel peekedModel = DeserializeRequest(peekedMessage.Body.ToString());
                         // Peeks top of queue, and only when it's the right pulls it from the queue;
-                        if (peekedMessage.Label == userImputModel.UserID && peekedModel.RemoteEndPoint == userImputModel.RemoteEndPoint && peekedModel.RequestType == RequestTypes.Create_User) {
+                        if (peekedMessage.Label == userImputModel.UserID && peekedModel.RemoteEndPoint == userImputModel.RemoteEndPoint && peekedModel.RequestType == RequestType.Create_User) {
                             Message m = Middleware_Main.databaseResponseQueue.Receive();
                             m.Formatter = new JsonMessageFormatter();
                             UserModel userModel = DeserializeRequest(m.Body.ToString());
@@ -403,13 +403,13 @@ namespace Login_Middleware {
                             switch (userModel.Status) {
                                 case RequestStatus.Success:
                                     userModel = RequestToken(DeserializeRequest(m.Body.ToString()), TokenRequestType.CreateToken);
-                                    userModel.RequestType = RequestTypes.Create_User;
+                                    userModel.RequestType = RequestType.Create_User;
                                     userModel.Status = RequestStatus.Success;
                                     WriteLine("User Created Sucessfully!");
                                     break;
                                 default:
                                     WriteLine($"Error: {HandleError(userModel)}");
-                                    userModel.RequestType = RequestTypes.Error;
+                                    userModel.RequestType = RequestType.Error;
                                     userModel.Message = $"Error: {HandleError(userModel)}";
                                     break;
                             }
@@ -423,7 +423,7 @@ namespace Login_Middleware {
                 //    break;
                 //case RequestTypes.Delete_User:
                 //    break;
-                case RequestTypes.Token_Check:
+                case RequestType.Token_Check:
                     WriteLine("Token Login Request Recieved");
                     WriteLine("Sending Verification Request to Token server");
                     WriteToClient(JsonConvert.SerializeObject(RequestToken(userImputModel, TokenRequestType.VerifyToken)));

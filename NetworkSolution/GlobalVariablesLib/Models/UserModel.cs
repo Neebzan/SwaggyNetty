@@ -22,7 +22,7 @@ namespace GlobalVariablesLib
         public string Message { get; set; }
 
         public RequestStatus Status { get; set; }
-        public RequestTypes RequestType { get; set; }
+        public RequestType RequestType { get; set; }
 
         public TokenResponse TokenResponse { get; set; }
     }

@@ -12,7 +12,7 @@ namespace MySQL_translator
 
     public class InputRecievedEventArgs : EventArgs
     {
-        public GlobalVariablesLib.RequestTypes RequestType { get; set; }
+        public GlobalVariablesLib.RequestType RequestType { get; set; }
         public UserModel User { get; set; }
     }
 
@@ -54,14 +54,14 @@ namespace MySQL_translator
 
             try {
                 UserModel user = Newtonsoft.Json.JsonConvert.DeserializeObject<UserModel>(m.Body.ToString());
-                GlobalVariablesLib.RequestTypes requestType = GlobalVariablesLib.RequestTypes.Get_User;
+                GlobalVariablesLib.RequestType requestType = GlobalVariablesLib.RequestType.Get_User;
 
                 switch (user.RequestType) {
-                    case GlobalVariablesLib.RequestTypes.Get_User:
-                        requestType = GlobalVariablesLib.RequestTypes.Get_User;
+                    case GlobalVariablesLib.RequestType.Get_User:
+                        requestType = GlobalVariablesLib.RequestType.Get_User;
                         break;
-                    case GlobalVariablesLib.RequestTypes.Create_User:
-                        requestType = GlobalVariablesLib.RequestTypes.Create_User;
+                    case GlobalVariablesLib.RequestType.Create_User:
+                        requestType = GlobalVariablesLib.RequestType.Create_User;
                         break;
                     default:
                         break;

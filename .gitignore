@@ -16,3 +16,4 @@ NetworkSolution/StressTester/StressTester.csproj
 NetworkSolution/StressTester/Properties/AssemblyInfo.cs
 NetworkSolution/StressTester/Program.cs
 NetworkSolution/StressTester/App.config
+NetworkSolution/Middleware/Properties/AssemblyInfo.cs

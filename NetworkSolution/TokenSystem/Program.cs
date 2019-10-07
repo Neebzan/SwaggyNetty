@@ -60,6 +60,7 @@ namespace TokenSystem
 
                             userModel.Token = JWTManager.CreateJWT(JWTManager.CreateClaims<JWTPayload>(payload), 5).RawData;
                             userModel.TokenResponse = TokenResponse.Created;
+                            userModel.RequestType = RequestType.Token_Get;
 
                             Message userResponse = new Message()
                             {
@@ -123,7 +124,7 @@ namespace TokenSystem
                 UserModel userModel = new UserModel()
                 {
                     UserID = JsonConvert.DeserializeObject<UserModel>(m.Body.ToString()).UserID,
-                    RequestType = RequestTypes.Error,
+                    RequestType = RequestType.Error,
                     TokenResponse = TokenResponse.Invalid,
                     Message = "Token Request Failed: " + error.Message
                 };
