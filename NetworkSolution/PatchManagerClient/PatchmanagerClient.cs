@@ -38,8 +38,8 @@ namespace PatchManagerClient {
         public static void StartPatchCheck (string dir) {
             Status = PatchStatus.Connecting;
             StatusChanged.Invoke(null, new EventArgs());
-            Directory.CreateDirectory(downloadDirectory);
             downloadDirectory = dir;
+            Directory.CreateDirectory(downloadDirectory);
             FileChecker.GetFilesDictionaryProgress += ProgressUpdateReceived;
             Task.Run(() => FileChecker.GetFilesDictionary(out allFilesDictionary, downloadDirectory));
 
