@@ -7,6 +7,8 @@ using MSMQHelperUtilities;
 using GlobalVariablesLib;
 using System.Messaging;
 using JWTlib;
+using TcpHelper;
+using System.Net.Sockets;
 
 namespace TestProject
 {
@@ -20,26 +22,51 @@ namespace TestProject
 
         static void Main(string[] args)
         {
-            ConsoleKey key = Console.ReadKey().Key;
             Console.WriteLine("1. Request new JWT Token");
-
-            switch(key)
+            while (true)
             {
-                case ConsoleKey.D1:
-                    {
-                        RequestJWTToken();
-                        break;
-                    }
-                case ConsoleKey.D2:
-                    {
-                        break;
-                    }
-            }
+                ConsoleKey key = Console.ReadKey().Key;
+                switch (key)
+                {
+                    case ConsoleKey.D1:
+                        {
+                            RequestJWTToken();
+                            break;
+                        }
+                    case ConsoleKey.D2:
+                        {
+                            SpoofDataModel();
+                            break;
+                        }
+                }
 
-            Console.ReadKey();
+            }
         }
 
+        static void SpoofDataModel()
+        {
+            List<PlayerDataModel> meh = new List<PlayerDataModel>();
 
+            for (int i = 0; i < 1000; i++)
+            {
+                meh.Add(new PlayerDataModel()
+                {
+                    PlayerDataRequest = PlayerDataRequest.Read,
+                    UserID = "YeeHaw",
+                    ResponseExpected = false
+                    //Online = true,
+                    //PositionX = 5,
+                    //PositionY = 10,
+                    //ResponseExpected = false
+                });
+            }
+
+
+            byte[] data = MessageFormatter.MessageBytes(meh);
+            TcpClient client = new TcpClient("127.0.0.1", GlobalVariables.GAME_DATABASE_LOADBALANCER_PORT);
+            client.GetStream().Write(data, 0, data.Length);
+
+        }
 
         static void RequestJWTToken()
         {

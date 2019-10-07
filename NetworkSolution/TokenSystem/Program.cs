@@ -188,6 +188,7 @@ namespace TokenSystem
                         Console.WriteLine("Invalid token response send to {0}", client.Client.RemoteEndPoint.ToString());
                     }
                 }
+                Thread.Sleep(16);
             }
             Console.WriteLine("Disconnected");
         }

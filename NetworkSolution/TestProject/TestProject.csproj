@@ -67,6 +67,10 @@
       <Project>{33dfe7ee-dd0d-47c8-ab86-0b62a35ecec0}</Project>
       <Name>MSMQHelperUtilities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TcpHelper\TcpHelper.csproj">
+      <Project>{812FCB5E-7617-4944-AEE9-7A2935E952C8}</Project>
+      <Name>TcpHelper</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

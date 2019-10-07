@@ -6,59 +6,63 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MySQL_PlayerData_Translator {
-    class Program {
+namespace MySQL_PlayerData_Translator
+{
+    class Program
+    {
         private static DBConnection dbConnectionMaster;
         private static DBConnection dbConnectionSlave1;
         private static DBConnection dbConnectionSlave2;
         private static MSMQHandler handler;
 
-        private static PlayerDataModel data;
-
-        private static void Main (string [ ] args) {
+        private static void Main(string[] args)
+        {
             SetupDBConnections();
             handler = new MSMQHandler();
-            data = new PlayerDataModel();
             handler.NewInputRecieved += OnInputRecieved;
 
 
             Console.ReadKey();
         }
 
-        private static void OnInputRecieved (object sender, InputRecievedEventArgs e) {
+        private static void OnInputRecieved(object sender, InputRecievedEventArgs e)
+        {
             Console.WriteLine("Thread: " + Task.CurrentId + " executing OnInputRecieved");
-            switch (e.RequestType) {
+            switch (e.RequestType)
+            {
                 case PlayerDataRequest.Create:
-                    data = dbConnectionMaster.Insert(data);
-                    handler.EnqueueProducerQueue(data);
+                    
+                    handler.EnqueueProducerQueue(dbConnectionMaster.Insert(e.Data));
                     break;
 
                 case PlayerDataRequest.Update:
-                    data = dbConnectionMaster.Update(data);
-                    handler.EnqueueProducerQueue(data);
+                    
+                    handler.EnqueueProducerQueue(dbConnectionMaster.Update(e.Data));
                     break;
 
                 case PlayerDataRequest.Read:
-                    if (data.ReadSlaveNumber == 1) {
-                        data = dbConnectionSlave1.Select(data);
+                    if (e.Data.ReadSlaveNumber == 1)
+                    {                       
+                        handler.EnqueueProducerQueue(dbConnectionSlave1.Select(e.Data));
                     }
-                    else {
-                        data = dbConnectionSlave2.Select(data);
+                    else
+                    {                      
+                        handler.EnqueueProducerQueue(dbConnectionSlave2.Select(e.Data));
                     }
-                    handler.EnqueueProducerQueue(data);
                     break;
 
                 default:
                     break;
             }
 
-            if (data.PlayerDataStatus == PlayerDataStatus.Success)
+            if (e.Data.PlayerDataStatus == PlayerDataStatus.Success)
                 Console.WriteLine("Success");
             else
                 Console.WriteLine("Failure");
         }
 
-        static void SetupDBConnections () {
+        static void SetupDBConnections()
+        {
             dbConnectionMaster = new DBConnection();
             dbConnectionSlave1 = new DBConnection();
             dbConnectionSlave2 = new DBConnection();
