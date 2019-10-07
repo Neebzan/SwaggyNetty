@@ -17,6 +17,11 @@ namespace MySQL_translator {
             mQHandler.NewInputRecieved += InputRecieved;
 
             SetupDBConnection();
+            while (true) {
+                var key = Console.ReadKey();
+                if (key.Key == ConsoleKey.Escape)
+                    break;
+            }
         }
 
         static void SetupDBConnection () {
@@ -38,7 +43,7 @@ namespace MySQL_translator {
                     break;
 
                 default:
-                    Console.WriteLine("Inputs recieved, but command was unknown");
+                    ConsoleFormatter.WriteLineWithTimestamp("Inputs recieved, but command was unknown");
                     break;
             }
         }

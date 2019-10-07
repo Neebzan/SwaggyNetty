@@ -79,20 +79,20 @@ namespace MySQL_translator {
                         createdAt = DateTimeOffset.Parse(reader [ "created_at" ].ToString());
                     }
                     if (!string.IsNullOrEmpty(userID)) {
-                        Console.WriteLine("User with ID " + _user.UserID + " returned");
+                        ConsoleFormatter.WriteLineWithTimestamp("User with ID " + _user.UserID + " returned");
                         _user.Status = RequestStatus.Success;
                         _user.PswdHash = userPass;
                         _user.CreatedAt = createdAt;
                         return _user;
                     }
                     else {
-                        Console.WriteLine("User with ID " + _user.UserID + " does not exist, or couldn't be found");
+                        ConsoleFormatter.WriteLineWithTimestamp("User with ID " + _user.UserID + " does not exist, or couldn't be found");
                         _user.Status = RequestStatus.DoesNotExist;
                         return _user;
                     }
                 }
                 catch (Exception e) {
-                    Console.WriteLine("ERROR: " + e.Message);
+                    ConsoleFormatter.WriteLineWithTimestamp("ERROR: " + e.Message);
                     _user.Status = RequestStatus.ConnectionError;
                     return _user;
                 }
@@ -118,18 +118,18 @@ namespace MySQL_translator {
 
                     try {
                         int rowsAffected = command.ExecuteNonQuery();
-                        Console.WriteLine("User " + _user.UserID + " inserted");
+                        ConsoleFormatter.WriteLineWithTimestamp("User " + _user.UserID + " inserted");
                         _user.Status = RequestStatus.Success;
                         return _user;
                     }
                     catch (Exception e) {
-                        Console.WriteLine("ERROR: " + e.Message);
+                        ConsoleFormatter.WriteLineWithTimestamp("ERROR: " + e.Message);
                         _user.Status = RequestStatus.AlreadyExists;
                         return _user;
                     }
                 }
                 catch (Exception e) {
-                    Console.WriteLine("ERROR: " + e.Message);
+                    ConsoleFormatter.WriteLineWithTimestamp("ERROR: " + e.Message);
                     _user.Status = RequestStatus.ConnectionError;
                     return _user;
                 }

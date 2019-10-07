@@ -58,7 +58,7 @@ namespace MySQL_translator
                 Task.Factory.StartNew(() => handler?.Invoke(this, new InputRecievedEventArgs() { User = user, RequestType = user.RequestType }));
             }
             catch (Exception eM) {
-                Console.WriteLine(eM.Message);
+                ConsoleFormatter.WriteLineWithTimestamp(eM.Message);
             }
             mQ.BeginReceive();
         }

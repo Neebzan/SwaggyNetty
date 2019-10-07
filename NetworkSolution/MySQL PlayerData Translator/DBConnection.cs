@@ -86,14 +86,14 @@ namespace MySQL_PlayerData_Translator
 
                     else
                     {
-                        Console.WriteLine("User with ID " + data.UserID + " does not exist, or couldn't be found");
+                        ConsoleFormatter.WriteLineWithTimestamp("User with ID " + data.UserID + " does not exist, or couldn't be found");
                         data.PlayerDataStatus = PlayerDataStatus.DoesNotExist;
                         return data;
                     }
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("ERROR: " + e.Message);
+                    ConsoleFormatter.WriteLineWithTimestamp("ERROR: " + e.Message);
                     data.PlayerDataStatus = PlayerDataStatus.ConnectionFailed;
                     return data;
                 }
@@ -121,20 +121,20 @@ namespace MySQL_PlayerData_Translator
                     try
                     {
                         int rowsAffected = command.ExecuteNonQuery();
-                        Console.WriteLine("User " + data.UserID + " inserted");
+                        ConsoleFormatter.WriteLineWithTimestamp("User " + data.UserID + " inserted");
                         data.PlayerDataStatus = PlayerDataStatus.Success;
                         return data;
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine("ERROR: " + e.Message);
+                        ConsoleFormatter.WriteLineWithTimestamp("ERROR: " + e.Message);
                         data.PlayerDataStatus = PlayerDataStatus.AlreadyExists;
                         return data;
                     }
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("ERROR: " + e.Message);
+                    ConsoleFormatter.WriteLineWithTimestamp("ERROR: " + e.Message);
                     data.PlayerDataStatus = PlayerDataStatus.ConnectionFailed;
                     return data;
                 }
@@ -167,20 +167,20 @@ namespace MySQL_PlayerData_Translator
                     try
                     {
                         int rowsAffected = command.ExecuteNonQuery();
-                        Console.WriteLine("User " + data.UserID + " updated");
+                        ConsoleFormatter.WriteLineWithTimestamp("User " + data.UserID + " updated");
                         data.PlayerDataStatus = PlayerDataStatus.Success;
                         return data;
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine("ERROR: " + e.Message);
+                        ConsoleFormatter.WriteLineWithTimestamp("ERROR: " + e.Message);
                         data.PlayerDataStatus = PlayerDataStatus.DoesNotExist;
                         return data;
                     }
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("ERROR: " + e.Message);
+                    ConsoleFormatter.WriteLineWithTimestamp("ERROR: " + e.Message);
                     data.PlayerDataStatus = PlayerDataStatus.ConnectionFailed;
                     return data;
                 }

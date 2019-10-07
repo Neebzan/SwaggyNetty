@@ -22,12 +22,16 @@ namespace MySQL_PlayerData_Translator
             handler.NewInputRecieved += OnInputRecieved;
 
 
-            Console.ReadKey();
+            while (true) {
+                var key = Console.ReadKey();
+                if (key.Key == ConsoleKey.Escape)
+                    break;
+            }
         }
 
         private static void OnInputRecieved(object sender, InputRecievedEventArgs e)
         {
-            Console.WriteLine("Thread: " + Task.CurrentId + " executing OnInputRecieved");
+            ConsoleFormatter.WriteLineWithTimestamp("Thread: " + Task.CurrentId + " executing OnInputRecieved");
             switch (e.RequestType)
             {
                 case PlayerDataRequest.Create:
@@ -56,9 +60,9 @@ namespace MySQL_PlayerData_Translator
             }
 
             if (e.Data.PlayerDataStatus == PlayerDataStatus.Success)
-                Console.WriteLine("Success");
+                ConsoleFormatter.WriteLineWithTimestamp("Success");
             else
-                Console.WriteLine("Failure");
+                ConsoleFormatter.WriteLineWithTimestamp("Failure");
         }
 
         static void SetupDBConnections()
