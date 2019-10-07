@@ -45,13 +45,11 @@ namespace MySQL_PlayerData_Translator {
                 MessageQueue mQ = (MessageQueue)sender;
                 Message m = mQ.EndReceive(e.AsyncResult);
                 m.Formatter = new JsonMessageFormatter();
-                ConsoleFormatter.WriteLineWithTimestamp("Message recieved: " + m.Body);
 
                 try {
                     PlayerDataModel data = Newtonsoft.Json.JsonConvert.DeserializeObject<PlayerDataModel>(m.Body.ToString());
 
                     EventHandler<InputRecievedEventArgs> handler = NewInputRecieved;
-                    //handler?.Invoke(this, new InputRecievedEventArgs() { Data = data, RequestType = data.PlayerDataRequest });
                     Task.Factory.StartNew(() => handler?.Invoke(this, new InputRecievedEventArgs() { Data = data, RequestType = data.PlayerDataRequest }));
                 }
                 catch (Exception eM) {
