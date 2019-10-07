@@ -50,25 +50,12 @@ namespace MySQL_translator
             MessageQueue mQ = (MessageQueue)sender;
             Message m = mQ.EndReceive(e.AsyncResult);
             m.Formatter = new JsonMessageFormatter();
-            Console.WriteLine("Message recieved: " + m.Body);
 
             try {
                 UserModel user = Newtonsoft.Json.JsonConvert.DeserializeObject<UserModel>(m.Body.ToString());
-                GlobalVariablesLib.RequestTypes requestType = GlobalVariablesLib.RequestTypes.Get_User;
-
-                switch (user.RequestType) {
-                    case GlobalVariablesLib.RequestTypes.Get_User:
-                        requestType = GlobalVariablesLib.RequestTypes.Get_User;
-                        break;
-                    case GlobalVariablesLib.RequestTypes.Create_User:
-                        requestType = GlobalVariablesLib.RequestTypes.Create_User;
-                        break;
-                    default:
-                        break;
-                }
 
                 EventHandler<InputRecievedEventArgs> handler = NewInputRecieved;
-                handler?.Invoke(this, new InputRecievedEventArgs() { User = user, RequestType = requestType });
+                Task.Factory.StartNew(() => handler?.Invoke(this, new InputRecievedEventArgs() { User = user, RequestType = user.RequestType }));
             }
             catch (Exception eM) {
                 Console.WriteLine(eM.Message);
@@ -84,7 +71,7 @@ namespace MySQL_translator
             Message msg = new Message(Newtonsoft.Json.JsonConvert.SerializeObject(_user));
             msg.Label = _user.UserID;
             msg.Formatter = new JsonMessageFormatter();
-            MSMQHelperUtilities.MSMQHelper.SendMessage(producerQueue, msg);
+            MSMQHelper.SendMessage(producerQueue, msg);
         }
     }
 }
