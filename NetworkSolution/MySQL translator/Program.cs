@@ -34,11 +34,11 @@ namespace MySQL_translator {
 
         private static void InputRecieved (object sender, InputRecievedEventArgs e) {
             switch (e.RequestType) {
-                case RequestTypes.Get_User:
+                case RequestType.Get_User:
                     mQHandler.EnqueueProducerQueue(DBConnection.Instance().Select(e.User));
                     break;
 
-                case RequestTypes.Create_User:
+                case RequestType.Create_User:
                     mQHandler.EnqueueProducerQueue(DBConnection.Instance().Insert(e.User));
                     break;
 

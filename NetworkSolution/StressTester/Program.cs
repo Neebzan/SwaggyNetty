@@ -75,7 +75,7 @@ namespace StressTester {
 
         static void Spammer(TcpClient client) {
             while (alive) {
-                Thread.Sleep(500);
+                Thread.Sleep(10);
                 try {
                     UserModel userModel;
                     byte[] byteArr;
