@@ -75,7 +75,7 @@ namespace StressTester {
 
         static void Spammer(TcpClient client) {
             while (alive) {
-                Thread.Sleep(50);
+                Thread.Sleep(500);
                 try {
                     UserModel userModel;
                     byte[] byteArr;
@@ -93,6 +93,8 @@ namespace StressTester {
                         Console.WriteLine($"Spammer Sent Message {client.Client.RemoteEndPoint.ToString()}");
 
                     } else {
+                        client.Close();
+                        client = new TcpClient();
                         client.Connect(ip, port);
                     }
 
