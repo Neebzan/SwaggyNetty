@@ -12,7 +12,7 @@ namespace MySQL_translator
 
     public class InputRecievedEventArgs : EventArgs
     {
-        public GlobalVariablesLib.RequestTypes RequestType { get; set; }
+        public GlobalVariablesLib.RequestType RequestType { get; set; }
         public UserModel User { get; set; }
     }
 
