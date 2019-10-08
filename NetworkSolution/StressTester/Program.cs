@@ -15,8 +15,8 @@ namespace StressTester {
     class Program {
         static List<TcpClient> tcpClients = new List<TcpClient>();
 
-        static IPAddress ip = IPAddress.Parse("127.0.0.1");
-        static int port = 13010;
+        static IPAddress ip = IPAddress.Parse(GlobalVariables.MIDDLEWARE_IP);
+        static int port = GlobalVariables.MIDDLEWARE_PORT;
         static bool alive = true;
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace StressTester {
 
         static void Spammer(TcpClient client) {
             while (alive) {
-                Thread.Sleep(10);
+                Thread.Sleep(1);
                 try {
                     UserModel userModel;
                     byte[] byteArr;
