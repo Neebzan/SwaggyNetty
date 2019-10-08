@@ -1,5 +1,6 @@
 ﻿using GlobalVariablesLib;
 using JWTlib;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
@@ -84,6 +86,7 @@ public class ServerClient
                                 JwtSecurityToken token = new JwtSecurityToken(newMessage);
                                 JWTPayload payload = JWTManager.GetModelFromToken<JWTPayload>(token);
                                 clientName = payload.UserID;
+
                                 //Tjek om spilleren allerede er ingame
                                 foreach (var item in Server.Clients)
                                 {
@@ -93,12 +96,42 @@ public class ServerClient
                                         DisconnectClient();
                                     }
                                 }
-                                //string name = token.Claims.Where(n => n.Type == "UserID").Select(c => c.Value).FirstOrDefault().ToString();
-                                if (!isDisconnecting)
+
+                                //Tjek om brugeren har en karakter i databasen
+                                PlayerDataModel character = GetCharacterFromDB();
+
+                                if (character != null)
                                 {
-                                    Vector2 index = new Vector2(UnityEngine.Random.Range(0, Server.MapGrid.gridWidth), UnityEngine.Random.Range(0, Server.MapGrid.gridHeigth));
-                                    Server.MapGrid.grid[(int)index.x, (int)index.y].GetComponent<Cell>().OccupyCell(SpawnActor(index, clientName).gameObject);
+                                    switch (character.PlayerDataStatus)
+                                    {
+                                        case PlayerDataStatus.Success:
+                                            {
+                                                if (!isDisconnecting)
+                                                {
+                                                    Vector2 index = new Vector2(character.PositionX, character.PositionY);
+                                                    Server.MapGrid.grid[(int)index.x, (int)index.y].GetComponent<Cell>().OccupyCell(SpawnActor(index, clientName).gameObject);
+                                                }
+                                            }
+                                            break;
+                                        case PlayerDataStatus.DoesNotExist:
+                                            {
+                                                if (!isDisconnecting)
+                                                {
+                                                    Vector2 index = new Vector2(UnityEngine.Random.Range(0, Server.MapGrid.gridWidth), UnityEngine.Random.Range(0, Server.MapGrid.gridHeigth));
+                                                    Server.MapGrid.grid[(int)index.x, (int)index.y].GetComponent<Cell>().OccupyCell(SpawnActor(index, clientName).gameObject);
+                                                }
+                                            }
+                                            break;
+                                        default:
+                                            break;
+                                    }
                                 }
+                                else
+                                {
+                                    isDisconnecting = true;
+                                    DisconnectClient();
+                                }
+
                             }
                             else
                             {
@@ -128,6 +161,121 @@ public class ServerClient
                 DisconnectClient();
             }
         }
+    }
+
+    private PlayerDataModel GetCharacterFromDB()
+    {
+        TcpClient client = new TcpClient(GlobalVariables.LOADBALANCER_IP, GlobalVariables.GAME_DATABASE_LOADBALANCER_PORT);
+        //TcpClient client = new TcpClient("127.0.0.1", GlobalVariables.GAME_DATABASE_LOADBALANCER_PORT);
+
+        List<PlayerDataModel> requests = new List<PlayerDataModel>();
+        PlayerDataModel model = new PlayerDataModel()
+        {
+            PlayerDataRequest = PlayerDataRequest.Read,
+            UserID = clientName
+        };
+        requests.Add(model);
+        //Sent to database
+        byte[] data = TCPHelper.MessageBytesNewton(requests);
+
+        client.GetStream().Write(data, 0, data.Length);
+
+        PlayerDataModel responseModel = null;
+        //Wait for response
+        bool done = false;
+        while (!done)
+        {
+            if (TCPHelper.Connected(client))
+            {
+                if (client.GetStream().DataAvailable)
+                {
+                    Debug.Log("INCOMMING DATA");
+                    string responseString = TCPHelper.ReadStreamOnce(client.GetStream());
+                    responseModel = JsonConvert.DeserializeObject<PlayerDataModel>(responseString);
+                    done = true;
+                }
+            }
+            else
+                done = true;
+
+            Thread.Sleep(16);
+        }
+        //When response have been received, check the response
+        switch (responseModel.PlayerDataStatus)
+        {
+            case PlayerDataStatus.None:
+                break;
+            case PlayerDataStatus.Success:
+                return responseModel;
+            case PlayerDataStatus.ConnectionFailed:
+                break;
+            case PlayerDataStatus.AlreadyExists:
+                break;
+            case PlayerDataStatus.DoesNotExist:
+                {
+                    if (RequestCharacterCreation(client))
+                    {
+                        return new PlayerDataModel() { PlayerDataStatus = PlayerDataStatus.DoesNotExist };
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+        return null;
+    }
+
+    private bool RequestCharacterCreation(TcpClient client)
+    {
+        List<PlayerDataModel> requests = new List<PlayerDataModel>();
+        PlayerDataModel model = new PlayerDataModel()
+        {
+            PlayerDataRequest = PlayerDataRequest.Create,
+            UserID = clientName
+        };
+        requests.Add(model);
+        //Sent to database
+        byte[] data = TCPHelper.MessageBytesNewton(requests);
+        client.GetStream().Write(data, 0, data.Length);
+
+        PlayerDataModel responseModel = null;
+        //Wait for response
+        bool done = false;
+        while (!done)
+        {
+            if (TCPHelper.Connected(client))
+            {
+                if (client.GetStream().DataAvailable)
+                {
+                    Debug.Log("INCOMMING DATA");
+                    string responseString = TCPHelper.ReadStreamOnce(client.GetStream());
+                    responseModel = JsonConvert.DeserializeObject<PlayerDataModel>(responseString);
+                    done = true;
+                }
+            }
+            else
+                done = true;
+
+            Thread.Sleep(16);
+        }
+
+        switch (responseModel.PlayerDataStatus)
+        {
+            case PlayerDataStatus.None:
+                break;
+            case PlayerDataStatus.Success:
+                return true;
+            case PlayerDataStatus.ConnectionFailed:
+                break;
+            case PlayerDataStatus.AlreadyExists:
+                break;
+            case PlayerDataStatus.DoesNotExist:
+                break;
+            default:
+                break;
+        }
+
+        return false;
     }
 
     private void DisconnectClient()
@@ -215,8 +363,6 @@ public class ServerClient
 
         }
     }
-
-
 
     public bool Connected
     {

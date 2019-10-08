@@ -20,9 +20,13 @@ public static class Server
     //static TcpListener listener = new TcpListener(iPAd, SERVER_PORT);
     static TcpListener listener = new TcpListener(IPAddress.Any, SERVER_PORT);
     public static TcpClient SessionClient;
+    public static TcpClient databaseClient;
+
 
     public static System.Timers.Timer roundTimer = new System.Timers.Timer(1000);
     public static System.Timers.Timer packageTimer = new System.Timers.Timer(16.667);
+    public static System.Timers.Timer saveStateTimer = new System.Timers.Timer(1000);
+
 
     public static uint PlayersConnected;
 
@@ -34,6 +38,8 @@ public static class Server
 
     static Server()
     {
+        //databaseClient = new TcpClient(GlobalVariables.MYSQL_PLAYER_DB_IP, GlobalVariables.GAME_DATABASE_LOADBALANCER_PORT);
+        databaseClient = new TcpClient(GlobalVariables.LOADBALANCER_IP, GlobalVariables.GAME_DATABASE_LOADBALANCER_PORT);
         StartTick();
         UnityEngine.Application.quitting += StopServer;
         try
@@ -82,12 +88,41 @@ public static class Server
         packageTimer.Elapsed += PackageTick;
         packageTimer.AutoReset = true;
         packageTimer.Enabled = true;
+        saveStateTimer.Elapsed += SaveTick;
+        saveStateTimer.AutoReset = true;
+        saveStateTimer.Enabled = true;
+
+    }
+
+    private static void SaveTick(object sender, ElapsedEventArgs e)
+    {
+        if (Players.Count > 0)
+        {
+            List<PlayerDataModel> characterSaves = new List<PlayerDataModel>();
+            lock (Players)
+                foreach (var item in Players)
+                {
+                    characterSaves.Add(new PlayerDataModel()
+                    {
+                        PlayerDataRequest = PlayerDataRequest.Update,
+                        Online = true,
+                        PositionX = item.startingX,
+                        PositionY = item.startingY,
+                        UserID = item.Client.clientName,
+                        ResponseExpected = false
+                    });
+                }
+
+            byte[] data = TCPHelper.MessageBytesNewton(characterSaves);
+            databaseClient.GetStream().Write(data, 0, data.Length);
+        }
+
 
     }
 
     private static void PackageTick(object sender, ElapsedEventArgs e)
     {
-        
+
         lock (Server.ChangedCells)
         {
             List<PositionDataPackage> positionData = PositionData();
@@ -180,6 +215,7 @@ public static class Server
 
     public static void Disconnect(ServerClient disconnectedClient)
     {
+        //Session manager - UNTESTED
         try
         {
             UserSession ses = new UserSession() { UserID = disconnectedClient.clientName, InGame = false, Request = SessionRequest.SetStatus };
@@ -190,6 +226,7 @@ public static class Server
         {
 
         }
+
         ServerActor disconnectedActor = null;
         foreach (ServerActor actor in Players)
         {
@@ -201,6 +238,21 @@ public static class Server
         }
         if (disconnectedActor != null)
         {
+            //Gem spillerens state
+            List<PlayerDataModel> saveStates = new List<PlayerDataModel>();
+            saveStates.Add(new PlayerDataModel()
+            {
+                PlayerDataRequest = PlayerDataRequest.Update,
+                Online = false,
+                PositionX = disconnectedActor.startingX,
+                PositionY = disconnectedActor.startingY,
+                UserID = disconnectedActor.Client.clientName,
+                ResponseExpected = false
+            });
+            byte[] data = TCPHelper.MessageBytesNewton(saveStates);
+            databaseClient.GetStream().Write(data, 0, data.Length);
+
+            //Fjern fra spillet
             MapGrid.grid[disconnectedActor.startingX, disconnectedActor.startingY].GetComponent<Cell>().UnoccupyCell();
             ChangedCells.Add(Server.MapGrid.grid[disconnectedActor.startingX, disconnectedActor.startingY].GetComponent<Cell>(), 0);
             Players.Remove(disconnectedActor);

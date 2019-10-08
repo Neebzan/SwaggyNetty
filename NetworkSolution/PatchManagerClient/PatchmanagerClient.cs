@@ -39,6 +39,7 @@ namespace PatchManagerClient {
             Status = PatchStatus.Connecting;
             StatusChanged.Invoke(null, new EventArgs());
             downloadDirectory = dir;
+            Directory.CreateDirectory(downloadDirectory);
             FileChecker.GetFilesDictionaryProgress += ProgressUpdateReceived;
             Task.Run(() => FileChecker.GetFilesDictionary(out allFilesDictionary, downloadDirectory));
 

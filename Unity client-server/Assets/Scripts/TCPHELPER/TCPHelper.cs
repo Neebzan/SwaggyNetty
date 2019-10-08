@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-public class TCPHelper : MonoBehaviour
+public class TCPHelper
 {
 
     /// <summary>
@@ -34,6 +34,24 @@ public class TCPHelper : MonoBehaviour
     public static byte[] MessageBytes<T>(T obj)
     {
         string packageJson = JsonUtility.ToJson(obj);
+        string msg = packageJson;
+        //Convert to JSON
+        byte[] packageData = System.Text.Encoding.ASCII.GetBytes(msg);
+
+        byte[] totalPackage = AddSizeHeaderToPackage(packageData);
+
+        return totalPackage;
+    }
+
+    /// <summary>
+    /// Serializes to JSON, converts to byte array, and adds a header to the package, consisting of an integer value of the byte length of the orignial message
+    /// </summary>
+    /// <typeparam name="T">The type of object to JSON serialize</typeparam>
+    /// <param name="obj">The object to serialize as a message</param>
+    /// <returns></returns>
+    public static byte[] MessageBytesNewton<T>(T obj)
+    {
+        string packageJson = Newtonsoft.Json.JsonConvert.SerializeObject(obj);
         string msg = packageJson;
         //Convert to JSON
         byte[] packageData = System.Text.Encoding.ASCII.GetBytes(msg);

@@ -1,8 +1,9 @@
-﻿using GlobalVariablesLib.Models;
+﻿using GlobalVariablesLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MySQL_PlayerData_Translator {
@@ -12,45 +13,39 @@ namespace MySQL_PlayerData_Translator {
         private static DBConnection dbConnectionSlave2;
         private static MSMQHandler handler;
 
-        private static PlayerDataModel data;
-
         private static void Main (string [ ] args) {
             SetupDBConnections();
             handler = new MSMQHandler();
-            data = new PlayerDataModel();
             handler.NewInputRecieved += OnInputRecieved;
+
+
+            while (true) {
+                var key = Console.ReadKey();
+                if (key.Key == ConsoleKey.Escape)
+                    break;
+            }
         }
 
         private static void OnInputRecieved (object sender, InputRecievedEventArgs e) {
             switch (e.RequestType) {
                 case PlayerDataRequest.Create:
-                    data = dbConnectionMaster.Insert(data);
-                    handler.EnqueueProducerQueue(data);
+                    handler.EnqueueProducerQueue(dbConnectionMaster.Insert(e.Data));
                     break;
 
                 case PlayerDataRequest.Update:
-                    data = dbConnectionMaster.Update(data);
-                    handler.EnqueueProducerQueue(data);
+                    handler.EnqueueProducerQueue(dbConnectionMaster.Update(e.Data));
                     break;
 
                 case PlayerDataRequest.Read:
-                    if (data.ReadSlaveNumber == 1) {
-                        data = dbConnectionSlave1.Select(data);
-                    }
-                    else {
-                        data = dbConnectionSlave2.Select(data);
-                    }
-                    handler.EnqueueProducerQueue(data);
+                    if (e.Data.ReadSlaveNumber == 1)
+                        handler.EnqueueProducerQueue(dbConnectionSlave1.Select(e.Data));
+                    else
+                        handler.EnqueueProducerQueue(dbConnectionSlave2.Select(e.Data));
                     break;
 
                 default:
                     break;
             }
-
-            if (data.PlayerDataStatus == PlayerDataStatus.Success)
-                Console.WriteLine("Success");
-            else
-                Console.WriteLine("Failure");
         }
 
         static void SetupDBConnections () {

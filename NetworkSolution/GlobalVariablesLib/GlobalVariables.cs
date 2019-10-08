@@ -31,6 +31,8 @@ namespace GlobalVariablesLib
         public const string PATCHMANAGER_IP = "178.155.161.248";
         public const int PATCHMANAGER_PORT = 13011;
 
+        public const string LOADBALANCER_IP = "178.155.161.248";
+
         public const string CONSUMER_QUEUE_NAME = "userdb_request_consumer";
         public const string PRODUCER_QUEUE_NAME = "userdb_request_producer";
 
@@ -38,6 +40,8 @@ namespace GlobalVariablesLib
         public const int BEACON_PORT = 13006;
         public const int SESSION_USER_PORT = 13007;
         public const int SESSION_SERVER_PORT = 13008;
+        public const int GAME_DATABASE_LOADBALANCER_PORT = 13009;
+
 
         public const int MYSQL_LOGIN_DB_PORT = 3306;
         public const string MYSQL_LOGIN_DB_IP = "178.155.161.248";

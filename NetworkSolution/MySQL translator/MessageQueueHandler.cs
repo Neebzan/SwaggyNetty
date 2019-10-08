@@ -12,7 +12,7 @@ namespace MySQL_translator
 
     public class InputRecievedEventArgs : EventArgs
     {
-        public GlobalVariablesLib.RequestType RequestType { get; set; }
+        public GlobalVariablesLib.RequestTypes RequestType { get; set; }
         public UserModel User { get; set; }
     }
 
@@ -50,28 +50,15 @@ namespace MySQL_translator
             MessageQueue mQ = (MessageQueue)sender;
             Message m = mQ.EndReceive(e.AsyncResult);
             m.Formatter = new JsonMessageFormatter();
-            Console.WriteLine("Message recieved: " + m.Body);
 
             try {
                 UserModel user = Newtonsoft.Json.JsonConvert.DeserializeObject<UserModel>(m.Body.ToString());
-                GlobalVariablesLib.RequestType requestType = GlobalVariablesLib.RequestType.Get_User;
-
-                switch (user.RequestType) {
-                    case GlobalVariablesLib.RequestType.Get_User:
-                        requestType = GlobalVariablesLib.RequestType.Get_User;
-                        break;
-                    case GlobalVariablesLib.RequestType.Create_User:
-                        requestType = GlobalVariablesLib.RequestType.Create_User;
-                        break;
-                    default:
-                        break;
-                }
 
                 EventHandler<InputRecievedEventArgs> handler = NewInputRecieved;
-                handler?.Invoke(this, new InputRecievedEventArgs() { User = user, RequestType = requestType });
+                Task.Factory.StartNew(() => handler?.Invoke(this, new InputRecievedEventArgs() { User = user, RequestType = user.RequestType }));
             }
             catch (Exception eM) {
-                Console.WriteLine(eM.Message);
+                ConsoleFormatter.WriteLineWithTimestamp(eM.Message);
             }
             mQ.BeginReceive();
         }
@@ -84,7 +71,7 @@ namespace MySQL_translator
             Message msg = new Message(Newtonsoft.Json.JsonConvert.SerializeObject(_user));
             msg.Label = _user.UserID;
             msg.Formatter = new JsonMessageFormatter();
-            MSMQHelperUtilities.MSMQHelper.SendMessage(producerQueue, msg);
+            MSMQHelper.SendMessage(producerQueue, msg);
         }
     }
 }

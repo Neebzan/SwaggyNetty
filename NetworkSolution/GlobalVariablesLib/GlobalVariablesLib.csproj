@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConsoleFormatter.cs" />
     <Compile Include="GlobalVariables.cs" />
     <Compile Include="Models\ConnectionModel.cs" />
     <Compile Include="Models\FileTransferModel.cs" />

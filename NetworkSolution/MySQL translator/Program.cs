@@ -8,10 +8,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using GlobalVariablesLib;
 
-namespace MySQL_translator
-{
-    class Program
-    {
+namespace MySQL_translator {
+    class Program {
         static MessageQueueHandler mQHandler;
 
         static void Main (string [ ] args) {
@@ -19,7 +17,11 @@ namespace MySQL_translator
             mQHandler.NewInputRecieved += InputRecieved;
 
             SetupDBConnection();
-            ConsoleInputLoop();
+            while (true) {
+                var key = Console.ReadKey();
+                if (key.Key == ConsoleKey.Escape)
+                    break;
+            }
         }
 
         static void SetupDBConnection () {
@@ -31,81 +33,20 @@ namespace MySQL_translator
         }
 
         private static void InputRecieved (object sender, InputRecievedEventArgs e) {
-            UserModel newUser = null;
-
             switch (e.RequestType) {
-                case GlobalVariablesLib.RequestType.Get_User:
-                    newUser = DBConnection.Instance().Select(e.User);
-                    newUser.RemoteEndPoint = e.User.RemoteEndPoint;
-                    mQHandler.EnqueueProducerQueue(newUser);
+                case RequestTypes.Get_User:
+                    mQHandler.EnqueueProducerQueue(DBConnection.Instance().Select(e.User));
                     break;
 
-                case GlobalVariablesLib.RequestType.Create_User:
-                    newUser = DBConnection.Instance().Insert(e.User);
-                    newUser.RemoteEndPoint = e.User.RemoteEndPoint;
-                    mQHandler.EnqueueProducerQueue(newUser);
+                case RequestTypes.Create_User:
+                    mQHandler.EnqueueProducerQueue(DBConnection.Instance().Insert(e.User));
                     break;
 
                 default:
-                    Console.WriteLine("Inputs recieved, but command was unknown");
+                    ConsoleFormatter.WriteLineWithTimestamp("Inputs recieved, but command was unknown");
                     break;
             }
         }
-
-        private static void ConsoleInputLoop () {
-            UserModel newUser = null;
-
-            while (true) {
-
-                Console.WriteLine(" R: SELECT FROM users");
-                Console.WriteLine(" S: SELECT * FROM users");
-                Console.WriteLine(" I: INSERT INTO users\n");
-
-                var key = Console.ReadKey().Key;
-
-                Console.Clear();
-
-                string user_id = "";
-                string password_hash = "";
-
-                switch (key) {
-                    case ConsoleKey.R:
-                        Console.Write("user_id: ");
-                        user_id = Console.ReadLine();
-
-                        newUser = DBConnection.Instance().Select(new UserModel() { UserID = user_id });
-
-                        if (newUser.Status == GlobalVariablesLib.RequestStatus.Success) {
-                            Console.WriteLine("UserID: {0}, PswdHash: {1}, CreatedAt: {2}", newUser.UserID, newUser.PswdHash, newUser.CreatedAt);
-                        }
-                        break;
-                    case ConsoleKey.S:
-                        DBConnection.Instance().ConsoleSelect();
-
-                        break;
-                    case ConsoleKey.I:
-                        Console.Write("user_id: ");
-                        user_id = Console.ReadLine();
-
-                        Console.Write("password_hash: ");
-                        password_hash = Console.ReadLine();
-
-                        newUser = DBConnection.Instance().Insert(new UserModel() { UserID = user_id, PswdHash = password_hash });
-                        
-                        if (newUser.Status == GlobalVariablesLib.RequestStatus.Success) {
-                            Console.WriteLine("UserID: {0}, PswdHash: {1}", newUser.UserID, newUser.PswdHash);
-                        }
-                        
-                        break;
-                    case ConsoleKey.Escape:
-                        Environment.Exit(1);
-                        break;
-                    default:
-                        break;
-                }
-                Console.WriteLine("\n");
-            }
-        }
-
     }
 }
+
