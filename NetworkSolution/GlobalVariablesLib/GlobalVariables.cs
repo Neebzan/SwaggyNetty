@@ -24,8 +24,7 @@ namespace GlobalVariablesLib
         public const string BEACON_RESPONSE_QUEUE_NAME = "Beacon_Response_Queue";
         public const string TEST_QUEUE_NAME = "Test_Queue";
 
-        //public const string MIDDLEWARE_IP = "178.155.161.248";
-        public const string MIDDLEWARE_IP = "127.0.0.1";
+        public const string MIDDLEWARE_IP = "178.155.161.248";
         public const int MIDDLEWARE_PORT = 13010;
 
         public const string PATCHMANAGER_IP = "178.155.161.248";

@@ -96,6 +96,8 @@ namespace Middleware {
                                 if (GetMessage(userRequest.UserID, uniqueClientID, dataBaseResponses,out Message response)){
                                     // Model Representing response.
                                     UserModel databaseResponseModel = JsonConvert.DeserializeObject<UserModel>(response.Body.ToString());
+                                    // Calls statushandler, that based on UserModel.Status Returns True, if Success, or false and an
+                                    // error message for the user.
                                     if (StatusHandler(databaseResponseModel,out string message)) {
                                         if (userRequest.PswdHash == databaseResponseModel.PswdHash) {
                                             // Queue Where Exptected Messages should be recieved from.
