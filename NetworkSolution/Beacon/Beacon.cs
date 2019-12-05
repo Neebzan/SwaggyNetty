@@ -20,7 +20,7 @@ namespace Beacon
         {
             serverData.Servers = new List<ServerInformation>();
 
-            serverData.Servers.Add(new ServerInformation() { IP = "TEST IP", Port = 1234 });
+            serverData.Servers.Add(new ServerInformation() { IP = "178.155.161.248", Port = 13000 });
 
             Thread t = new Thread(ListenForServers);
             t.IsBackground = true;
